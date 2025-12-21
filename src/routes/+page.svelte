@@ -7,6 +7,8 @@
 	import Footer from '$lib/components/Footer.svelte';
 	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 	
+	let { data } = $props<{ data: { pluginCount: number; releaseCount: number } }>();
+	
 	let navRef: HTMLElement;
 	let scrolled = $state(false);
 	
@@ -39,7 +41,7 @@
 
 <Hero />
 <Showcase />
-<Features />
+<Features pluginCount={data.pluginCount} releaseCount={data.releaseCount} />
 <Footer />
 <ScrollToTop />
 

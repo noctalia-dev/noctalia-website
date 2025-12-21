@@ -15,53 +15,41 @@
 		lastUpdated: string;
 	}
 	
-	interface Registry {
-		version: number;
-		plugins: Plugin[];
-	}
+	let { data } = $props<{ data: { plugins: Plugin[] } }>();
 	
 	let plugins = $state<Plugin[]>([]);
 	let allPlugins = $state<Plugin[]>([]);
-	let loading = $state(true);
+	let loading = $state(false);
 	let error = $state<string | null>(null);
 	let selectedPlugin = $state<Plugin | null>(null);
 	let latestUpdate = $state<Plugin | null>(null);
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
 	
-	onMount(async () => {
-		try {
-			const response = await fetch('https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json');
-			if (!response.ok) throw new Error('Failed to fetch plugins');
-			const data: Registry = await response.json();
-			allPlugins = data.plugins.sort((a, b) => 
-				new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-			);
-			
-			// Initialize Fuse.js for fuzzy search
-			fuse = new Fuse(allPlugins, {
-				keys: [
-					{ name: 'name', weight: 0.5 },
-					{ name: 'description', weight: 0.3 },
-					{ name: 'author', weight: 0.2 },
-					{ name: 'id', weight: 0.1 }
-				],
-				threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
-				includeScore: true,
-				minMatchCharLength: 2
-			});
-			
-			plugins = allPlugins;
-			
-			// Get the most recently updated plugin
-			if (plugins.length > 0) {
-				latestUpdate = plugins[0];
-			}
-			
-			loading = false;
-		} catch (err) {
-			error = err instanceof Error ? err.message : 'Failed to load plugins';
-			loading = false;
+	onMount(() => {
+		// Sort plugins by last updated
+		allPlugins = data.plugins.sort((a, b) => 
+			new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+		);
+		
+		// Initialize Fuse.js for fuzzy search
+		fuse = new Fuse(allPlugins, {
+			keys: [
+				{ name: 'name', weight: 0.5 },
+				{ name: 'description', weight: 0.3 },
+				{ name: 'author', weight: 0.2 },
+				{ name: 'id', weight: 0.1 }
+			],
+			threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
+			includeScore: true,
+			minMatchCharLength: 2
+		});
+		
+		plugins = allPlugins;
+		
+		// Get the most recently updated plugin
+		if (plugins.length > 0) {
+			latestUpdate = plugins[0];
 		}
 	});
 	

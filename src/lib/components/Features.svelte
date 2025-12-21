@@ -8,10 +8,9 @@
 	let featuresRef: HTMLElement;
 	let headerRef: HTMLElement;
 	let gridRef: HTMLElement;
-	let pluginCount = $state<number | null>(null);
-	let releaseCount = $state<number | null>(null);
+	let { pluginCount = 0, releaseCount = 0 } = $props<{ pluginCount?: number; releaseCount?: number }>();
 	
-	onMount(async () => {
+	onMount(() => {
 		mounted = true;
 		// Fallback: show content after a short delay if scroll detection doesn't work
 		setTimeout(() => {
@@ -35,60 +34,6 @@
 				}, { threshold: 0.1 });
 			}
 		}, 100);
-		
-		// Fetch plugin count
-		try {
-			const response = await fetch('https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json');
-			if (!response.ok) throw new Error('Failed to fetch plugins');
-			const data = await response.json();
-			pluginCount = data.plugins?.length || 0;
-		} catch (err) {
-			pluginCount = null;
-		}
-		
-		// Fetch release count from GitHub (handle pagination)
-		try {
-			let allReleases: any[] = [];
-			let page = 1;
-			let hasMore = true;
-			const maxPages = 10; // Safety limit
-			
-			while (hasMore && page <= maxPages) {
-				const response = await fetch(`https://api.github.com/repos/noctalia-dev/noctalia-shell/releases?per_page=100&page=${page}`, {
-					headers: {
-						'Accept': 'application/vnd.github.v3+json'
-					}
-				});
-				
-				if (!response.ok) {
-					const errorText = await response.text();
-					console.error('GitHub API error:', response.status, errorText);
-					throw new Error(`Failed to fetch releases: ${response.status}`);
-				}
-				
-				const releases = await response.json();
-				if (Array.isArray(releases)) {
-					if (releases.length === 0) {
-						hasMore = false;
-					} else {
-						allReleases = allReleases.concat(releases);
-						// Check if there are more pages via Link header
-						const linkHeader = response.headers.get('Link');
-						hasMore = linkHeader?.includes('rel="next"') ?? (releases.length === 100);
-						page++;
-					}
-				} else {
-					hasMore = false;
-				}
-			}
-			
-			releaseCount = allReleases.length > 0 ? allReleases.length : 0;
-		} catch (err) {
-			console.error('Failed to fetch releases:', err);
-			// Fallback: if API fails, try to use a known value or show null
-			// You can temporarily hardcode this if the API is blocked
-			releaseCount = null;
-		}
 	});
 	
 	const features = $derived([
@@ -119,20 +64,16 @@
 		},
 		{
 			icon: '🧩',
-			value: pluginCount !== null ? `${pluginCount}+` : '...',
+			value: `${pluginCount}+`,
 			title: 'Plugins Available',
-			description: pluginCount !== null 
-				? `${pluginCount} community plugins to extend functionality`
-				: 'Extend functionality with community plugins',
+			description: `${pluginCount} community plugins to extend functionality`,
 			type: 'stat'
 		},
 		{
 			icon: '🚀',
-			value: releaseCount !== null ? `${releaseCount}+` : '...',
+			value: `${releaseCount}+`,
 			title: 'Releases',
-			description: releaseCount !== null && releaseCount > 0
-				? `${releaseCount} stable releases and counting`
-				: 'Regular updates and improvements',
+			description: `${releaseCount} stable releases and counting`,
 			type: 'stat'
 		}
 	]);
