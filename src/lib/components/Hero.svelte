@@ -78,6 +78,7 @@
 		inset: 0;
 		z-index: 0;
 		overflow: hidden;
+		will-change: transform;
 	}
 	
 	.gradient-orb {
@@ -251,6 +252,12 @@
 		opacity: 0.8;
 	}
 	
+	:global([data-theme='light']) .logo-subtitle {
+		color: var(--mPrimary);
+		opacity: 1;
+		font-weight: 400;
+	}
+	
 	.hero-title {
 		font-size: 3.5rem;
 		font-weight: 700;
@@ -298,6 +305,12 @@
 		font-weight: 400;
 		position: relative;
 		z-index: 1;
+	}
+	
+	:global([data-theme='light']) .hero-description {
+		text-shadow: 
+			0 1px 4px rgba(0, 0, 0, 0.1),
+			0 0 8px rgba(0, 0, 0, 0.05);
 	}
 	
 	.hero-actions {

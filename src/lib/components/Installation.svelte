@@ -119,7 +119,7 @@
 		padding: 2rem;
 		border-radius: 1rem;
 		backdrop-filter: blur(10px);
-		background: rgba(var(--mSurfaceVariant-rgb, 17, 17, 45), 0.6);
+		background: color-mix(in srgb, var(--mSurfaceVariant) 90%, var(--mSurface) 10%);
 		border: 1px solid var(--mOutline);
 		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		position: relative;
@@ -142,7 +142,7 @@
 		border-color: var(--mSecondary);
 		transform: translateY(-4px);
 		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15), 0 0 24px rgba(169, 174, 254, 0.1);
-		background: rgba(var(--mSurfaceVariant-rgb, 17, 17, 45), 0.8);
+		background: color-mix(in srgb, var(--mSurfaceVariant) 95%, var(--mSurface) 5%);
 	}
 	
 	.install-card:hover::before {

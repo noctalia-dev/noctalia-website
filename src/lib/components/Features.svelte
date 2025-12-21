@@ -1,54 +1,163 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { setupScrollAnimation } from '$lib/utils/scrollAnimations';
 	
 	let mounted = $state(false);
+	let headerVisible = $state(false);
+	let gridVisible = $state(false);
+	let featuresRef: HTMLElement;
+	let headerRef: HTMLElement;
+	let gridRef: HTMLElement;
+	let pluginCount = $state<number | null>(null);
+	let releaseCount = $state<number | null>(null);
 	
-	onMount(() => {
+	onMount(async () => {
 		mounted = true;
+		// Fallback: show content after a short delay if scroll detection doesn't work
+		setTimeout(() => {
+			if (!headerVisible) {
+				headerVisible = true;
+			}
+			if (!gridVisible) {
+				gridVisible = true;
+			}
+		}, 500);
+		
+		setTimeout(() => {
+			if (headerRef) {
+				setupScrollAnimation(headerRef, (visible) => {
+					headerVisible = visible;
+				}, { threshold: 0.2 });
+			}
+			if (gridRef) {
+				setupScrollAnimation(gridRef, (visible) => {
+					gridVisible = visible;
+				}, { threshold: 0.1 });
+			}
+		}, 100);
+		
+		// Fetch plugin count
+		try {
+			const response = await fetch('https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json');
+			if (!response.ok) throw new Error('Failed to fetch plugins');
+			const data = await response.json();
+			pluginCount = data.plugins?.length || 0;
+		} catch (err) {
+			pluginCount = null;
+		}
+		
+		// Fetch release count from GitHub (handle pagination)
+		try {
+			let allReleases: any[] = [];
+			let page = 1;
+			let hasMore = true;
+			const maxPages = 10; // Safety limit
+			
+			while (hasMore && page <= maxPages) {
+				const response = await fetch(`https://api.github.com/repos/noctalia-dev/noctalia-shell/releases?per_page=100&page=${page}`, {
+					headers: {
+						'Accept': 'application/vnd.github.v3+json'
+					}
+				});
+				
+				if (!response.ok) {
+					const errorText = await response.text();
+					console.error('GitHub API error:', response.status, errorText);
+					throw new Error(`Failed to fetch releases: ${response.status}`);
+				}
+				
+				const releases = await response.json();
+				if (Array.isArray(releases)) {
+					if (releases.length === 0) {
+						hasMore = false;
+					} else {
+						allReleases = allReleases.concat(releases);
+						// Check if there are more pages via Link header
+						const linkHeader = response.headers.get('Link');
+						hasMore = linkHeader?.includes('rel="next"') ?? (releases.length === 100);
+						page++;
+					}
+				} else {
+					hasMore = false;
+				}
+			}
+			
+			releaseCount = allReleases.length > 0 ? allReleases.length : 0;
+		} catch (err) {
+			console.error('Failed to fetch releases:', err);
+			// Fallback: if API fails, try to use a known value or show null
+			// You can temporarily hardcode this if the API is blocked
+			releaseCount = null;
+		}
 	});
 	
-	const features = [
+	const features = $derived([
 		{
 			icon: '⚡',
 			title: 'Built on Quickshell',
-			description: 'High performance foundation for a smooth experience'
+			description: 'High performance foundation for a smooth experience',
+			type: 'feature'
 		},
 		{
 			icon: '🎯',
 			title: 'Minimalist Design',
-			description: 'Clean, uncluttered interface that gets out of your way'
+			description: 'Clean, uncluttered interface that gets out of your way',
+			type: 'feature'
 		},
 		{
 			icon: '🔧',
 			title: 'Easily Customizable',
-			description: 'Tailor every aspect to match your personal style'
+			description: 'Tailor every aspect to match your personal style',
+			type: 'feature'
 		},
 		{
 			icon: '🪟',
-			title: 'Compositor Support',
-			description: 'Native support for Niri, Hyprland, Sway, MangoWC, and labwc'
+			value: '5+',
+			title: 'Compositors Supported',
+			description: 'Niri, Hyprland, Sway, MangoWC, and labwc',
+			type: 'stat'
 		},
 		{
 			icon: '🧩',
-			title: 'Plugins',
-			description: 'Extend functionality with community plugins and create your own'
+			value: pluginCount !== null ? `${pluginCount}+` : '...',
+			title: 'Plugins Available',
+			description: pluginCount !== null 
+				? `${pluginCount} community plugins to extend functionality`
+				: 'Extend functionality with community plugins',
+			type: 'stat'
+		},
+		{
+			icon: '🚀',
+			value: releaseCount !== null ? `${releaseCount}+` : '...',
+			title: 'Releases',
+			description: releaseCount !== null && releaseCount > 0
+				? `${releaseCount} stable releases and counting`
+				: 'Regular updates and improvements',
+			type: 'stat'
 		}
-	];
+	]);
 </script>
 
-<section class="features" id="features">
+<section class="features" id="features" bind:this={featuresRef}>
 	<div class="container">
-		<div class="section-header" class:visible={mounted}>
+		<div class="section-header" class:visible={headerVisible} bind:this={headerRef}>
 			<h2 class="section-title">Key Features</h2>
 			<p class="section-description">
 				Everything you need for a beautiful, distraction-free desktop experience
 			</p>
 		</div>
 		
-		<div class="features-grid">
+		<div class="features-grid" class:visible={gridVisible} bind:this={gridRef}>
 			{#each features as feature, i}
-				<div class="feature-card" class:visible={mounted} style="animation-delay: {i * 0.1}s">
+				<div 
+					class="feature-card" 
+					class:stat-card={feature.type === 'stat'}
+					style="animation-delay: {i * 0.1}s"
+				>
 					<div class="feature-icon">{feature.icon}</div>
+					{#if feature.type === 'stat' && feature.value}
+						<div class="feature-value">{feature.value}</div>
+					{/if}
 					<h3 class="feature-title">{feature.title}</h3>
 					<p class="feature-description">{feature.description}</p>
 				</div>
@@ -110,13 +219,21 @@
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 		gap: 2rem;
+		opacity: 0;
+		transform: translateY(20px);
+		transition: opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s;
+	}
+	
+	.features-grid.visible {
+		opacity: 1;
+		transform: translateY(0);
 	}
 	
 	.feature-card {
 		padding: 2.5rem;
 		border-radius: 1.5rem;
 		backdrop-filter: blur(10px);
-		background: rgba(var(--mSurface-rgb, 7, 7, 34), 0.6);
+		background: color-mix(in srgb, var(--mSurface) 90%, var(--mSurfaceVariant) 10%);
 		border: 1px solid var(--mOutline);
 		transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 		opacity: 0;
@@ -126,6 +243,22 @@
 		box-shadow: 
 			0 4px 16px rgba(0, 0, 0, 0.1),
 			inset 0 1px 0 rgba(255, 255, 255, 0.05);
+	}
+	
+	.features-grid.visible .feature-card {
+		opacity: 1;
+		transform: translateY(0);
+	}
+	
+	@keyframes slideUp {
+		from {
+			opacity: 0;
+			transform: translateY(30px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
 	}
 	
 	.feature-card::before {
@@ -153,9 +286,6 @@
 		transition: opacity 0.5s ease;
 	}
 	
-	.feature-card.visible {
-		animation: slideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-	}
 	
 	.feature-card:hover {
 		transform: translateY(-12px) scale(1.03) rotate(0.5deg);
@@ -164,7 +294,7 @@
 			0 24px 60px rgba(0, 0, 0, 0.25), 
 			0 0 60px rgba(169, 174, 254, 0.15),
 			inset 0 1px 0 rgba(255, 255, 255, 0.1);
-		background: rgba(var(--mSurface-rgb, 7, 7, 34), 0.9);
+		background: color-mix(in srgb, var(--mSurface) 95%, var(--mSurfaceVariant) 5%);
 	}
 	
 	.feature-card:hover::before {
@@ -202,6 +332,38 @@
 		color: var(--mOnSurfaceVariant);
 		line-height: 1.7;
 		font-size: 1.0625rem;
+	}
+	
+	.feature-card.stat-card {
+		text-align: center;
+	}
+	
+	.feature-value {
+		font-size: 3.5rem;
+		font-weight: 700;
+		background: linear-gradient(135deg, var(--mPrimary), var(--mSecondary), var(--mTertiary));
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		margin-bottom: 0.75rem;
+		line-height: 1;
+		letter-spacing: -0.02em;
+	}
+	
+	:global([data-theme='light']) .feature-value {
+		background: linear-gradient(135deg, #4b55c8, #5d65f5, #4b55c8);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		filter: contrast(1.3);
+	}
+	
+	.stat-card .feature-icon {
+		margin-bottom: 1rem;
+	}
+	
+	.stat-card .feature-title {
+		margin-bottom: 0.75rem;
 	}
 	
 	@media (max-width: 768px) {

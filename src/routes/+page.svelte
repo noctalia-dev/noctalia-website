@@ -3,10 +3,24 @@
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
 	import Hero from '$lib/components/Hero.svelte';
 	import Features from '$lib/components/Features.svelte';
+	import Showcase from '$lib/components/Showcase.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
+	
+	let navRef: HTMLElement;
+	let scrolled = $state(false);
+	
+	onMount(() => {
+		const handleScroll = () => {
+			scrolled = window.scrollY > 20;
+		};
+		
+		window.addEventListener('scroll', handleScroll, { passive: true });
+		return () => window.removeEventListener('scroll', handleScroll);
+	});
 </script>
 
-<nav class="nav fade-in">
+<nav class="nav fade-in" class:scrolled={scrolled} bind:this={navRef}>
 	<div class="nav-container">
 		<a href="/" class="nav-brand">
 			<img src="https://assets.noctalia.dev/noctalia-logo.svg" alt="Noctalia" class="nav-logo" />
@@ -24,8 +38,10 @@
 </nav>
 
 <Hero />
+<Showcase />
 <Features />
 <Footer />
+<ScrollToTop />
 
 <style>
 	.nav {
@@ -39,6 +55,13 @@
 			0 4px 24px rgba(0, 0, 0, 0.1),
 			0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 		transition: all 0.3s ease;
+	}
+	
+	.nav.scrolled {
+		background: rgba(var(--mSurface-rgb, 7, 7, 34), 0.9);
+		box-shadow: 
+			0 8px 32px rgba(0, 0, 0, 0.2),
+			0 0 0 1px rgba(255, 255, 255, 0.08) inset;
 	}
 	
 	.nav::after {
@@ -111,6 +134,12 @@
 		opacity: 0.8;
 	}
 	
+	:global([data-theme='light']) .tagline {
+		color: var(--mPrimary);
+		opacity: 1;
+		font-weight: 400;
+	}
+	
 	@media (max-width: 768px) {
 		.nav-container {
 			padding: 1rem;
@@ -149,6 +178,12 @@
 		overflow: hidden;
 	}
 	
+	:global([data-theme='light']) .nav-link:not(:hover):not(.active) {
+		color: var(--mPrimary);
+		opacity: 1;
+		font-weight: 600;
+	}
+	
 	.nav-link::before {
 		content: '';
 		position: absolute;
@@ -160,8 +195,8 @@
 	}
 	
 	.nav-link:hover {
-		color: var(--mOnSecondary);
-		background: rgba(169, 174, 254, 0.15);
+		color: var(--mSecondary);
+		background: rgba(169, 174, 254, 0.2);
 		transform: translateY(-2px);
 	}
 	
