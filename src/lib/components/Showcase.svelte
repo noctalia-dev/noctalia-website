@@ -7,6 +7,7 @@
 	let showcaseRef: HTMLElement;
 	let imageRef: HTMLElement;
 	let videoRef: HTMLVideoElement;
+	let progressBarRef: HTMLElement;
 	let isPlaying = $state(false);
 	let currentTime = $state(0);
 	let duration = $state(0);
@@ -49,8 +50,15 @@
 		// Setup video event listeners after a short delay to ensure videoRef is bound
 		setTimeout(() => {
 			if (videoRef) {
-				videoRef.addEventListener('loadedmetadata', () => {
+				// Set duration immediately if already loaded
+				if (videoRef.duration && !isNaN(videoRef.duration)) {
 					duration = videoRef.duration;
+				}
+				
+				videoRef.addEventListener('loadedmetadata', () => {
+					if (videoRef.duration && !isNaN(videoRef.duration)) {
+						duration = videoRef.duration;
+					}
 				});
 				videoRef.addEventListener('timeupdate', () => {
 					if (!isDragging) {
@@ -69,6 +77,7 @@
 					isFullscreen = !!document.fullscreenElement;
 				});
 			}
+			
 		}, 200);
 	});
 	
@@ -82,27 +91,82 @@
 		}
 	}
 	
-	function handleProgressClick(e: MouseEvent) {
-		if (!videoRef || !duration) return;
-		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-		const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-		videoRef.currentTime = percent * duration;
-		currentTime = videoRef.currentTime;
-	}
-	
-	function handleMouseDown(e: MouseEvent) {
-		if (!videoRef || !duration) return;
+	function handleProgressMouseDown(e: MouseEvent) {
+		if (!videoRef) return;
+		
+		// Get duration from video if not set yet
+		const videoDuration = videoRef.duration && !isNaN(videoRef.duration) ? videoRef.duration : duration;
+		if (!videoDuration || videoDuration === 0) {
+			console.log('Video duration not loaded yet');
+			return;
+		}
+		
+		// Don't handle if clicking directly on the handle
+		if ((e.target as HTMLElement).classList.contains('progress-handle')) return;
+		
+		e.preventDefault();
+		e.stopPropagation();
 		isDragging = true;
-		const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-		const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-		videoRef.currentTime = percent * duration;
-		currentTime = videoRef.currentTime;
+		
+		const progressBar = e.currentTarget as HTMLElement;
+		
+		const updatePosition = (clientX: number) => {
+			const rect = progressBar.getBoundingClientRect();
+			const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+			const newTime = percent * videoDuration;
+			videoRef.currentTime = newTime;
+			currentTime = newTime;
+		};
+		
+		// Update immediately
+		updatePosition(e.clientX);
 		
 		const handleMouseMove = (moveEvent: MouseEvent) => {
-			const newRect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-			const newPercent = Math.max(0, Math.min(1, (moveEvent.clientX - newRect.left) / newRect.width));
-			videoRef.currentTime = newPercent * duration;
-			currentTime = videoRef.currentTime;
+			moveEvent.preventDefault();
+			updatePosition(moveEvent.clientX);
+		};
+		
+		const handleMouseUp = () => {
+			isDragging = false;
+			document.removeEventListener('mousemove', handleMouseMove);
+			document.removeEventListener('mouseup', handleMouseUp);
+		};
+		
+		document.addEventListener('mousemove', handleMouseMove);
+		document.addEventListener('mouseup', handleMouseUp);
+	}
+	
+	function handleHandleMouseDown(e: MouseEvent) {
+		if (!videoRef) return;
+		
+		// Get duration from video if not set yet
+		const videoDuration = videoRef.duration && !isNaN(videoRef.duration) ? videoRef.duration : duration;
+		if (!videoDuration || videoDuration === 0) {
+			return;
+		}
+		
+		e.preventDefault();
+		e.stopPropagation();
+		isDragging = true;
+		
+		// Get the progress bar parent
+		const progressBar = (e.currentTarget as HTMLElement).closest('.progress-bar') as HTMLElement;
+		if (!progressBar) return;
+		
+		const updatePosition = (clientX: number) => {
+			const rect = progressBar.getBoundingClientRect();
+			const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+			const newTime = percent * videoDuration;
+			videoRef.currentTime = newTime;
+			currentTime = newTime;
+		};
+		
+		// Update immediately
+		updatePosition(e.clientX);
+		
+		const handleMouseMove = (moveEvent: MouseEvent) => {
+			moveEvent.preventDefault();
+			updatePosition(moveEvent.clientX);
 		};
 		
 		const handleMouseUp = () => {
@@ -144,20 +208,30 @@
 					preload="metadata"
 					class="showcase-video"
 					bind:this={videoRef}
-					onclick={togglePlay}
+					onclick={(e) => {
+						// Don't toggle if clicking on controls
+						if ((e.target as HTMLElement).closest('.video-controls')) return;
+						togglePlay();
+					}}
 				>
 					Your browser does not support the video tag.
 				</video>
 				{#if !isPlaying}
-					<div class="video-preview-overlay" onclick={togglePlay}>
+					<button 
+						class="video-preview-overlay" 
+						onclick={togglePlay}
+						onkeydown={(e) => e.key === 'Enter' || e.key === ' ' ? togglePlay() : null}
+						aria-label="Play video"
+						type="button"
+					>
 						<div class="preview-play-button">
 							<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 								<polygon points="5 3 19 12 5 21 5 3"></polygon>
 							</svg>
 						</div>
-					</div>
+					</button>
 				{/if}
-				<div class="video-controls">
+				<div class="video-controls" class:dragging={isDragging}>
 					<button class="play-pause-btn" onclick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
 						{#if isPlaying}
 							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -173,17 +247,28 @@
 					<div class="progress-container">
 						<div 
 							class="progress-bar"
-							onclick={handleProgressClick}
-							onmousedown={handleMouseDown}
+							bind:this={progressBarRef}
+							onmousedown={handleProgressMouseDown}
 							role="slider"
 							aria-valuemin="0"
 							aria-valuemax={duration}
 							aria-valuenow={currentTime}
+							aria-label="Video progress"
 							tabindex="0"
 						>
 							<div class="progress-track"></div>
 							<div class="progress-filled" style="width: {duration ? (currentTime / duration) * 100 : 0}%"></div>
-							<div class="progress-handle" style="left: {duration ? (currentTime / duration) * 100 : 0}%"></div>
+							<div 
+								class="progress-handle" 
+								style="left: {duration ? (currentTime / duration) * 100 : 0}%"
+								onmousedown={handleHandleMouseDown}
+								role="slider"
+								tabindex="0"
+								aria-label="Drag to seek video"
+								aria-valuemin="0"
+								aria-valuemax={duration}
+								aria-valuenow={currentTime}
+							></div>
 						</div>
 						<div class="time-display">
 							<span>{formatTime(currentTime)}</span>
@@ -336,10 +421,18 @@
 		transition: all 0.3s ease;
 		border-radius: 1.5rem;
 		z-index: 1;
+		border: none;
+		padding: 0;
+		margin: 0;
 	}
 	
 	.video-preview-overlay:hover {
 		background: linear-gradient(135deg, color-mix(in srgb, var(--mSurface) 50%, transparent 50%), color-mix(in srgb, var(--mSurfaceVariant) 50%, transparent 50%));
+	}
+	
+	.video-preview-overlay:focus {
+		outline: 2px solid var(--mSecondary);
+		outline-offset: 2px;
 	}
 	
 	.preview-play-button {
@@ -368,7 +461,7 @@
 	.preview-play-button svg {
 		width: 32px;
 		height: 32px;
-		margin-left: 4px; /* Slight offset for visual centering of play icon */
+		margin-left: 4px;
 	}
 	
 	.video-controls {
@@ -384,18 +477,15 @@
 		gap: 1rem;
 		opacity: 0;
 		transition: opacity 0.3s ease;
-		pointer-events: none;
+		z-index: 10;
+		pointer-events: all;
 	}
 	
 	.showcase-image-wrapper:hover .video-controls,
-	.video-controls:hover {
+	.video-controls:hover,
+	.video-controls:focus-within,
+	.video-controls.dragging {
 		opacity: 1;
-		pointer-events: all;
-	}
-	
-	.progress-bar,
-	.play-pause-btn {
-		pointer-events: all;
 	}
 	
 	.play-pause-btn,
@@ -439,49 +529,69 @@
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
+		user-select: none;
 	}
 	
 	.progress-bar {
 		position: relative;
-		height: 6px;
-		background: rgba(255, 255, 255, 0.2);
-		border-radius: 3px;
+		height: 24px;
 		cursor: pointer;
-		overflow: visible;
+		display: flex;
+		align-items: center;
+		padding: 9px 0;
+		z-index: 11;
+		pointer-events: all;
 	}
 	
 	.progress-track {
 		position: absolute;
-		inset: 0;
+		left: 0;
+		right: 0;
+		top: 50%;
+		transform: translateY(-50%);
+		height: 6px;
+		background: rgba(255, 255, 255, 0.2);
 		border-radius: 3px;
 	}
 	
 	.progress-filled {
 		position: absolute;
-		top: 0;
 		left: 0;
-		height: 100%;
+		top: 50%;
+		transform: translateY(-50%);
+		height: 6px;
 		background: linear-gradient(90deg, var(--mSecondary), var(--mTertiary));
 		border-radius: 3px;
+		pointer-events: none;
 		transition: width 0.1s linear;
 	}
 	
 	.progress-handle {
 		position: absolute;
 		top: 50%;
-		width: 14px;
-		height: 14px;
+		width: 16px;
+		height: 16px;
 		background: var(--mSecondary);
 		border-radius: 50%;
 		transform: translate(-50%, -50%);
 		box-shadow: 0 0 8px rgba(169, 174, 254, 0.6);
 		opacity: 0;
 		transition: opacity 0.2s ease, transform 0.2s ease;
+		pointer-events: all;
+		cursor: grab;
 	}
 	
-	.progress-bar:hover .progress-handle {
+	.progress-handle:active {
+		cursor: grabbing;
+	}
+	
+	.progress-bar:hover .progress-handle,
+	.video-controls.dragging .progress-handle {
 		opacity: 1;
-		transform: translate(-50%, -50%) scale(1.2);
+	}
+	
+	.video-controls.dragging .progress-handle {
+		transform: translate(-50%, -50%) scale(1.3);
 	}
 	
 	.time-display {
@@ -501,11 +611,6 @@
 			font-size: 2rem;
 		}
 		
-		.showcase-features {
-			grid-template-columns: 1fr;
-			gap: 1.5rem;
-		}
-		
 		.video-controls {
 			padding: 1rem;
 		}
@@ -521,6 +626,15 @@
 			width: 18px;
 			height: 18px;
 		}
+		
+		.progress-handle {
+			width: 20px;
+			height: 20px;
+		}
+		
+		.progress-bar {
+			height: 32px;
+			padding: 12px 0;
+		}
 	}
 </style>
-
