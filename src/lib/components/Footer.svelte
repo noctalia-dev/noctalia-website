@@ -38,7 +38,7 @@
 		
 		<div class="footer-bottom">
 			<p class="footer-copyright">
-				Built with ❤️ for the Wayland community
+				Built with ❤️ by the Noctalia team
 			</p>
 		</div>
 	</div>
@@ -102,6 +102,12 @@
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
 		opacity: 0.8;
+	}
+	
+	:global([data-theme='light']) .footer-tagline {
+		color: var(--mPrimary);
+		opacity: 1;
+		font-weight: 400;
 	}
 	
 	.footer-links {
