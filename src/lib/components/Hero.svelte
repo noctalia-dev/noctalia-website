@@ -22,7 +22,7 @@
 				<img src="https://assets.noctalia.dev/noctalia-logo.svg" alt="Noctalia" class="hero-logo" />
 				<div class="logo-text-wrapper">
 					<span class="logo-text">Noctalia</span>
-					<span class="logo-subtitle">quiet by design!</span>
+					<span class="logo-subtitle">quiet by design</span>
 				</div>
 			</div>
 			
