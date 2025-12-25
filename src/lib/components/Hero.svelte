@@ -36,19 +36,19 @@
 			</p>
 			
 			<div class="hero-actions">
-				<a href="/plugins" class="btn btn-primary">
+				<a href="https://docs.noctalia.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+					</svg>
+					<span>Documentation</span>
+				</a>
+				<a href="/plugins" class="btn btn-secondary">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M12 2L2 7l10 5 10-5-10-5z"></path>
 						<path d="M2 17l10 5 10-5"></path>
 						<path d="M2 12l10 5 10-5"></path>
 					</svg>
 					<span>Plugins</span>
-				</a>
-				<a href="https://docs.noctalia.dev" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
-					</svg>
-					<span>Documentation</span>
 				</a>
 				<a href="https://github.com/noctalia-dev/noctalia-shell" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -58,6 +58,9 @@
 					<span>GitHub</span>
 				</a>
 			</div>
+			<p class="hero-hint">
+				To install Noctalia, read the <a href="https://docs.noctalia.dev" target="_blank" rel="noopener noreferrer">documentation</a>
+			</p>
 		</div>
 	</div>
 </section>
@@ -317,8 +320,30 @@
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
-		margin-bottom: 3rem;
+		margin-bottom: 1.5rem;
 		flex-wrap: wrap;
+	}
+	
+	.hero-hint {
+		font-size: 0.9375rem;
+		color: var(--mOnSurfaceVariant);
+		text-align: center;
+		margin: 0;
+		opacity: 0.8;
+		line-height: 1.6;
+	}
+	
+	.hero-hint a {
+		color: var(--mSecondary);
+		text-decoration: none;
+		font-weight: 500;
+		transition: all 0.2s ease;
+		border-bottom: 1px solid transparent;
+	}
+	
+	.hero-hint a:hover {
+		color: var(--mTertiary);
+		border-bottom-color: var(--mTertiary);
 	}
 	
 	.btn-primary {
