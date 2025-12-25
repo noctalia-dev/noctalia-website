@@ -156,7 +156,7 @@
 					<input
 						type="text"
 						class="search-input"
-						placeholder="Search plugins by name, description, or author..."
+						placeholder="Search plugins by name, description or author..."
 						bind:value={searchQuery}
 						autocomplete="off"
 					/>
@@ -677,16 +677,6 @@
 		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 		position: relative;
 		overflow: hidden;
-	}
-	
-	.latest-update::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 4px;
-		background: linear-gradient(90deg, var(--mPrimary), var(--mPrimary));
 	}
 	
 	.latest-badge {
