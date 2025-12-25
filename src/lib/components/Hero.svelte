@@ -235,7 +235,7 @@
 		display: block;
 		font-size: 4.5rem;
 		font-weight: 700;
-		background: linear-gradient(135deg, var(--mPrimary) 0%, var(--mSecondary) 50%, var(--mTertiary) 100%);
+		background: linear-gradient(135deg, var(--mPrimary) 0%, var(--mPrimary) 50%, var(--mPrimary) 100%);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -261,6 +261,14 @@
 		font-weight: 400;
 	}
 	
+	:global([data-theme='light']) .logo-text {
+		background: linear-gradient(135deg, var(--mPrimary) 0%, var(--mPrimary) 50%, var(--mPrimary) 100%);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+		text-shadow: none;
+	}
+	
 	.hero-title {
 		font-size: 3.5rem;
 		font-weight: 700;
@@ -271,7 +279,7 @@
 	}
 	
 	.highlight {
-		background: linear-gradient(135deg, var(--mSecondary), var(--mTertiary));
+		background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -346,8 +354,22 @@
 		border-bottom-color: var(--mTertiary);
 	}
 	
+	:global([data-theme='light']) .hero-hint {
+		color: var(--mOnSurface);
+		opacity: 0.9;
+	}
+	
+	:global([data-theme='light']) .hero-hint a {
+		color: var(--mPrimary);
+	}
+	
+	:global([data-theme='light']) .hero-hint a:hover {
+		color: var(--mOnSurface);
+		border-bottom-color: var(--mPrimary);
+	}
+	
 	.btn-primary {
-		background: linear-gradient(135deg, var(--mPrimary), var(--mSecondary));
+		background: var(--mPrimary);
 		color: var(--mOnPrimary);
 		padding: 1.125rem 2.5rem;
 		font-size: 1.125rem;
@@ -359,13 +381,15 @@
 		box-shadow: 0 4px 20px rgba(255, 245, 155, 0.3);
 		position: relative;
 		overflow: hidden;
+		transition: all 0.3s ease;
 	}
 	
 	.btn-primary::before {
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(135deg, var(--mSecondary), var(--mTertiary));
+		background: var(--mPrimary);
+		filter: brightness(1.1);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 	}
@@ -383,6 +407,19 @@
 	.btn-primary:hover {
 		transform: translateY(-3px);
 		box-shadow: 0 8px 30px rgba(255, 245, 155, 0.4);
+	}
+	
+	:global([data-theme='light']) .btn-primary {
+		box-shadow: 0 4px 20px rgba(93, 101, 245, 0.25);
+	}
+	
+	:global([data-theme='light']) .btn-primary::before {
+		background: var(--mPrimary);
+		filter: brightness(1.1);
+	}
+	
+	:global([data-theme='light']) .btn-primary:hover {
+		box-shadow: 0 8px 30px rgba(93, 101, 245, 0.35);
 	}
 	
 	.btn-secondary {

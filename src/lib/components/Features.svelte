@@ -141,10 +141,11 @@
 		font-size: 3rem;
 		font-weight: 700;
 		margin-bottom: 1.25rem;
-		background: linear-gradient(135deg, var(--mOnSurface), var(--mSecondary));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+		color: var(--mOnSurface);
+		background: none;
+		-webkit-background-clip: unset;
+		-webkit-text-fill-color: var(--mOnSurface);
+		background-clip: unset;
 		letter-spacing: -0.02em;
 	}
 	
@@ -292,11 +293,11 @@
 	}
 	
 	:global([data-theme='light']) .feature-value {
-		background: linear-gradient(135deg, #4b55c8, #5d65f5, #4b55c8);
+		background: linear-gradient(135deg, #2d3180, #5d65f5, #2d3180);
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
-		filter: contrast(1.3);
+		filter: contrast(1.1);
 	}
 	
 	.stat-card .feature-icon {

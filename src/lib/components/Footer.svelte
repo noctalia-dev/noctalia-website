@@ -88,7 +88,7 @@
 	.footer-logo {
 		font-size: 1.75rem;
 		font-weight: 700;
-		background: linear-gradient(135deg, var(--mPrimary), var(--mSecondary));
+		background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;

@@ -36,40 +36,40 @@ export const colorScheme = {
 		mOnHover: '#0e0e43'
 	},
 	light: {
-		// New SL variables
+		// New SL variables - matching docs theme
 		'sl-color-accent': '#5d65f5',
 		'sl-color-text-accent': '#5d65f5',
 		'sl-border-radius': '10px',
 		'sl-color-bg': '#e6e8fa',
 		'sl-color-bg-soft': '#eff0ff',
-		'sl-color-text': '#4b55c8',
-		'sl-color-text-soft': '#4b55c8',
-		'sl-color-hairline': '#8288fc',
+		'sl-color-text': '#2d3180', // Darker than docs for better contrast
+		'sl-color-text-soft': '#4b55c8', // Match docs
+		'sl-color-hairline': '#8288fc', // Match docs
 		'sl-color-bg-nav': '#eff0ff',
 		'sl-color-black': '#eff0ff',
 		'sl-color-bg-sidebar': '#eff0ff',
-		'sl-color-link': '#5d65f5',
-		'sl-color-link-hover': '#fef29a',
-		'sl-shadow-color': '#4b55c8',
+		'sl-color-link': '#5d65f5', // Match docs
+		'sl-color-link-hover': '#fef29a', // Match docs
+		'sl-shadow-color': '#4b55c8', // Match docs
 		'ec-frm-edBg': '#e0e2ff',
 		'ec-frm-trmBg': '#e0e2ff',
 		// Legacy mappings
-		mPrimary: '#5d65f5',
-		mOnPrimary: '#dadcff',
-		mSecondary: '#fef29a',
-		mOnSecondary: '#4b55c8',
-		mTertiary: '#fef29a',
-		mOnTertiary: '#4b55c8',
-		mError: '#FD4663',
-		mOnError: '#0e0e43',
-		mSurface: '#e6e8fa',
-		mOnSurface: '#4b55c8',
-		mSurfaceVariant: '#eff0ff',
-		mOnSurfaceVariant: '#4b55c8',
-		mOutline: '#8288fc',
-		mShadow: '#eff0ff',
-		mHover: '#fef29a',
-		mOnHover: '#4b55c8'
+		mPrimary: '#5d65f5', // Match docs
+		mOnPrimary: '#ffffff', // White for better contrast on buttons
+		mSecondary: '#fef29a', // Match docs
+		mOnSecondary: '#2d3180', // Darker for better contrast
+		mTertiary: '#fef29a', // Match docs
+		mOnTertiary: '#2d3180', // Darker for better contrast
+		mError: '#c62828',
+		mOnError: '#ffffff',
+		mSurface: '#e6e8fa', // Match docs
+		mOnSurface: '#2d3180', // Darker for better contrast
+		mSurfaceVariant: '#eff0ff', // Match docs
+		mOnSurfaceVariant: '#4b55c8', // Match docs
+		mOutline: '#8288fc', // Match docs
+		mShadow: '#eff0ff', // Match docs
+		mHover: '#fef29a', // Match docs
+		mOnHover: '#2d3180' // Darker for better contrast
 	}
 };
 

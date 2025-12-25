@@ -327,10 +327,11 @@
 		font-size: 3rem;
 		font-weight: 700;
 		margin-bottom: 1.25rem;
-		background: linear-gradient(135deg, var(--mOnSurface), var(--mSecondary));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+		color: var(--mOnSurface);
+		background: none;
+		-webkit-background-clip: unset;
+		-webkit-text-fill-color: var(--mOnSurface);
+		background-clip: unset;
 		letter-spacing: -0.02em;
 	}
 	

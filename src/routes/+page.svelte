@@ -59,11 +59,25 @@
 		transition: all 0.3s ease;
 	}
 	
+	:global([data-theme='light']) .nav {
+		background: rgba(230, 232, 250, 0.85);
+		box-shadow: 
+			0 4px 24px rgba(0, 0, 0, 0.05),
+			0 0 0 1px rgba(107, 114, 212, 0.2) inset;
+	}
+	
 	.nav.scrolled {
 		background: rgba(var(--mSurface-rgb, 7, 7, 34), 0.9);
 		box-shadow: 
 			0 8px 32px rgba(0, 0, 0, 0.2),
 			0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+	}
+	
+	:global([data-theme='light']) .nav.scrolled {
+		background: rgba(230, 232, 250, 0.95);
+		box-shadow: 
+			0 8px 32px rgba(0, 0, 0, 0.1),
+			0 0 0 1px rgba(107, 114, 212, 0.3) inset;
 	}
 	
 	.nav::after {
@@ -119,7 +133,7 @@
 	.logo {
 		font-size: 1.5rem;
 		font-weight: 700;
-		background: linear-gradient(135deg, var(--mPrimary), var(--mSecondary));
+		background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
 		-webkit-background-clip: text;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
@@ -137,9 +151,9 @@
 	}
 	
 	:global([data-theme='light']) .tagline {
-		color: var(--mPrimary);
-		opacity: 1;
-		font-weight: 400;
+		color: var(--mOnSurface);
+		opacity: 0.9;
+		font-weight: 500;
 	}
 	
 	@media (max-width: 768px) {
@@ -181,8 +195,8 @@
 	}
 	
 	:global([data-theme='light']) .nav-link:not(:hover):not(.active) {
-		color: var(--mPrimary);
-		opacity: 1;
+		color: var(--mOnSurface);
+		opacity: 0.9;
 		font-weight: 600;
 	}
 	
@@ -190,16 +204,21 @@
 		content: '';
 		position: absolute;
 		inset: 0;
-		background: linear-gradient(135deg, var(--mSecondary), var(--mTertiary));
+		background: var(--mPrimary);
 		opacity: 0;
 		transition: opacity 0.3s ease;
 		z-index: 0;
 	}
 	
 	.nav-link:hover {
-		color: var(--mSecondary);
-		background: rgba(169, 174, 254, 0.2);
+		color: var(--mPrimary);
+		background: rgba(255, 245, 155, 0.15);
 		transform: translateY(-2px);
+	}
+	
+	:global([data-theme='light']) .nav-link:hover {
+		color: var(--mPrimary);
+		background: rgba(93, 101, 245, 0.1);
 	}
 	
 	.nav-link:hover::before {
@@ -207,9 +226,9 @@
 	}
 	
 	.nav-link.active {
-		color: var(--mSecondary);
-		background: rgba(169, 174, 254, 0.15);
-		box-shadow: 0 2px 8px rgba(169, 174, 254, 0.2);
+		color: var(--mPrimary);
+		background: rgba(255, 245, 155, 0.15);
+		box-shadow: 0 2px 8px rgba(255, 245, 155, 0.2);
 	}
 	
 	.nav-link.active::after {
@@ -219,9 +238,20 @@
 		left: 1rem;
 		right: 1rem;
 		height: 2px;
-		background: linear-gradient(90deg, var(--mSecondary), var(--mTertiary));
+		background: linear-gradient(90deg, var(--mPrimary), var(--mPrimary));
 		border-radius: 2px;
-		box-shadow: 0 0 8px rgba(169, 174, 254, 0.5);
+		box-shadow: 0 0 8px rgba(255, 245, 155, 0.5);
+	}
+	
+	:global([data-theme='light']) .nav-link.active {
+		color: var(--mPrimary);
+		background: rgba(93, 101, 245, 0.1);
+		box-shadow: 0 2px 8px rgba(93, 101, 245, 0.15);
+	}
+	
+	:global([data-theme='light']) .nav-link.active::after {
+		background: linear-gradient(90deg, var(--mPrimary), var(--mPrimary));
+		box-shadow: 0 0 8px rgba(93, 101, 245, 0.4);
 	}
 	
 	@media (max-width: 768px) {

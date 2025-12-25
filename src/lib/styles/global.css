@@ -47,29 +47,29 @@
 	--mShadow: var(--sl-color-bg);
 }
 
-/* Light Theme */
+/* Light Theme - matching docs theme with improved contrast */
 :root[data-theme='light'] {
 	/* Brand & accents */
-	--sl-color-accent: #5d65f5; /* Primary */
+	--sl-color-accent: #5d65f5; /* Primary - match docs */
 	--sl-color-text-accent: #5d65f5;
 	--sl-border-radius: 10px;
 
 	/* Surfaces & text */
-	--sl-color-bg: #e6e8fa; /* Surface */
-	--sl-color-bg-soft: #eff0ff; /* Surface Variant */
-	--sl-color-text: #4b55c8; /* On Surface */
-	--sl-color-text-soft: #4b55c8; /* On Surface Variant */
-	--sl-color-hairline: #8288fc; /* Outline */
+	--sl-color-bg: #e6e8fa; /* Surface - match docs */
+	--sl-color-bg-soft: #eff0ff; /* Surface Variant - match docs */
+	--sl-color-text: #2d3180; /* On Surface - darker than docs for better contrast */
+	--sl-color-text-soft: #4b55c8; /* On Surface Variant - match docs */
+	--sl-color-hairline: #8288fc; /* Outline - match docs */
 	--sl-color-bg-nav: var(--sl-color-bg-soft);
 	--sl-color-black: var(--sl-color-bg-soft);
 	--sl-color-bg-sidebar: var(--sl-color-bg-soft);
 
 	/* Links */
 	--sl-color-link: var(--sl-color-accent);
-	--sl-color-link-hover: #fef29a; /* Secondary */
+	--sl-color-link-hover: #fef29a; /* Secondary - match docs */
 
 	/* Shadows */
-	--sl-shadow-color: #4b55c8; /* Shadow */
+	--sl-shadow-color: #4b55c8; /* Shadow - match docs */
 
 	/* Slightly darker than surface variant */
 	--ec-frm-edBg: #e0e2ff;
@@ -77,20 +77,20 @@
 	
 	/* Legacy mappings for compatibility */
 	--mPrimary: var(--sl-color-accent);
-	--mSecondary: var(--sl-color-link-hover);
-	--mTertiary: var(--sl-color-link-hover);
+	--mSecondary: #fef29a;
+	--mTertiary: #fef29a;
 	--mSurface: var(--sl-color-bg);
 	--mOnSurface: var(--sl-color-text);
 	--mSurfaceVariant: var(--sl-color-bg-soft);
 	--mOnSurfaceVariant: var(--sl-color-text-soft);
 	--mOutline: var(--sl-color-hairline);
-	--mHover: var(--sl-color-link-hover);
+	--mHover: #fef29a;
 	--mOnHover: var(--sl-color-text);
-	--mOnPrimary: #dadcff;
+	--mOnPrimary: #ffffff;
 	--mOnSecondary: var(--sl-color-text);
 	--mOnTertiary: var(--sl-color-text);
-	--mError: #FD4663;
-	--mOnError: #0e0e43;
+	--mError: #c62828;
+	--mOnError: #ffffff;
 	--mShadow: var(--sl-color-bg-soft);
 }
 
