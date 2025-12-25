@@ -185,7 +185,8 @@
 		return `${mins}:${secs.toString().padStart(2, '0')}`;
 	}
 	
-	const videoUrl = 'https://github.com/user-attachments/assets/bf46f233-8d66-439a-a1ae-ab0446270f2d';
+	const videoUrl = 'https://assets.noctalia.dev/video/noctalia-showcase-short.mp4';
+	const posterUrl = 'https://assets.noctalia.dev/video/video-poster.png';
 </script>
 
 <section class="showcase" bind:this={showcaseRef}>
@@ -200,8 +201,9 @@
 		<div class="showcase-content" class:visible={contentVisible} bind:this={imageRef}>
 			<div class="showcase-image-wrapper">
 				<div class="showcase-glow"></div>
-				<video 
+				<video
 					src={videoUrl}
+					poster={posterUrl}
 					loop
 					muted
 					playsinline
@@ -366,12 +368,6 @@
 		transition: transform 0.5s ease, box-shadow 0.5s ease;
 	}
 	
-	.showcase-image-wrapper:hover {
-		transform: translateY(-8px) scale(1.01);
-		box-shadow: 
-			0 30px 80px rgba(0, 0, 0, 0.4),
-			0 0 120px rgba(169, 174, 254, 0.2);
-	}
 	
 	.showcase-glow {
 		position: absolute;
@@ -406,9 +402,6 @@
 		background: var(--mSurface);
 	}
 	
-	.showcase-image-wrapper:hover .showcase-video {
-		transform: scale(1.02);
-	}
 	
 	.video-preview-overlay {
 		position: absolute;
@@ -417,7 +410,7 @@
 		align-items: center;
 		justify-content: center;
 		background: linear-gradient(135deg, color-mix(in srgb, var(--mSurface) 70%, transparent 30%), color-mix(in srgb, var(--mSurfaceVariant) 70%, transparent 30%));
-		backdrop-filter: blur(2px);
+		backdrop-filter: blur(1px);
 		cursor: pointer;
 		transition: all 0.3s ease;
 		border-radius: 1.5rem;
@@ -471,8 +464,7 @@
 		left: 0;
 		right: 0;
 		padding: 1.5rem;
-		background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.5) 70%, transparent 100%);
-		backdrop-filter: blur(10px);
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
 		display: flex;
 		align-items: center;
 		gap: 1rem;
@@ -480,6 +472,18 @@
 		transition: opacity 0.3s ease;
 		z-index: 10;
 		pointer-events: all;
+	}
+
+	.video-controls::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		backdrop-filter: blur(8px);
+		-webkit-backdrop-filter: blur(8px);
+		mask-image: linear-gradient(to top, black 0%, black 40%, transparent 100%);
+		-webkit-mask-image: linear-gradient(to top, black 0%, black 40%, transparent 100%);
+		z-index: -1;
+		border-radius: inherit;
 	}
 	
 	.showcase-image-wrapper:hover .video-controls,
