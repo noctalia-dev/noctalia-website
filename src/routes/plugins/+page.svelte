@@ -21,7 +21,6 @@
 	let allPlugins = $state<Plugin[]>([]);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
-	let selectedPlugin = $state<Plugin | null>(null);
 	let latestUpdate = $state<Plugin | null>(null);
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
@@ -85,12 +84,12 @@
 		}
 	}
 	
-	function getPluginUrl(pluginId: string): string {
-		const plugin = plugins.find(p => p.id === pluginId);
-		if (plugin?.repository.includes('AdrienPiechocki')) {
-			return `https://github.com/AdrienPiechocki/noctalia-virtual-keyboard-plugin`;
+	function getPluginUrl(plugin: Plugin): string {
+		// Use the repository field if it's a full URL, otherwise fall back to the default path
+		if (plugin.repository && (plugin.repository.startsWith('http://') || plugin.repository.startsWith('https://'))) {
+			return plugin.repository;
 		}
-		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
+		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${plugin.id}`;
 	}
 	
 	function formatDate(dateString: string): string {
@@ -180,7 +179,7 @@
 				{/if}
 			</div>
 			
-			{#if latestUpdate && !selectedPlugin && !searchQuery}
+			{#if latestUpdate && !searchQuery}
 				<div class="latest-update">
 					<div class="latest-badge">Latest Update</div>
 					<div class="latest-content">
@@ -203,14 +202,14 @@
 								<span class="latest-date">Updated {formatRelativeDate(latestUpdate.lastUpdated)}</span>
 							</div>
 							<div class="latest-actions">
-								<button 
+								<a 
+									href="/plugins/{latestUpdate.id}"
 									class="btn btn-primary"
-									onclick={() => selectedPlugin = latestUpdate}
 								>
 									View Details
-								</button>
+								</a>
 								<a 
-									href={getPluginUrl(latestUpdate.id)} 
+									href={getPluginUrl(latestUpdate)} 
 									target="_blank" 
 									rel="noopener noreferrer"
 									class="btn btn-secondary"
@@ -227,121 +226,52 @@
 				</div>
 			{/if}
 			
-			{#if selectedPlugin}
-				<div class="plugin-detail">
-					<button class="back-btn" onclick={() => selectedPlugin = null}>
-						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M19 12H5"></path>
-							<path d="M12 19l-7-7 7-7"></path>
-						</svg>
-						Back to plugins
-					</button>
-					
-					<div class="detail-content">
-						<div class="detail-preview">
-							<img 
-								src={getPreviewUrl(selectedPlugin!.id)} 
-								alt={selectedPlugin!.name}
-								onerror={(e) => handleImageError(e, selectedPlugin!.id)}
-							/>
-							<div class="preview-placeholder" style="display: none;">
-								<div class="placeholder-icon">📦</div>
-								<p>No preview available</p>
-							</div>
-						</div>
-						
-						<div class="detail-info">
-							<h2 class="detail-name">{selectedPlugin.name}</h2>
-							<p class="detail-description">{selectedPlugin.description}</p>
-							
-							<div class="detail-meta">
-								<div class="meta-item">
-									<span class="meta-label">Version</span>
-									<span class="meta-value">{selectedPlugin.version}</span>
-								</div>
-								<div class="meta-item">
-									<span class="meta-label">Author</span>
-									<span class="meta-value">{selectedPlugin.author}</span>
-								</div>
-								<div class="meta-item">
-									<span class="meta-label">License</span>
-									<span class="meta-value">{selectedPlugin.license}</span>
-								</div>
-								<div class="meta-item">
-									<span class="meta-label">Updated</span>
-									<span class="meta-value">{formatDate(selectedPlugin.lastUpdated)}</span>
-								</div>
-								<div class="meta-item">
-									<span class="meta-label">Min Version</span>
-									<span class="meta-value">{selectedPlugin.minNoctaliaVersion}</span>
-								</div>
-							</div>
-							
-							<a 
-								href={getPluginUrl(selectedPlugin.id)} 
-								target="_blank" 
-								rel="noopener noreferrer"
-								class="detail-link"
-							>
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-									<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-									<path d="M9 18c-4.51 2-5-2-7-2"></path>
-								</svg>
-								View on GitHub
-							</a>
-						</div>
+			<div class="plugins-section">
+				<h2 class="section-title">
+					{searchQuery ? 'Search Results' : 'All Plugins'}
+				</h2>
+				{#if plugins.length === 0 && searchQuery}
+					<div class="no-results">
+						<div class="no-results-icon">🔍</div>
+						<h3>No plugins found</h3>
+						<p>Try adjusting your search query or <button class="clear-search-link" onclick={() => searchQuery = ''}>clear the search</button></p>
 					</div>
-				</div>
-			{:else}
-				<div class="plugins-section">
-					<h2 class="section-title">
-						{searchQuery ? 'Search Results' : 'All Plugins'}
-					</h2>
-					{#if plugins.length === 0 && searchQuery}
-						<div class="no-results">
-							<div class="no-results-icon">🔍</div>
-							<h3>No plugins found</h3>
-							<p>Try adjusting your search query or <button class="clear-search-link" onclick={() => searchQuery = ''}>clear the search</button></p>
-						</div>
-					{:else}
-						<div class="plugins-grid">
-						{#each plugins as plugin}
-							<button 
-								class="plugin-card" 
-								onclick={() => selectedPlugin = plugin}
-								onkeydown={(e) => e.key === 'Enter' && (selectedPlugin = plugin)}
-								type="button"
-							>
-								<div class="plugin-preview">
-									<img 
-										src={getPreviewUrl(plugin.id)} 
-										alt={plugin.name}
-										onerror={(e) => handleImageError(e, plugin.id)}
-									/>
-									<div class="preview-placeholder" style="display: none;">
-										<div class="placeholder-icon">📦</div>
-									</div>
-									<div class="preview-overlay">
-										<span class="preview-text">View Details</span>
-									</div>
+				{:else}
+					<div class="plugins-grid">
+					{#each plugins as plugin}
+						<a 
+							href="/plugins/{plugin.id}"
+							class="plugin-card"
+						>
+							<div class="plugin-preview">
+								<img 
+									src={getPreviewUrl(plugin.id)} 
+									alt={plugin.name}
+									onerror={(e) => handleImageError(e, plugin.id)}
+								/>
+								<div class="preview-placeholder" style="display: none;">
+									<div class="placeholder-icon">📦</div>
 								</div>
-								<div class="plugin-info">
-									<h3 class="plugin-name">{plugin.name}</h3>
-									<p class="plugin-description">{plugin.description}</p>
-									<div class="plugin-footer">
-										<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
-										<span class="plugin-version">v{plugin.version}</span>
-									</div>
-									<div class="plugin-updated">
-										Updated {formatRelativeDate(plugin.lastUpdated)}
-									</div>
+								<div class="preview-overlay">
+									<span class="preview-text">View Details</span>
 								</div>
-							</button>
-						{/each}
-						</div>
-					{/if}
-				</div>
-			{/if}
+							</div>
+							<div class="plugin-info">
+								<h3 class="plugin-name">{plugin.name}</h3>
+								<p class="plugin-description">{plugin.description}</p>
+								<div class="plugin-footer">
+									<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
+									<span class="plugin-version">v{plugin.version}</span>
+								</div>
+								<div class="plugin-updated">
+									Updated {formatRelativeDate(plugin.lastUpdated)}
+								</div>
+							</div>
+						</a>
+					{/each}
+					</div>
+				{/if}
+			</div>
 		{/if}
 	</div>
 </section>
@@ -802,6 +732,8 @@
 		text-align: left;
 		padding: 0;
 		width: 100%;
+		text-decoration: none;
+		color: inherit;
 	}
 	
 	.plugin-card:hover {
@@ -928,127 +860,6 @@
 		margin-top: 0.5rem;
 	}
 	
-	.plugin-detail {
-		display: flex;
-		flex-direction: column;
-		gap: 2rem;
-	}
-	
-	.back-btn {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-		padding: 0.75rem 1.25rem;
-		background: transparent;
-		border: 1px solid var(--mOutline);
-		border-radius: 0.5rem;
-		color: var(--mOnSurfaceVariant);
-		cursor: pointer;
-		transition: all 0.2s ease;
-		font-size: 0.9375rem;
-		font-weight: 500;
-		width: fit-content;
-	}
-	
-	.back-btn:hover {
-		background: var(--mPrimary);
-		color: var(--mOnPrimary);
-		border-color: var(--mPrimary);
-	}
-	
-	.detail-content {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 3rem;
-	}
-	
-	.detail-preview {
-		border-radius: 1rem;
-		overflow: hidden;
-		background: var(--mSurfaceVariant);
-		border: 1px solid var(--mOutline);
-		aspect-ratio: 16 / 9;
-		position: relative;
-	}
-	
-	.detail-preview img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-	
-	.detail-info {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-	
-	.detail-name {
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--mOnSurface);
-		letter-spacing: -0.02em;
-	}
-	
-	.detail-description {
-		font-size: 1.125rem;
-		color: var(--mOnSurfaceVariant);
-		line-height: 1.7;
-	}
-	
-	.detail-meta {
-		display: grid;
-		grid-template-columns: repeat(2, 1fr);
-		gap: 1rem;
-		padding: 1.5rem;
-		background: var(--mSurfaceVariant);
-		border-radius: 0.75rem;
-		border: 1px solid var(--mOutline);
-	}
-	
-	.meta-item {
-		display: flex;
-		flex-direction: column;
-		gap: 0.25rem;
-	}
-	
-	.meta-label {
-		font-size: 0.75rem;
-		color: var(--mOnSurfaceVariant);
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-		font-weight: 500;
-	}
-	
-	.meta-value {
-		font-size: 1rem;
-		color: var(--mOnSurface);
-		font-weight: 600;
-	}
-	
-	.detail-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.75rem;
-		padding: 1rem 1.5rem;
-		background: var(--mPrimary);
-		color: var(--mOnPrimary);
-		border-radius: 0.75rem;
-		font-weight: 600;
-		transition: all 0.2s ease;
-		width: fit-content;
-		text-decoration: none;
-	}
-	
-	.detail-link:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(255, 245, 155, 0.3);
-		filter: brightness(1.1);
-	}
-	
-	:global([data-theme='light']) .detail-link:hover {
-		box-shadow: 0 8px 24px rgba(93, 101, 245, 0.35);
-	}
 	
 	.btn {
 		display: inline-flex;
@@ -1123,14 +934,6 @@
 		}
 		
 		.plugins-grid {
-			grid-template-columns: 1fr;
-		}
-		
-		.detail-content {
-			grid-template-columns: 1fr;
-		}
-		
-		.detail-meta {
 			grid-template-columns: 1fr;
 		}
 	}
