@@ -1,3 +1,5 @@
+import { error } from '@sveltejs/kit';
+
 // Simple in-memory cache with TTL
 const pluginsCache = {
 	plugins: [] as any[],
@@ -6,7 +8,7 @@ const pluginsCache = {
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
-async function getPlugins() {
+async function fetchPlugins() {
 	const now = Date.now();
 	
 	// Return cached data if still valid
@@ -31,17 +33,20 @@ async function getPlugins() {
 	}
 }
 
+// Generate all plugin pages at build time
+export async function entries() {
+	const plugins = await fetchPlugins();
+	return plugins.map((plugin: any) => ({
+		name: plugin.id
+	}));
+}
+
 export async function load({ params }: { params: { name: string } }) {
-	const plugins = await getPlugins();
-	
-	// Find plugin by id (which is used as the slug)
+	const plugins = await fetchPlugins();
 	const plugin = plugins.find((p: any) => p.id === params.name);
 	
 	if (!plugin) {
-		return {
-			status: 404,
-			error: new Error('Plugin not found')
-		};
+		throw error(404, 'Plugin not found');
 	}
 	
 	return {

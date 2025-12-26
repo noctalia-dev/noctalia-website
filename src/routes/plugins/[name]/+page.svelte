@@ -37,12 +37,12 @@
 		}
 	}
 	
-	function getPluginUrl(plugin: Plugin): string {
-		// Use the repository field if it's a full URL, otherwise fall back to the default path
-		if (plugin.repository && (plugin.repository.startsWith('http://') || plugin.repository.startsWith('https://'))) {
-			return plugin.repository;
+	function getPluginUrl(pluginId: string): string {
+		const plugin = data.plugin;
+		if (plugin?.repository.includes('AdrienPiechocki')) {
+			return `https://github.com/AdrienPiechocki/noctalia-virtual-keyboard-plugin`;
 		}
-		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${plugin.id}`;
+		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
 	}
 	
 	function formatDate(dateString: string): string {
@@ -68,7 +68,7 @@
 	</div>
 </nav>
 
-<section class="plugin-detail-page">
+<section class="plugin-page">
 	<div class="container">
 		<a href="/plugins" class="back-btn">
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -78,58 +78,60 @@
 			Back to plugins
 		</a>
 		
-		<div class="detail-content">
-			<div class="detail-preview">
-				<img 
-					src={getPreviewUrl(data.plugin.id)} 
-					alt={data.plugin.name}
-					onerror={(e) => handleImageError(e, data.plugin.id)}
-				/>
-				<div class="preview-placeholder" style="display: none;">
-					<div class="placeholder-icon">📦</div>
-					<p>No preview available</p>
-				</div>
-			</div>
-			
-			<div class="detail-info">
-				<h1 class="detail-name">{data.plugin.name}</h1>
-				<p class="detail-description">{data.plugin.description}</p>
-				
-				<div class="detail-meta">
-					<div class="meta-item">
-						<span class="meta-label">Version</span>
-						<span class="meta-value">{data.plugin.version}</span>
-					</div>
-					<div class="meta-item">
-						<span class="meta-label">Author</span>
-						<span class="meta-value">{data.plugin.author}</span>
-					</div>
-					<div class="meta-item">
-						<span class="meta-label">License</span>
-						<span class="meta-value">{data.plugin.license}</span>
-					</div>
-					<div class="meta-item">
-						<span class="meta-label">Updated</span>
-						<span class="meta-value">{formatDate(data.plugin.lastUpdated)}</span>
-					</div>
-					<div class="meta-item">
-						<span class="meta-label">Min Version</span>
-						<span class="meta-value">{data.plugin.minNoctaliaVersion}</span>
+		<div class="plugin-detail">
+			<div class="detail-content">
+				<div class="detail-preview">
+					<img 
+						src={getPreviewUrl(data.plugin.id)} 
+						alt={data.plugin.name}
+						onerror={(e) => handleImageError(e, data.plugin.id)}
+					/>
+					<div class="preview-placeholder" style="display: none;">
+						<div class="placeholder-icon">📦</div>
+						<p>No preview available</p>
 					</div>
 				</div>
 				
-				<a 
-					href={getPluginUrl(data.plugin)} 
-					target="_blank" 
-					rel="noopener noreferrer"
-					class="detail-link"
-				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-						<path d="M9 18c-4.51 2-5-2-7-2"></path>
-					</svg>
-					View on GitHub
-				</a>
+				<div class="detail-info">
+					<h1 class="detail-name">{data.plugin.name}</h1>
+					<p class="detail-description">{data.plugin.description}</p>
+					
+					<div class="detail-meta">
+						<div class="meta-item">
+							<span class="meta-label">Version</span>
+							<span class="meta-value">{data.plugin.version}</span>
+						</div>
+						<div class="meta-item">
+							<span class="meta-label">Author</span>
+							<span class="meta-value">{data.plugin.author}</span>
+						</div>
+						<div class="meta-item">
+							<span class="meta-label">License</span>
+							<span class="meta-value">{data.plugin.license}</span>
+						</div>
+						<div class="meta-item">
+							<span class="meta-label">Updated</span>
+							<span class="meta-value">{formatDate(data.plugin.lastUpdated)}</span>
+						</div>
+						<div class="meta-item">
+							<span class="meta-label">Min Version</span>
+							<span class="meta-value">{data.plugin.minNoctaliaVersion}</span>
+						</div>
+					</div>
+					
+					<a 
+						href={getPluginUrl(data.plugin.id)} 
+						target="_blank" 
+						rel="noopener noreferrer"
+						class="detail-link"
+					>
+						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
+							<path d="M9 18c-4.51 2-5-2-7-2"></path>
+						</svg>
+						View on GitHub
+					</a>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -291,7 +293,7 @@
 		box-shadow: 0 0 8px rgba(93, 101, 245, 0.4);
 	}
 	
-	.plugin-detail-page {
+	.plugin-page {
 		min-height: 100vh;
 		padding: 4rem 0;
 		background: linear-gradient(180deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
@@ -327,6 +329,12 @@
 		border-color: var(--mPrimary);
 	}
 	
+	.plugin-detail {
+		display: flex;
+		flex-direction: column;
+		gap: 2rem;
+	}
+	
 	.detail-content {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
@@ -359,7 +367,6 @@
 		font-weight: 700;
 		color: var(--mOnSurface);
 		letter-spacing: -0.02em;
-		margin: 0;
 	}
 	
 	.detail-description {

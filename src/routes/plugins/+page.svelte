@@ -84,17 +84,12 @@
 		}
 	}
 	
-	function getPluginUrl(plugin: Plugin): string {
-		// Use the repository field if it's a full URL, otherwise fall back to the default path
-		if (plugin.repository && (plugin.repository.startsWith('http://') || plugin.repository.startsWith('https://'))) {
-			return plugin.repository;
+	function getPluginUrl(pluginId: string): string {
+		const plugin = plugins.find(p => p.id === pluginId);
+		if (plugin?.repository.includes('AdrienPiechocki')) {
+			return `https://github.com/AdrienPiechocki/noctalia-virtual-keyboard-plugin`;
 		}
-		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${plugin.id}`;
-	}
-	
-	function formatDate(dateString: string): string {
-		const date = new Date(dateString);
-		return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
 	}
 	
 	function formatRelativeDate(dateString: string): string {
@@ -209,7 +204,7 @@
 									View Details
 								</a>
 								<a 
-									href={getPluginUrl(latestUpdate)} 
+									href={getPluginUrl(latestUpdate.id)} 
 									target="_blank" 
 									rel="noopener noreferrer"
 									class="btn btn-secondary"
@@ -226,52 +221,52 @@
 				</div>
 			{/if}
 			
-			<div class="plugins-section">
-				<h2 class="section-title">
-					{searchQuery ? 'Search Results' : 'All Plugins'}
-				</h2>
-				{#if plugins.length === 0 && searchQuery}
-					<div class="no-results">
-						<div class="no-results-icon">🔍</div>
-						<h3>No plugins found</h3>
-						<p>Try adjusting your search query or <button class="clear-search-link" onclick={() => searchQuery = ''}>clear the search</button></p>
-					</div>
-				{:else}
-					<div class="plugins-grid">
-					{#each plugins as plugin}
-						<a 
-							href="/plugins/{plugin.id}"
-							class="plugin-card"
-						>
-							<div class="plugin-preview">
-								<img 
-									src={getPreviewUrl(plugin.id)} 
-									alt={plugin.name}
-									onerror={(e) => handleImageError(e, plugin.id)}
-								/>
-								<div class="preview-placeholder" style="display: none;">
-									<div class="placeholder-icon">📦</div>
+				<div class="plugins-section">
+					<h2 class="section-title">
+						{searchQuery ? 'Search Results' : 'All Plugins'}
+					</h2>
+					{#if plugins.length === 0 && searchQuery}
+						<div class="no-results">
+							<div class="no-results-icon">🔍</div>
+							<h3>No plugins found</h3>
+							<p>Try adjusting your search query or <button class="clear-search-link" onclick={() => searchQuery = ''}>clear the search</button></p>
+						</div>
+					{:else}
+						<div class="plugins-grid">
+						{#each plugins as plugin}
+							<a 
+								href="/plugins/{plugin.id}"
+								class="plugin-card"
+							>
+								<div class="plugin-preview">
+									<img 
+										src={getPreviewUrl(plugin.id)} 
+										alt={plugin.name}
+										onerror={(e) => handleImageError(e, plugin.id)}
+									/>
+									<div class="preview-placeholder" style="display: none;">
+										<div class="placeholder-icon">📦</div>
+									</div>
+									<div class="preview-overlay">
+										<span class="preview-text">View Details</span>
+									</div>
 								</div>
-								<div class="preview-overlay">
-									<span class="preview-text">View Details</span>
+								<div class="plugin-info">
+									<h3 class="plugin-name">{plugin.name}</h3>
+									<p class="plugin-description">{plugin.description}</p>
+									<div class="plugin-footer">
+										<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
+										<span class="plugin-version">v{plugin.version}</span>
+									</div>
+									<div class="plugin-updated">
+										Updated {formatRelativeDate(plugin.lastUpdated)}
+									</div>
 								</div>
-							</div>
-							<div class="plugin-info">
-								<h3 class="plugin-name">{plugin.name}</h3>
-								<p class="plugin-description">{plugin.description}</p>
-								<div class="plugin-footer">
-									<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
-									<span class="plugin-version">v{plugin.version}</span>
-								</div>
-								<div class="plugin-updated">
-									Updated {formatRelativeDate(plugin.lastUpdated)}
-								</div>
-							</div>
-						</a>
-					{/each}
-					</div>
-				{/if}
-			</div>
+							</a>
+						{/each}
+						</div>
+					{/if}
+				</div>
 		{/if}
 	</div>
 </section>
@@ -936,6 +931,7 @@
 		.plugins-grid {
 			grid-template-columns: 1fr;
 		}
+		
 	}
 </style>
 
