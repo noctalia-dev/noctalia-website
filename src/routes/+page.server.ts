@@ -1,39 +1,17 @@
-// Simple in-memory cache with TTL
-const cache = {
-	pluginCount: { value: 0, timestamp: 0 },
-	releaseCount: { value: 0, timestamp: 0 }
-};
-
-const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
-
 async function getPluginCount(): Promise<number> {
-	const now = Date.now();
-	if (cache.pluginCount.timestamp > 0 && (now - cache.pluginCount.timestamp) < CACHE_TTL) {
-		return cache.pluginCount.value;
-	}
-
 	try {
 		const response = await fetch('https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json');
 		if (response.ok) {
 			const data = await response.json();
-			const count = data.plugins?.length || 0;
-			cache.pluginCount = { value: count, timestamp: now };
-			return count;
+			return data.plugins?.length || 0;
 		}
 	} catch (err) {
 		console.error('Error fetching plugin count:', err);
 	}
-	
-	// Return cached value if available, otherwise 0
-	return cache.pluginCount.value || 0;
+	return 0;
 }
 
 async function getReleaseCount(): Promise<number> {
-	const now = Date.now();
-	if (cache.releaseCount.timestamp > 0 && (now - cache.releaseCount.timestamp) < CACHE_TTL) {
-		return cache.releaseCount.value;
-	}
-
 	try {
 		let allReleases: any[] = [];
 		let page = 1;
@@ -63,16 +41,12 @@ async function getReleaseCount(): Promise<number> {
 				hasMore = false;
 			}
 		}
-		
-		const count = allReleases.length;
-		cache.releaseCount = { value: count, timestamp: now };
-		return count;
+
+		return allReleases.length;
 	} catch (err) {
 		console.error('Error fetching release count:', err);
 	}
-	
-	// Return cached value if available, otherwise 0
-	return cache.releaseCount.value || 0;
+	return 0;
 }
 
 export async function load() {
