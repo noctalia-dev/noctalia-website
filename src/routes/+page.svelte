@@ -34,6 +34,7 @@
 		<div class="nav-links">
 			<a href="/" class="nav-link active">Home</a>
 			<a href="/plugins" class="nav-link">Plugins</a>
+			<a href="/themes" class="nav-link">Themes</a>
 		</div>
 		<ThemeToggle />
 	</div>

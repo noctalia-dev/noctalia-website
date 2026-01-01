@@ -119,6 +119,7 @@
 		<div class="nav-links">
 			<a href="/" class="nav-link">Home</a>
 			<a href="/plugins" class="nav-link active">Plugins</a>
+			<a href="/themes" class="nav-link">Themes</a>
 		</div>
 		<ThemeToggle />
 	</div>
