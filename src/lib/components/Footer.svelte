@@ -8,9 +8,9 @@
 	});
 	
 	const links = [
-		{ label: 'GitHub', href: 'https://github.com/noctalia-dev/noctalia-shell', icon: 'github' },
 		{ label: 'Documentation', href: 'https://docs.noctalia.dev', icon: 'docs' },
-		{ label: 'Discord', href: 'https://discord.noctalia.dev', icon: 'discord' }
+		{ label: 'Discord', href: 'https://discord.noctalia.dev', icon: 'discord' },
+		{ label: 'GitHub', href: 'https://github.com/noctalia-dev/noctalia-shell', icon: 'github' }
 	];
 </script>
 
