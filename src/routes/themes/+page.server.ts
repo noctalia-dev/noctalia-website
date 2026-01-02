@@ -9,7 +9,7 @@ export async function load() {
 	const coreThemes = (coreColorschemes.themes || []).map((theme: any) => ({
 		name: theme.name,
 		path: theme.path,
-		html_url: `https://github.com/noctalia-dev/noctalia-shell/tree/main/Assets/ColorSchemes/${encodeURIComponent(theme.path)}`,
+		html_url: `https://github.com/noctalia-dev/noctalia-shell/tree/main/Assets/ColorScheme/${encodeURIComponent(theme.path)}`,
 		swatches: extractSwatches(theme.dark),
 		darkSwatches: extractSwatches(theme.dark),
 		lightSwatches: extractSwatches(theme.light)
