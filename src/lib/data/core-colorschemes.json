@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "themes": [
+    {
+      "name": "Ayu",
+      "path": "Ayu",
+      "dark": {"mPrimary":"#E6B450","mOnPrimary":"#0B0E14","mSecondary":"#AAD94C","mOnSecondary":"#0B0E14","mTertiary":"#39BAE6","mOnTertiary":"#0B0E14","mError":"#D95757","mOnError":"#0B0E14","mSurface":"#0B0E14","mOnSurface":"#BFBDB6","mSurfaceVariant":"#1e222a","mOnSurfaceVariant":"#636A72","mOutline":"#565B66","mShadow":"#000000","mHover":"#39BAE6","mOnHover":"#0B0E14"},
+      "light": {"mPrimary":"#FF8F40","mOnPrimary":"#F8F9FA","mSecondary":"#86B300","mOnSecondary":"#F8F9FA","mTertiary":"#55B4D4","mOnTertiary":"#F8F9FA","mError":"#E65050","mOnError":"#F8F9FA","mSurface":"#F8F9FA","mOnSurface":"#5C6166","mSurfaceVariant":"#E4E6E9","mOnSurfaceVariant":"#8A9199","mOutline":"#8A9199","mShadow":"#F8F9FA","mHover":"#55B4D4","mOnHover":"#F8F9FA"}
+    },
+    {
+      "name": "Catppuccin",
+      "path": "Catppuccin",
+      "dark": {"mPrimary":"#cba6f7","mOnPrimary":"#11111b","mSecondary":"#fab387","mOnSecondary":"#11111b","mTertiary":"#94e2d5","mOnTertiary":"#11111b","mError":"#f38ba8","mOnError":"#11111b","mSurface":"#1e1e2e","mOnSurface":"#cdd6f4","mSurfaceVariant":"#313244","mOnSurfaceVariant":"#a3b4eb","mOutline":"#4c4f69","mShadow":"#11111b","mHover":"#94e2d5","mOnHover":"#11111b"},
+      "light": {"mPrimary":"#8839ef","mOnPrimary":"#eff1f5","mSecondary":"#fe640b","mOnSecondary":"#eff1f5","mTertiary":"#40a02b","mOnTertiary":"#eff1f5","mError":"#d20f39","mOnError":"#dce0e8","mSurface":"#eff1f5","mOnSurface":"#4c4f69","mSurfaceVariant":"#ccd0da","mOnSurfaceVariant":"#6c6f85","mOutline":"#a5adcb","mShadow":"#dce0e8","mHover":"#40a02b","mOnHover":"#eff1f5"}
+    },
+    {
+      "name": "Dracula",
+      "path": "Dracula",
+      "dark": {"mPrimary":"#bd93f9","mOnPrimary":"#282A36","mSecondary":"#ff79c6","mOnSecondary":"#4e1d32","mTertiary":"#8be9fd","mOnTertiary":"#003543","mError":"#FF5555","mOnError":"#282A36","mSurface":"#282A36","mOnSurface":"#F8F8F2","mSurfaceVariant":"#44475A","mOnSurfaceVariant":"#d6d8e0","mOutline":"#5a5e77","mShadow":"#282A36","mHover":"#8be9fd","mOnHover":"#003543"},
+      "light": {"mPrimary":"#8332f4","mOnPrimary":"#ffffff","mSecondary":"#ff1399","mOnSecondary":"#ffffff","mTertiary":"#0398b9","mOnTertiary":"#ffffff","mError":"#FF5555","mOnError":"#282A36","mSurface":"#f8f8f2","mOnSurface":"#282a36","mSurfaceVariant":"#e6e6ea","mOnSurfaceVariant":"#44475a","mOutline":"#cacad3","mShadow":"#d6d8e0","mHover":"#0398b9","mOnHover":"#ffffff"}
+    },
+    {
+      "name": "Eldritch",
+      "path": "Eldritch",
+      "dark": {"mPrimary":"#37f499","mOnPrimary":"#171928","mSecondary":"#04d1f9","mOnSecondary":"#171928","mTertiary":"#a48cf2","mOnTertiary":"#171928","mError":"#f16c75","mOnError":"#171928","mSurface":"#212337","mOnSurface":"#ebfafa","mSurfaceVariant":"#292e42","mOnSurfaceVariant":"#ABB4DA","mOutline":"#3b4261","mShadow":"#414868","mHover":"#a48cf2","mOnHover":"#171928"},
+      "light": {"mPrimary":"#37f499","mOnPrimary":"#171928","mSecondary":"#04d1f9","mOnSecondary":"#171928","mTertiary":"#a48cf2","mOnTertiary":"#171928","mError":"#f16c75","mOnError":"#171928","mSurface":"#ffffff","mOnSurface":"#171928","mSurfaceVariant":"#f2f4f8","mOnSurfaceVariant":"#3b4261","mOutline":"#b0b6c3","mShadow":"#e0e3e8","mHover":"#a48cf2","mOnHover":"#171928"}
+    },
+    {
+      "name": "Gruvbox",
+      "path": "Gruvbox",
+      "dark": {"mPrimary":"#b8bb26","mOnPrimary":"#282828","mSecondary":"#fabd2f","mOnSecondary":"#282828","mTertiary":"#83a598","mOnTertiary":"#282828","mError":"#fb4934","mOnError":"#282828","mSurface":"#282828","mOnSurface":"#fbf1c7","mSurfaceVariant":"#3c3836","mOnSurfaceVariant":"#ebdbb2","mOutline":"#57514e","mShadow":"#282828","mHover":"#83a598","mOnHover":"#282828"},
+      "light": {"mPrimary":"#98971a","mOnPrimary":"#fbf1c7","mSecondary":"#d79921","mOnSecondary":"#fbf1c7","mTertiary":"#458588","mOnTertiary":"#fbf1c7","mError":"#cc241d","mOnError":"#fbf1c7","mSurface":"#fbf1c7","mOnSurface":"#3c3836","mSurfaceVariant":"#ebdbb2","mOnSurfaceVariant":"#7c6f64","mOutline":"#bdae93","mShadow":"#d5c4a1","mHover":"#458588","mOnHover":"#fbf1c7"}
+    },
+    {
+      "name": "Kanagawa",
+      "path": "Kanagawa",
+      "dark": {"mPrimary":"#76946a","mOnPrimary":"#1f1f28","mSecondary":"#c0a36e","mOnSecondary":"#1f1f28","mTertiary":"#7e9cd8","mOnTertiary":"#1f1f28","mError":"#c34043","mOnError":"#1f1f28","mSurface":"#1f1f28","mOnSurface":"#c8c093","mSurfaceVariant":"#2a2a37","mOnSurfaceVariant":"#717c7c","mOutline":"#363646","mShadow":"#1f1f28","mHover":"#7e9cd8","mOnHover":"#1f1f28"},
+      "light": {"mPrimary":"#6f894e","mOnPrimary":"#f2ecbc","mSecondary":"#77713f","mOnSecondary":"#f2ecbc","mTertiary":"#4d699b","mOnTertiary":"#f2ecbc","mError":"#c84053","mOnError":"#f2ecbc","mSurface":"#f2ecbc","mOnSurface":"#545464","mSurfaceVariant":"#e5ddb0","mOnSurfaceVariant":"#8a8980","mOutline":"#cfc49c","mShadow":"#f2ecbc","mHover":"#4d699b","mOnHover":"#f2ecbc"}
+    },
+    {
+      "name": "Noctalia-default",
+      "path": "Noctalia-default",
+      "dark": {"mPrimary":"#fff59b","mOnPrimary":"#0e0e43","mSecondary":"#a9aefe","mOnSecondary":"#0e0e43","mTertiary":"#9BFECE","mOnTertiary":"#0e0e43","mError":"#FD4663","mOnError":"#0e0e43","mSurface":"#070722","mOnSurface":"#f3edf7","mSurfaceVariant":"#11112d","mOnSurfaceVariant":"#7c80b4","mOutline":"#21215F","mShadow":"#070722","mHover":"#9BFECE","mOnHover":"#0e0e43"},
+      "light": {"mPrimary":"#5d65f5","mOnPrimary":"#dadcff","mSecondary":"#8E93D8","mOnSecondary":"#dadcff","mTertiary":"#0e0e43","mOnTertiary":"#fef29a","mError":"#FD4663","mOnError":"#0e0e43","mSurface":"#e6e8fa","mOnSurface":"#0e0e43","mSurfaceVariant":"#eff0ff","mOnSurfaceVariant":"#4b55c8","mOutline":"#8288fc","mShadow":"#f3edf7","mHover":"#0e0e43","mOnHover":"#fef29a"}
+    },
+    {
+      "name": "Nord",
+      "path": "Nord",
+      "dark": {"mPrimary":"#8fbcbb","mOnPrimary":"#2e3440","mSecondary":"#88c0d0","mOnSecondary":"#2e3440","mTertiary":"#5e81ac","mOnTertiary":"#2e3440","mError":"#bf616a","mOnError":"#2e3440","mSurface":"#2e3440","mOnSurface":"#eceff4","mSurfaceVariant":"#3b4252","mOnSurfaceVariant":"#d8dee9","mOutline":"#505a70","mShadow":"#2e3440","mHover":"#5e81ac","mOnHover":"#2e3440"},
+      "light": {"mPrimary":"#5e81ac","mOnPrimary":"#eceff4","mSecondary":"#64adc2","mOnSecondary":"#eceff4","mTertiary":"#6fa9a8","mOnTertiary":"#eceff4","mError":"#bf616a","mOnError":"#eceff4","mSurface":"#eceff4","mOnSurface":"#2e3440","mSurfaceVariant":"#e5e9f0","mOnSurfaceVariant":"#4c566a","mOutline":"#c5cedd","mShadow":"#d8dee9","mHover":"#6fa9a8","mOnHover":"#eceff4"}
+    },
+    {
+      "name": "Rosepine",
+      "path": "Rosepine",
+      "dark": {"mPrimary":"#ebbcba","mOnPrimary":"#191724","mSecondary":"#9ccfd8","mOnSecondary":"#191724","mTertiary":"#31748f","mOnTertiary":"#e0def4","mError":"#eb6f92","mOnError":"#191724","mSurface":"#191724","mOnSurface":"#e0def4","mSurfaceVariant":"#26233a","mOnSurfaceVariant":"#908caa","mOutline":"#403d52","mShadow":"#191724","mHover":"#524f67","mOnHover":"#e0def4"},
+      "light": {"mPrimary":"#d7827e","mOnPrimary":"#faf4ed","mSecondary":"#56949f","mOnSecondary":"#faf4ed","mTertiary":"#286983","mOnTertiary":"#faf4ed","mError":"#b4637a","mOnError":"#faf4ed","mSurface":"#fffaf3","mOnSurface":"#575279","mSurfaceVariant":"#f2e9e1","mOnSurfaceVariant":"#797593","mOutline":"#dfdad9","mShadow":"#faf4ed","mHover":"#cecacd","mOnHover":"#575279"}
+    },
+    {
+      "name": "Tokyo-Night",
+      "path": "Tokyo-Night",
+      "dark": {"mPrimary":"#7aa2f7","mOnPrimary":"#16161e","mSecondary":"#bb9af7","mOnSecondary":"#16161e","mTertiary":"#9ece6a","mOnTertiary":"#16161e","mError":"#f7768e","mOnError":"#16161e","mSurface":"#1a1b26","mOnSurface":"#c0caf5","mSurfaceVariant":"#24283b","mOnSurfaceVariant":"#9aa5ce","mOutline":"#353D57","mShadow":"#15161e","mHover":"#9ece6a","mOnHover":"#16161e"},
+      "light": {"mPrimary":"#2e7de9","mOnPrimary":"#e1e2e7","mSecondary":"#9854f1","mOnSecondary":"#e1e2e7","mTertiary":"#587539","mOnTertiary":"#e1e2e7","mError":"#f52a65","mOnError":"#e1e2e7","mSurface":"#e1e2e7","mOnSurface":"#3760bf","mSurfaceVariant":"#d0d5e3","mOnSurfaceVariant":"#6172b0","mOutline":"#b4b5b9","mShadow":"#a8aecb","mHover":"#587539","mOnHover":"#e1e2e7"}
+    }
+  ]
+}

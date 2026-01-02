@@ -12,16 +12,26 @@ interface ThemeItem {
 	lightSwatches: string[];
 }
 
-let { data } = $props<{ data: { themes: ThemeItem[] } }>();
-let themes = $state<ThemeItem[]>([]);
-let allThemes = $state<ThemeItem[]>([]);
+let { data } = $props<{ data: { coreThemes: ThemeItem[], communityThemes: ThemeItem[] } }>();
+let coreThemes = $state<ThemeItem[]>([]);
+let communityThemes = $state<ThemeItem[]>([]);
+let allCoreThemes = $state<ThemeItem[]>([]);
+let allCommunityThemes = $state<ThemeItem[]>([]);
 let searchQuery = $state('');
-let fuse: Fuse<ThemeItem> | null = $state(null);
+let fuse: Fuse<ThemeItem & { isCore: boolean }> | null = $state(null);
 let isDarkMode = $state(true);
 
 onMount(() => {
-	allThemes = data.themes || [];
-	themes = allThemes.slice();
+	allCoreThemes = data.coreThemes || [];
+	allCommunityThemes = data.communityThemes || [];
+	coreThemes = allCoreThemes.slice();
+	communityThemes = allCommunityThemes.slice();
+
+	// Combine both for search, tagging each with isCore
+	const allThemes = [
+		...allCoreThemes.map(t => ({ ...t, isCore: true })),
+		...allCommunityThemes.map(t => ({ ...t, isCore: false }))
+	];
 
 	fuse = new Fuse(allThemes, {
 		keys: ['name'],
@@ -45,10 +55,13 @@ onMount(() => {
 
 $effect(() => {
 	if (!searchQuery.trim() || !fuse) {
-		themes = allThemes.slice();
+		coreThemes = allCoreThemes.slice();
+		communityThemes = allCommunityThemes.slice();
 		return;
 	}
-	themes = fuse.search(searchQuery).map((r) => r.item);
+	const results = fuse.search(searchQuery).map((r) => r.item);
+	coreThemes = results.filter(t => t.isCore);
+	communityThemes = results.filter(t => !t.isCore);
 });
 
 function getSwatches(theme: ThemeItem): string[] {
@@ -79,7 +92,7 @@ function getSwatches(theme: ThemeItem): string[] {
 	<div class="container">
 		<div class="page-header">
 			<h1 class="page-title">Themes</h1>
-			<p class="page-subtitle">Browse optional color schemes that you can add to noctalia-shell via the Color Scheme tab.</p>
+			<p class="page-subtitle">Explore color schemes for Noctalia Shell.</p>
 		</div>
 
 		<div class="search-section">
@@ -110,28 +123,55 @@ function getSwatches(theme: ThemeItem): string[] {
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
-					Found {themes.length} {themes.length === 1 ? 'theme' : 'themes'}
+					Found {coreThemes.length + communityThemes.length} {coreThemes.length + communityThemes.length === 1 ? 'theme' : 'themes'}
 				</div>
 			{/if}
 		</div>
 
-		{#if themes.length === 0}
+		{#if coreThemes.length === 0 && communityThemes.length === 0}
 			<div class="empty">No themes found.</div>
 		{:else}
-			<div class="themes-grid">
-				{#each themes as theme}
-					<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
-						<div class="theme-card-header">
-							<h3 class="theme-name">{theme.name}</h3>
-						</div>
-						<div class="swatches">
-							{#each getSwatches(theme) as col}
-								<div class="swatch" style="background:{col}" title={col}></div>
-							{/each}
-						</div>
-					</a>
-				{/each}
-			</div>
+			{#if coreThemes.length > 0}
+				<div class="section">
+					<h2 class="section-title">Core Themes</h2>
+					<p class="section-subtitle">Built-in color schemes included with Noctalia.</p>
+					<div class="themes-grid">
+						{#each coreThemes as theme}
+							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
+								<div class="theme-card-header">
+									<h3 class="theme-name">{theme.name}</h3>
+								</div>
+								<div class="swatches">
+									{#each getSwatches(theme) as col}
+										<div class="swatch" style="background:{col}" title={col}></div>
+									{/each}
+								</div>
+							</a>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			{#if communityThemes.length > 0}
+				<div class="section">
+					<h2 class="section-title">Community Themes</h2>
+					<p class="section-subtitle">Color schemes created by the community, downloadable within Noctalia.</p>
+					<div class="themes-grid">
+						{#each communityThemes as theme}
+							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
+								<div class="theme-card-header">
+									<h3 class="theme-name">{theme.name}</h3>
+								</div>
+								<div class="swatches">
+									{#each getSwatches(theme) as col}
+										<div class="swatch" style="background:{col}" title={col}></div>
+									{/each}
+								</div>
+							</a>
+						{/each}
+					</div>
+				</div>
+			{/if}
 		{/if}
 	</div>
 </section>
@@ -438,6 +478,23 @@ function getSwatches(theme: ThemeItem): string[] {
 			color: var(--mOnSurfaceVariant);
 			font-size: 0.9375rem;
 		}
+
+	.section {
+		margin-bottom: 3rem;
+	}
+
+	.section-title {
+		font-size: 1.75rem;
+		font-weight: 600;
+		color: var(--mOnSurface);
+		margin-bottom: 0.5rem;
+	}
+
+	.section-subtitle {
+		font-size: 1rem;
+		color: var(--mOnSurfaceVariant);
+		margin-bottom: 1.5rem;
+	}
 
 	.themes-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem }
 	.theme-card {
