@@ -353,6 +353,13 @@ function getSwatches(theme: ThemeItem): string[] {
 
 	.empty { padding:2rem; text-align:center; color:var(--mOnSurfaceVariant) }
 
+	@media (max-width: 768px) {
+		.themes-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+		.theme-card { padding: 1rem; }
+		.theme-name { font-size: 1rem; }
+		.swatches { gap: 6px; }
+	}
+
 	@media (max-width:640px) {
 		.search-container { min-width: 160px }
 		.swatch { width:36px; height:36px }
