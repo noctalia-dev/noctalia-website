@@ -221,7 +221,6 @@ function getSwatches(theme: ThemeItem): string[] {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		position: relative;
 	}
 
 	.nav-brand {
@@ -229,7 +228,6 @@ function getSwatches(theme: ThemeItem): string[] {
 		align-items: center;
 		gap: 0.75rem;
 		text-decoration: none;
-		margin-right: auto;
 	}
 
 	.nav-logo {
@@ -298,9 +296,8 @@ function getSwatches(theme: ThemeItem): string[] {
 		display: flex;
 		gap: 1.5rem;
 		align-items: center;
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
+		flex: 1;
+		justify-content: center;
 	}
 
 	.nav-link {

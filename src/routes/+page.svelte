@@ -105,7 +105,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		position: relative;
 	}
 	
 	.nav-brand {
@@ -113,7 +112,6 @@
 		align-items: center;
 		gap: 0.75rem;
 		text-decoration: none;
-		margin-right: auto;
 	}
 	
 	.nav-logo {
@@ -182,9 +180,8 @@
 		display: flex;
 		gap: 1.5rem;
 		align-items: center;
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
+		flex: 1;
+		justify-content: center;
 	}
 	
 	.nav-link {
