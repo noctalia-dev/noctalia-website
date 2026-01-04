@@ -8,14 +8,24 @@ const config = {
 	preprocess: vitePreprocess(),
 
 	kit: {
-	    adapter: adapter({
-	      pages: 'build',
-	      assets: 'build',
-	      fallback: undefined,
-	      precompress: false,
-	      strict: true
-	    })
-	  }
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: undefined,
+			precompress: false,
+			strict: true
+		}),
+		prerender: {
+			handleHttpError: ({ path, referrer, message }) => {
+				// Ignore 404s for preview images (they may not exist for all plugins)
+				if (path.includes('/preview.')) {
+					console.warn(`Missing preview image: ${path}`);
+					return;
+				}
+				throw new Error(message);
+			}
+		}
+	}
 };
 
 export default config;

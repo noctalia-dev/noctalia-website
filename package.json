@@ -26,6 +26,7 @@
 		"vite": "^7.2.6"
 	},
 	"dependencies": {
-		"fuse.js": "^7.1.0"
+		"fuse.js": "^7.1.0",
+		"marked": "^17.0.1"
 	}
 }
