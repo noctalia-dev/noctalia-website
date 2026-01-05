@@ -12,6 +12,7 @@
 		minNoctaliaVersion: string;
 		license: string;
 		lastUpdated: string;
+		tags?: string[];
 	}
 
 	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
@@ -138,6 +139,14 @@
 				{formatDate(data.plugin.lastUpdated)}
 			</span>
 		</div>
+
+		{#if data.plugin.tags && data.plugin.tags.length > 0}
+			<div class="tag-row">
+				{#each data.plugin.tags as tag}
+					<a href="/plugins?tag={tag}" class="tag-badge">{tag}</a>
+				{/each}
+			</div>
+		{/if}
 
 		{#if data.readme}
 			<div class="about-section">
@@ -439,7 +448,32 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.75rem;
+		margin-bottom: 1rem;
+	}
+
+	/* Tag Row */
+	.tag-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
 		margin-bottom: 2rem;
+	}
+
+	.tag-badge {
+		padding: 0.375rem 0.875rem;
+		border-radius: 2rem;
+		background: transparent;
+		border: 1px solid var(--mPrimary);
+		color: var(--mPrimary);
+		font-size: 0.875rem;
+		font-weight: 500;
+		text-decoration: none;
+		transition: all 0.2s ease;
+	}
+
+	.tag-badge:hover {
+		background: var(--mPrimary);
+		color: var(--mOnPrimary);
 	}
 
 	.badge {

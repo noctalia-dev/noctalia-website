@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Fuse from 'fuse.js';
 	
@@ -13,6 +14,7 @@
 		minNoctaliaVersion: string;
 		license: string;
 		lastUpdated: string;
+		tags?: string[];
 	}
 	
 	let { data } = $props<{ data: { plugins: Plugin[] } }>();
@@ -24,43 +26,82 @@
 	let latestUpdate = $state<Plugin | null>(null);
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
+	let selectedTags = $state<string[]>([]);
+	let availableTags = $state<string[]>([]);
 	
 	onMount(() => {
 		// Sort plugins by last updated
-		allPlugins = data.plugins.sort((a, b) => 
+		allPlugins = data.plugins.sort((a: Plugin, b: Plugin) =>
 			new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
 		);
-		
+
+		// Extract all unique tags
+		const tagSet = new Set<string>();
+		allPlugins.forEach(plugin => {
+			plugin.tags?.forEach(tag => tagSet.add(tag));
+		});
+		availableTags = Array.from(tagSet).sort();
+
 		// Initialize Fuse.js for fuzzy search
 		fuse = new Fuse(allPlugins, {
 			keys: [
 				{ name: 'name', weight: 0.5 },
 				{ name: 'description', weight: 0.3 },
 				{ name: 'author', weight: 0.2 },
-				{ name: 'id', weight: 0.1 }
+				{ name: 'id', weight: 0.1 },
+				{ name: 'tags', weight: 0.4 }
 			],
 			threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
 			includeScore: true,
 			minMatchCharLength: 2
 		});
-		
+
 		plugins = allPlugins;
-		
+
 		// Get the most recently updated plugin
 		if (plugins.length > 0) {
 			latestUpdate = plugins[0];
 		}
+
+		// Check for tag query parameter
+		const urlTag = $page.url.searchParams.get('tag');
+		if (urlTag && availableTags.includes(urlTag)) {
+			selectedTags = [urlTag];
+		}
 	});
 	
 	$effect(() => {
-		if (!fuse || !searchQuery.trim()) {
-			plugins = allPlugins;
-			return;
+		let filtered = allPlugins;
+
+		// Apply tag filter (OR logic - show plugins matching any selected tag)
+		if (selectedTags.length > 0) {
+			filtered = filtered.filter(plugin =>
+				selectedTags.some(tag => plugin.tags?.includes(tag))
+			);
 		}
-		
-		const results = fuse.search(searchQuery);
-		plugins = results.map(result => result.item);
+
+		// Apply search filter
+		if (fuse && searchQuery.trim()) {
+			const results = fuse.search(searchQuery);
+			const searchIds = new Set(results.map(r => r.item.id));
+			filtered = filtered.filter(plugin => searchIds.has(plugin.id));
+		}
+
+		plugins = filtered;
 	});
+
+	function toggleTag(tag: string) {
+		if (selectedTags.includes(tag)) {
+			selectedTags = [];
+		} else {
+			selectedTags = [tag];
+		}
+	}
+
+	function clearFilters() {
+		selectedTags = [];
+		searchQuery = '';
+	}
 	
 	function getPreviewUrl(pluginId: string, format: 'png' | 'jpg' = 'png'): string {
 		return `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${pluginId}/preview.${format}`;
@@ -152,14 +193,31 @@
 						</button>
 					{/if}
 				</div>
-				{#if searchQuery}
+				{#if searchQuery || selectedTags.length > 0}
 					<div class="search-results-info">
 						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
+						{#if selectedTags.length > 0 || searchQuery}
+							<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
+						{/if}
 					</div>
 				{/if}
 			</div>
+
+			{#if availableTags.length > 0}
+				<div class="tag-filters">
+					{#each availableTags as tag}
+						<button
+							class="tag-chip"
+							class:selected={selectedTags.includes(tag)}
+							onclick={() => toggleTag(tag)}
+						>
+							{tag}
+						</button>
+					{/each}
+				</div>
+			{/if}
 			
-			{#if latestUpdate && !searchQuery}
+			{#if latestUpdate && !searchQuery && selectedTags.length === 0}
 				<div class="latest-update">
 					<div class="latest-badge">Latest Update</div>
 					<div class="latest-content">
@@ -208,13 +266,13 @@
 			
 				<div class="plugins-section">
 					<h2 class="section-title">
-						{searchQuery ? 'Search Results' : 'All Plugins'}
+						{searchQuery || selectedTags.length > 0 ? 'Results' : 'All Plugins'}
 					</h2>
-					{#if plugins.length === 0 && searchQuery}
+					{#if plugins.length === 0 && (searchQuery || selectedTags.length > 0)}
 						<div class="no-results">
 							<div class="no-results-icon">🔍</div>
 							<h3>No plugins found</h3>
-							<p>Try adjusting your search query or <button class="clear-search-link" onclick={() => searchQuery = ''}>clear the search</button></p>
+							<p>Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}>clear all filters</button></p>
 						</div>
 					{:else}
 						<div class="plugins-grid">
@@ -239,6 +297,13 @@
 								<div class="plugin-info">
 									<h3 class="plugin-name">{plugin.name}</h3>
 									<p class="plugin-description">{plugin.description}</p>
+									{#if plugin.tags && plugin.tags.length > 0}
+										<div class="plugin-tags">
+											{#each plugin.tags as tag}
+												<span class="plugin-tag">{tag}</span>
+											{/each}
+										</div>
+									{/if}
 									<div class="plugin-footer">
 										<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
 										<span class="plugin-version">v{plugin.version}</span>
@@ -358,6 +423,63 @@
 		margin-top: 1rem;
 		color: var(--mOnSurfaceVariant);
 		font-size: 0.9375rem;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+	}
+
+	.clear-filters-btn {
+		background: transparent;
+		border: 1px solid var(--mOutline);
+		color: var(--mOnSurfaceVariant);
+		padding: 0.25rem 0.75rem;
+		border-radius: 0.5rem;
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+
+	.clear-filters-btn:hover {
+		background: var(--mSurfaceVariant);
+		border-color: var(--mPrimary);
+		color: var(--mPrimary);
+	}
+
+	.tag-filters {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		justify-content: center;
+		margin-bottom: 2rem;
+		max-width: 700px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	.tag-chip {
+		padding: 0.5rem 1rem;
+		border-radius: 2rem;
+		border: 1px solid var(--mOutline);
+		background: transparent;
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.875rem;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		flex: 1 1 auto;
+		text-align: center;
+		min-width: fit-content;
+	}
+
+	.tag-chip:hover {
+		border-color: var(--mPrimary);
+		color: var(--mPrimary);
+	}
+
+	.tag-chip.selected {
+		background: var(--mPrimary);
+		border-color: var(--mPrimary);
+		color: var(--mOnPrimary);
 	}
 	
 	.no-results {
@@ -649,6 +771,22 @@
 		line-height: 1.6;
 		font-size: 0.9375rem;
 		flex: 1;
+	}
+
+	.plugin-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.375rem;
+		margin-top: 0.25rem;
+	}
+
+	.plugin-tag {
+		padding: 0.125rem 0.5rem;
+		border-radius: 1rem;
+		background: var(--mSurface);
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.75rem;
+		border: 1px solid var(--mOutline);
 	}
 	
 	.plugin-footer {
