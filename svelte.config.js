@@ -22,6 +22,11 @@ const config = {
 					console.warn(`Missing preview image: ${path}`);
 					return;
 				}
+				// Ignore 404s for invalid plugin pages (malformed manifests)
+				if (path.startsWith('/plugins/') && path !== '/plugins/') {
+					console.warn(`Skipping invalid plugin page: ${path}`);
+					return;
+				}
 				throw new Error(message);
 			}
 		}

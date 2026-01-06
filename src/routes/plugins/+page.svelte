@@ -126,10 +126,6 @@
 	}
 	
 	function getPluginUrl(pluginId: string): string {
-		const plugin = plugins.find(p => p.id === pluginId);
-		if (plugin?.repository.includes('AdrienPiechocki')) {
-			return `https://github.com/AdrienPiechocki/noctalia-virtual-keyboard-plugin`;
-		}
 		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
 	}
 	

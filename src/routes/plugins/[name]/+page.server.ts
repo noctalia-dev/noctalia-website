@@ -10,6 +10,36 @@ const readmeCache = new Map<string, { content: string | null; timestamp: number 
 
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour in milliseconds
 
+const REQUIRED_FIELDS = ['id', 'name', 'version', 'author', 'description', 'license', 'lastUpdated'] as const;
+const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
+
+function isValidPlugin(plugin: any): boolean {
+	if (!plugin || typeof plugin !== 'object') return false;
+
+	// Check required fields
+	for (const field of REQUIRED_FIELDS) {
+		if (typeof plugin[field] !== 'string' || plugin[field].trim() === '') {
+			console.warn(`Plugin "${plugin.id ?? 'unknown'}" missing required field: ${field}`);
+			return false;
+		}
+	}
+
+	// Validate ID format (lowercase alphanumeric with hyphens)
+	const id = plugin.id;
+	if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) {
+		console.warn(`Plugin "${id}" has invalid ID format`);
+		return false;
+	}
+
+	// Block reserved IDs
+	if (RESERVED_IDS.includes(id.toLowerCase())) {
+		console.warn(`Plugin "${id}" uses reserved ID`);
+		return false;
+	}
+
+	return true;
+}
+
 async function fetchPlugins() {
 	const now = Date.now();
 
@@ -43,13 +73,7 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 		return cached.content;
 	}
 
-	// Determine the README URL based on repository
-	let readmeUrl: string;
-	if (plugin.repository?.includes('AdrienPiechocki')) {
-		readmeUrl = 'https://raw.githubusercontent.com/AdrienPiechocki/noctalia-virtual-keyboard-plugin/main/README.md';
-	} else {
-		readmeUrl = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${plugin.id}/README.md`;
-	}
+	const readmeUrl = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${plugin.id}/README.md`;
 
 	try {
 		const response = await fetch(readmeUrl);
@@ -70,16 +94,18 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 // Generate all plugin pages at build time
 export async function entries() {
 	const plugins = await fetchPlugins();
-	return plugins.map((plugin: any) => ({
-		name: plugin.id
-	}));
+	return plugins
+		.filter(isValidPlugin)
+		.map((plugin: any) => ({
+			name: plugin.id
+		}));
 }
 
 export async function load({ params }: { params: { name: string } }) {
 	const plugins = await fetchPlugins();
 	const plugin = plugins.find((p: any) => p.id === params.name);
 
-	if (!plugin) {
+	if (!plugin || !isValidPlugin(plugin)) {
 		throw error(404, 'Plugin not found');
 	}
 
