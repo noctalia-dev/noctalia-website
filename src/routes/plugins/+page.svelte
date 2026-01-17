@@ -2,6 +2,8 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 	import Fuse from 'fuse.js';
 	
 	interface Plugin {
@@ -304,6 +306,9 @@
 		{/if}
 	</div>
 </section>
+
+<Footer />
+<ScrollToTop />
 
 <style>
 	.plugins-page {

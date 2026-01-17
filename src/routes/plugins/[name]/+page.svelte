@@ -1,5 +1,7 @@
 <script lang="ts">
 	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
+	import Footer from '$lib/components/Footer.svelte';
+	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 	import { marked } from 'marked';
 
 	interface Plugin {
@@ -173,6 +175,9 @@
 		</div>
 	</div>
 </section>
+
+<Footer />
+<ScrollToTop />
 
 <style>
 	.nav {

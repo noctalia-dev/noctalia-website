@@ -1,6 +1,8 @@
 <script lang="ts">
 import { onMount } from 'svelte';
 import Navbar from '$lib/components/Navbar.svelte';
+import Footer from '$lib/components/Footer.svelte';
+import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 import Fuse from 'fuse.js';
 
 interface ThemeItem {
@@ -159,6 +161,9 @@ function getSwatches(theme: ThemeItem): string[] {
 		{/if}
 	</div>
 </section>
+
+<Footer />
+<ScrollToTop />
 
 <style>
 	/* Page-specific styles */

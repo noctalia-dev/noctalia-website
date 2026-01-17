@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
-	let { activePage = 'home' }: { activePage?: 'home' | 'plugins' | 'themes' } = $props();
+	let { activePage }: { activePage?: 'home' | 'plugins' | 'themes' } = $props();
 
 	let scrolled = $state(false);
 	let mobileMenuOpen = $state(false);

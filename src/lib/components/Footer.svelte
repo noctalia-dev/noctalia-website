@@ -37,6 +37,7 @@
 		</div>
 		
 		<div class="footer-bottom">
+			<a href="/privacy" class="footer-legal-link">Privacy Policy</a>
 			<p class="footer-copyright">
 				Built with ❤️ by the Noctalia team
 			</p>
@@ -181,6 +182,20 @@
 		background: linear-gradient(90deg, transparent, var(--mOutline), transparent);
 	}
 	
+	.footer-legal-link {
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.875rem;
+		opacity: 0.7;
+		transition: all 0.3s ease;
+		margin-bottom: 1rem;
+		display: inline-block;
+	}
+
+	.footer-legal-link:hover {
+		color: var(--mPrimary);
+		opacity: 1;
+	}
+
 	.footer-copyright {
 		color: var(--mOnSurfaceVariant);
 		font-size: 0.9375rem;
