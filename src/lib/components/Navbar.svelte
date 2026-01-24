@@ -40,6 +40,15 @@
 			<a href="/themes" class="nav-link" class:active={activePage === 'themes'}>Themes</a>
 		</div>
 		<div class="nav-right">
+			<a
+				href="https://buymeacoffee.com/noctalia"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="nav-donate-btn"
+			>
+				<span class="donate-icon">❤️</span>
+				<span>Support Noctalia</span>
+			</a>
 			<ThemeToggle />
 			<button
 				class="mobile-menu-btn"
@@ -62,6 +71,7 @@
 		<a href="/" class="mobile-link" class:active={activePage === 'home'} onclick={closeMobileMenu}>Home</a>
 		<a href="/plugins" class="mobile-link" class:active={activePage === 'plugins'} onclick={closeMobileMenu}>Plugins</a>
 		<a href="/themes" class="mobile-link" class:active={activePage === 'themes'} onclick={closeMobileMenu}>Themes</a>
+		<a href="https://buymeacoffee.com/noctalia" target="_blank" rel="noopener noreferrer" class="mobile-link mobile-donate">❤️ Support Noctalia</a>
 	</div>
 {/if}
 
@@ -261,6 +271,31 @@
 		gap: 0.5rem;
 	}
 
+	.nav-donate-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.45rem 1rem;
+		border-radius: 2rem;
+		background: var(--mPrimary);
+		color: var(--mOnPrimary);
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		text-decoration: none;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 8px rgba(169, 174, 254, 0.2);
+	}
+
+	.nav-donate-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 16px rgba(169, 174, 254, 0.4);
+	}
+
+	.donate-icon {
+		font-size: 0.875rem;
+	}
+
 	/* Mobile menu button */
 	.mobile-menu-btn {
 		display: none;
@@ -363,6 +398,14 @@
 		background: rgba(93, 101, 245, 0.1);
 	}
 
+	.mobile-donate {
+		margin-top: 0.5rem;
+		border-top: 1px solid var(--mOutline);
+		padding-top: 1rem;
+		color: var(--mPrimary);
+		font-weight: 600;
+	}
+
 	@media (max-width: 768px) {
 		.nav-container {
 			padding: 1rem;
@@ -382,6 +425,10 @@
 		}
 
 		.nav-links {
+			display: none;
+		}
+
+		.nav-donate-btn {
 			display: none;
 		}
 

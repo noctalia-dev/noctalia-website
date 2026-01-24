@@ -39,8 +39,18 @@
 		<div class="footer-bottom">
 			<a href="/privacy" class="footer-legal-link">Privacy Policy</a>
 			<p class="footer-copyright">
-				Built with ❤️ by the Noctalia team
+				Built with love by the Noctalia team
 			</p>
+
+			<a
+				href="https://buymeacoffee.com/noctalia"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="footer-donation-btn"
+			>
+				<span class="donation-icon">❤️</span>
+				<span>Support Noctalia</span>
+			</a>
 		</div>
 	</div>
 </footer>
@@ -103,6 +113,31 @@
 		letter-spacing: 0.15em;
 		text-transform: uppercase;
 		opacity: 0.8;
+	}
+
+	.footer-donation-btn {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1.25rem;
+		padding: 0.6rem 1.25rem;
+		border-radius: 2rem;
+		background: var(--mPrimary);
+		color: var(--mOnPrimary);
+		font-size: 0.875rem;
+		font-weight: 600;
+		letter-spacing: 0.02em;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 8px rgba(169, 174, 254, 0.2);
+	}
+
+	.footer-donation-btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 16px rgba(169, 174, 254, 0.4);
+	}
+
+	.donation-icon {
+		font-size: 1rem;
 	}
 	
 	:global([data-theme='light']) .footer-tagline {
