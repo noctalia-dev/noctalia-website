@@ -17,6 +17,7 @@
 		license: string;
 		lastUpdated: string;
 		tags?: string[];
+		official?: boolean;
 	}
 	
 	let { data } = $props<{ data: { plugins: Plugin[] } }>();
@@ -30,6 +31,7 @@
 	let fuse: Fuse<Plugin> | null = $state(null);
 	let selectedTags = $state<string[]>([]);
 	let availableTags = $state<string[]>([]);
+	let showOfficialOnly = $state(false);
 	
 	onMount(() => {
 		// Sort plugins by last updated
@@ -75,6 +77,11 @@
 	$effect(() => {
 		let filtered = allPlugins;
 
+		// Apply official filter
+		if (showOfficialOnly) {
+			filtered = filtered.filter(plugin => plugin.official === true);
+		}
+
 		// Apply tag filter (OR logic - show plugins matching any selected tag)
 		if (selectedTags.length > 0) {
 			filtered = filtered.filter(plugin =>
@@ -103,6 +110,7 @@
 	function clearFilters() {
 		selectedTags = [];
 		searchQuery = '';
+		showOfficialOnly = false;
 	}
 	
 	function getPreviewUrl(pluginId: string, format: 'png' | 'jpg' = 'png'): string {
@@ -191,31 +199,37 @@
 						</button>
 					{/if}
 				</div>
-				{#if searchQuery || selectedTags.length > 0}
+				{#if searchQuery || selectedTags.length > 0 || showOfficialOnly}
 					<div class="search-results-info">
 						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
-						{#if selectedTags.length > 0 || searchQuery}
-							<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
-						{/if}
+						<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
 					</div>
 				{/if}
 			</div>
 
-			{#if availableTags.length > 0}
-				<div class="tag-filters">
-					{#each availableTags as tag}
-						<button
-							class="tag-chip"
-							class:selected={selectedTags.includes(tag)}
-							onclick={() => toggleTag(tag)}
-						>
-							{tag}
-						</button>
-					{/each}
-				</div>
-			{/if}
+			<div class="tag-filters">
+				<button
+					class="tag-chip official-chip"
+					class:selected={showOfficialOnly}
+					onclick={() => showOfficialOnly = !showOfficialOnly}
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+						<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+					</svg>
+					Official
+				</button>
+				{#each availableTags as tag}
+					<button
+						class="tag-chip"
+						class:selected={selectedTags.includes(tag)}
+						onclick={() => toggleTag(tag)}
+					>
+						{tag}
+					</button>
+				{/each}
+			</div>
 			
-			{#if latestUpdate && !searchQuery && selectedTags.length === 0}
+			{#if latestUpdate && !searchQuery && selectedTags.length === 0 && !showOfficialOnly}
 				<div class="latest-update">
 					<div class="latest-badge">Latest Update</div>
 					<div class="latest-content">
@@ -252,9 +266,9 @@
 			
 				<div class="plugins-section">
 					<h2 class="section-title">
-						{searchQuery || selectedTags.length > 0 ? 'Results' : 'All Plugins'}
+						{searchQuery || selectedTags.length > 0 || showOfficialOnly ? 'Results' : 'All Plugins'}
 					</h2>
-					{#if plugins.length === 0 && (searchQuery || selectedTags.length > 0)}
+					{#if plugins.length === 0 && (searchQuery || selectedTags.length > 0 || showOfficialOnly)}
 						<div class="no-results">
 							<div class="no-results-icon">🔍</div>
 							<h3>No plugins found</h3>
@@ -281,7 +295,16 @@
 									</div>
 								</div>
 								<div class="plugin-info">
-									<h3 class="plugin-name">{plugin.name}</h3>
+									<div class="plugin-name-row">
+										<h3 class="plugin-name">{plugin.name}</h3>
+										{#if plugin.official}
+											<span class="official-badge" title="Official Plugin">
+												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+													<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+												</svg>
+											</span>
+										{/if}
+									</div>
 									<p class="plugin-description">{plugin.description}</p>
 									{#if plugin.tags && plugin.tags.length > 0}
 										<div class="plugin-tags">
@@ -470,7 +493,17 @@
 		border-color: var(--mPrimary);
 		color: var(--mOnPrimary);
 	}
-	
+
+	.official-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+	}
+
+	.official-chip svg {
+		flex-shrink: 0;
+	}
+
 	.no-results {
 		text-align: center;
 		padding: 4rem 2rem;
@@ -748,13 +781,35 @@
 		flex: 1;
 	}
 	
+	.plugin-name-row {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
 	.plugin-name {
 		font-size: 1.25rem;
 		font-weight: 700;
 		color: var(--mOnSurface);
 		letter-spacing: -0.01em;
 	}
-	
+
+	.official-badge {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		color: var(--mPrimary);
+		flex-shrink: 0;
+	}
+
+	.official-badge svg {
+		filter: drop-shadow(0 0 4px rgba(255, 245, 155, 0.4));
+	}
+
+	:global([data-theme='light']) .official-badge svg {
+		filter: drop-shadow(0 0 4px rgba(93, 101, 245, 0.3));
+	}
+
 	.plugin-description {
 		color: var(--mOnSurfaceVariant);
 		line-height: 1.6;
