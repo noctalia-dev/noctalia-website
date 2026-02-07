@@ -4,6 +4,7 @@
 	import Features from '$lib/components/Features.svelte';
 	import Showcase from '$lib/components/Showcase.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import StarHistory from '$lib/components/StarHistory.svelte';
 	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
 
 	let { data } = $props<{ data: { pluginCount: number; releaseCount: number } }>();
@@ -14,6 +15,7 @@
 <Hero />
 <Showcase />
 <Features pluginCount={data.pluginCount} releaseCount={data.releaseCount} />
+<StarHistory />
 <Footer />
 <ScrollToTop />
 
