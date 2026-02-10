@@ -57,9 +57,9 @@
 		},
 		{
 			icon: '🪟',
-			value: '5+',
+			value: '6+',
 			title: 'Compositors Supported',
-			description: 'Niri, Hyprland, Sway, MangoWC, and labwc',
+			description: 'Niri, Hyprland, Sway, Scroll, MangoWC, and Labwc',
 			type: 'stat'
 		},
 		{
