@@ -37,7 +37,7 @@
 		<div class="graph-wrapper" class:visible={contentVisible} bind:this={graphRef}>
 			<div class="graph-glow"></div>
 			<img
-				src="https://noctalia.dev:7777/stars"
+				src="https://api.noctalia.dev/stars"
 				alt="GitHub star history graph for noctalia-shell"
 				class="star-graph"
 				loading="lazy"
