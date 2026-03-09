@@ -15,6 +15,7 @@
 		license: string;
 		lastUpdated: string;
 		tags?: string[];
+		official?: boolean;
 	}
 
 	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
@@ -97,7 +98,17 @@
 			</div>
 			<div class="hero-overlay"></div>
 			<div class="hero-content">
-				<h1 class="hero-title">{data.plugin.name}</h1>
+				<h1 class="hero-title">
+					{data.plugin.name}
+					{#if data.plugin.official}
+						<span class="official-badge" title="Official Noctalia Plugin">
+							<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+								<path d="M9 12l2 2 4-4"></path>
+							</svg>
+						</span>
+					{/if}
+				</h1>
 				<p class="hero-description">{data.plugin.description}</p>
 			</div>
 		</div>
@@ -659,6 +670,20 @@
 
 	:global([data-theme='light']) .github-btn:hover {
 		box-shadow: 0 8px 24px rgba(93, 101, 245, 0.35);
+	}
+
+	/* Official Badge */
+	.official-badge {
+		display: inline-flex;
+		align-items: center;
+		vertical-align: middle;
+		color: var(--mPrimary);
+		filter: drop-shadow(0 0 8px rgba(255, 245, 155, 0.6));
+		margin-left: 0.5rem;
+	}
+
+	:global([data-theme='light']) .official-badge {
+		filter: drop-shadow(0 0 8px rgba(93, 101, 245, 0.5));
 	}
 
 	/* Mobile Responsive */
