@@ -37,7 +37,7 @@
 		<div class="nav-links">
 			<a href="/" class="nav-link" class:active={activePage === 'home'}>Home</a>
 			<a href="/plugins" class="nav-link" class:active={activePage === 'plugins'}>Plugins</a>
-			<a href="/themes" class="nav-link" class:active={activePage === 'themes'}>Themes</a>
+			<a href="/themes" class="nav-link" class:active={activePage === 'themes'}>Palettes</a>
 		</div>
 		<div class="nav-right">
 			<a
@@ -70,7 +70,7 @@
 	<div class="mobile-menu">
 		<a href="/" class="mobile-link" class:active={activePage === 'home'} onclick={closeMobileMenu}>Home</a>
 		<a href="/plugins" class="mobile-link" class:active={activePage === 'plugins'} onclick={closeMobileMenu}>Plugins</a>
-		<a href="/themes" class="mobile-link" class:active={activePage === 'themes'} onclick={closeMobileMenu}>Themes</a>
+		<a href="/themes" class="mobile-link" class:active={activePage === 'themes'} onclick={closeMobileMenu}>Palettes</a>
 		<a href="https://buymeacoffee.com/noctalia" target="_blank" rel="noopener noreferrer" class="mobile-link mobile-donate">❤️ Support Noctalia</a>
 	</div>
 {/if}

@@ -77,8 +77,8 @@ function getSwatches(theme: ThemeItem): string[] {
 <section class="themes-page">
 	<div class="container">
 		<div class="page-header">
-			<h1 class="page-title">Themes</h1>
-			<p class="page-subtitle">Explore color schemes for Noctalia Shell.</p>
+			<h1 class="page-title">Palettes</h1>
+			<p class="page-subtitle">Explore color palettes for Noctalia Shell.</p>
 		</div>
 
 		<div class="search-section">
@@ -90,7 +90,7 @@ function getSwatches(theme: ThemeItem): string[] {
 				<input
 					type="text"
 					class="search-input"
-					placeholder="Search themes by name..."
+					placeholder="Search palettes by name..."
 					bind:value={searchQuery}
 					autocomplete="off"
 				/>
@@ -109,18 +109,18 @@ function getSwatches(theme: ThemeItem): string[] {
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
-					Found {coreThemes.length + communityThemes.length} {coreThemes.length + communityThemes.length === 1 ? 'theme' : 'themes'}
+					Found {coreThemes.length + communityThemes.length} {coreThemes.length + communityThemes.length === 1 ? 'palette' : 'palettes'}
 				</div>
 			{/if}
 		</div>
 
 		{#if coreThemes.length === 0 && communityThemes.length === 0}
-			<div class="empty">No themes found.</div>
+			<div class="empty">No palettes found.</div>
 		{:else}
 			{#if coreThemes.length > 0}
 				<div class="section">
-					<h2 class="section-title">Core Themes</h2>
-					<p class="section-subtitle">Built-in color schemes included with Noctalia.</p>
+					<h2 class="section-title">Core Palettes</h2>
+					<p class="section-subtitle">Built-in palettes included with Noctalia.</p>
 					<div class="themes-grid">
 						{#each coreThemes as theme}
 							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
@@ -140,8 +140,8 @@ function getSwatches(theme: ThemeItem): string[] {
 
 			{#if communityThemes.length > 0}
 				<div class="section">
-					<h2 class="section-title">Community Themes</h2>
-					<p class="section-subtitle">Color schemes created by the community, downloadable within Noctalia.</p>
+					<h2 class="section-title">Community Palettes</h2>
+					<p class="section-subtitle">Palettes created by the community, downloadable within Noctalia.</p>
 					<div class="themes-grid">
 						{#each communityThemes as theme}
 							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
@@ -282,7 +282,7 @@ function getSwatches(theme: ThemeItem): string[] {
 		margin-bottom: 1.5rem;
 	}
 
-	.themes-grid { display:grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap:1.5rem }
+	.themes-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:1.25rem }
 	.theme-card {
 		background: var(--mSurface);
 		border: 1.5px solid var(--mOutline);
@@ -357,6 +357,10 @@ function getSwatches(theme: ThemeItem): string[] {
 	}
 
 	.empty { padding:2rem; text-align:center; color:var(--mOnSurfaceVariant) }
+
+	@media (max-width: 1024px) {
+		.themes-grid { grid-template-columns: repeat(3, 1fr); }
+	}
 
 	@media (max-width: 768px) {
 		.themes-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
