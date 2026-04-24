@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import ThemeToggle from './ThemeToggle.svelte';
 
-	let { activePage }: { activePage?: 'home' | 'plugins' | 'themes' } = $props();
+	let { activePage }: { activePage?: 'home' | 'plugins' | 'themes' | 'blog' } = $props();
 
 	let scrolled = $state(false);
 	let mobileMenuOpen = $state(false);
@@ -36,6 +36,7 @@
 		</a>
 		<div class="nav-links">
 			<a href="/" class="nav-link" class:active={activePage === 'home'}>Home</a>
+			<a href="/blog" class="nav-link" class:active={activePage === 'blog'}>Blog</a>
 			<a href="/plugins" class="nav-link" class:active={activePage === 'plugins'}>Plugins</a>
 			<a href="/themes" class="nav-link" class:active={activePage === 'themes'}>Palettes</a>
 		</div>
@@ -69,6 +70,7 @@
 	<div class="mobile-menu-overlay" onclick={closeMobileMenu} role="presentation"></div>
 	<div class="mobile-menu">
 		<a href="/" class="mobile-link" class:active={activePage === 'home'} onclick={closeMobileMenu}>Home</a>
+		<a href="/blog" class="mobile-link" class:active={activePage === 'blog'} onclick={closeMobileMenu}>Blog</a>
 		<a href="/plugins" class="mobile-link" class:active={activePage === 'plugins'} onclick={closeMobileMenu}>Plugins</a>
 		<a href="/themes" class="mobile-link" class:active={activePage === 'themes'} onclick={closeMobileMenu}>Palettes</a>
 		<a href="https://buymeacoffee.com/noctalia" target="_blank" rel="noopener noreferrer" class="mobile-link mobile-donate">❤️ Support Noctalia</a>
