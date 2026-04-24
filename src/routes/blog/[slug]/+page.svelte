@@ -8,7 +8,8 @@
 	let { data } = $props<{ data: { post: BlogPost } }>();
 
 	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('en-US', {
+		const [year, month, day] = dateString.slice(0, 10).split('-').map(Number);
+		return new Date(year, month - 1, day).toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
@@ -55,12 +56,6 @@
 		min-height: 100vh;
 		padding: 2.5rem 0 4rem;
 		background: linear-gradient(180deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
-	}
-
-	.container {
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 0 2rem;
 	}
 
 	.back-link {
@@ -201,10 +196,6 @@
 	}
 
 	@media (max-width: 768px) {
-		.container {
-			padding: 0 1rem;
-		}
-
 		.post-body {
 			padding: 1.25rem;
 		}

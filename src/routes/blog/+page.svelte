@@ -7,7 +7,8 @@
 	let { data } = $props<{ data: { posts: BlogPost[] } }>();
 
 	function formatDate(dateString: string): string {
-		return new Date(dateString).toLocaleDateString('en-US', {
+		const [year, month, day] = dateString.slice(0, 10).split('-').map(Number);
+		return new Date(year, month - 1, day).toLocaleDateString('en-US', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric'
