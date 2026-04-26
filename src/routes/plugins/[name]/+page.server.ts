@@ -65,6 +65,25 @@ async function fetchPlugins() {
 	}
 }
 
+function rewriteRelativeUrls(content: string, pluginId: string): string {
+	const rawBase = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${pluginId}/`;
+	const githubBase = `https://github.com/noctalia-dev/noctalia-plugins/blob/main/${pluginId}/`;
+
+	// Rewrite relative image URLs: ![alt](path) → absolute raw URL
+	let result = content.replace(
+		/!\[([^\]]*)\]\((?!https?:\/\/)(?!\/)([^)]+)\)/g,
+		(_, alt, path) => `![${alt}](${rawBase}${path})`
+	);
+
+	// Rewrite relative links: [text](path) → absolute GitHub URL (skip anchors)
+	result = result.replace(
+		/(?<!!)\[([^\]]*)\]\((?!https?:\/\/)(?!\/)(?!#)([^)]+)\)/g,
+		(_, text, path) => `[${text}](${githubBase}${path})`
+	);
+
+	return result;
+}
+
 async function fetchReadme(plugin: any): Promise<string | null> {
 	const now = Date.now();
 	const cached = readmeCache.get(plugin.id);
@@ -81,7 +100,8 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 			readmeCache.set(plugin.id, { content: null, timestamp: now });
 			return null;
 		}
-		const content = await response.text();
+		const raw = await response.text();
+		const content = rewriteRelativeUrls(raw, plugin.id);
 		readmeCache.set(plugin.id, { content, timestamp: now });
 		return content;
 	} catch (err) {
