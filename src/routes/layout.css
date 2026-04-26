@@ -280,20 +280,18 @@ html[data-theme='light'] {
 		}
 	}
 
-	/* Article width follows viewport and a readable measure (ch), not a fixed rem cap */
 	.blog-post-shell {
 		box-sizing: border-box;
 		margin-left: auto;
 		margin-right: auto;
 		width: 100%;
-		max-width: min(72ch, calc(100vw - 2rem));
+		max-width: 56rem;
 		padding-left: 1rem;
 		padding-right: 1rem;
 	}
 
 	@media (min-width: 640px) {
 		.blog-post-shell {
-			max-width: min(72ch, calc(100vw - 2.5rem));
 			padding-left: 1.25rem;
 			padding-right: 1.25rem;
 		}
