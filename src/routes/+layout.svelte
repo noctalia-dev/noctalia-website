@@ -62,5 +62,5 @@
 	<div class="ambient-tint fixed inset-0 z-0" aria-hidden="true"></div>
 	<DotGlowCanvas />
 	<div class="film-grain" aria-hidden="true"></div>
-	<div class="relative z-[1]">{@render children()}</div>
+	<div class="relative z-[1] flex min-h-screen flex-col">{@render children()}</div>
 </div>
