@@ -2,6 +2,7 @@
 	"name": "noctalia-site",
 	"private": true,
 	"version": "0.0.1",
+	"packageManager": "npm@10.9.4",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
