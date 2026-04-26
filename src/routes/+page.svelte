@@ -189,7 +189,7 @@
 				<Reveal delay={90}>
 					<SpotlightSurface
 						tag="div"
-						class="card-surface mx-auto mt-10 max-w-4xl overflow-hidden p-0 ring-1 ring-inset ring-white/[0.06]"
+						class="card-surface mx-auto mt-10 overflow-hidden p-0 ring-1 ring-inset ring-white/[0.06]"
 					>
 						{#snippet children()}
 							<video
