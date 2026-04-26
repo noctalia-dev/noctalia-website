@@ -193,12 +193,18 @@
 			}
 		};
 
+		let isLight = document.documentElement.getAttribute('data-theme') === 'light';
+		const themeObserver = new MutationObserver(() => {
+			isLight = document.documentElement.getAttribute('data-theme') === 'light';
+			palette = readPalette();
+		});
+		themeObserver.observe(document.documentElement, { attributeFilter: ['data-theme'] });
+
 		const draw = () => {
-			const light = document.documentElement.getAttribute('data-theme') === 'light';
-			const lineColor = light ? palette.lightLine : palette.line;
+			const lineColor = isLight ? palette.lightLine : palette.line;
 
 			ctx.clearRect(0, 0, width, height);
-			ctx.globalCompositeOperation = light ? 'source-over' : 'lighter';
+			ctx.globalCompositeOperation = isLight ? 'source-over' : 'lighter';
 			ctx.lineCap = 'round';
 
 			for (let i = 0; i < particles.length; i++) {
@@ -231,7 +237,7 @@
 								)
 							: 0;
 					const alpha =
-						(light ? 0.18 : 0.31) * proximity * Math.min(a.weight, b.weight) + mouseGlow * 0.1;
+						(isLight ? 0.18 : 0.31) * proximity * Math.min(a.weight, b.weight) + mouseGlow * 0.1;
 
 					ctx.strokeStyle = rgba(lineColor, alpha);
 					ctx.lineWidth = 0.42 + proximity * 0.72 + mouseGlow * 0.12;
@@ -247,22 +253,33 @@
 					? Math.max(0, 1 - Math.hypot(p.x - mouseX, p.y - mouseY) / MOUSE_RADIUS)
 					: 0;
 				const color = mouseGlow > 0.05 ? palette.highlight : palette.node;
-				const alpha = ((light ? 0.3 : 0.46) + mouseGlow * 0.24) * p.weight;
+				const alpha = ((isLight ? 0.3 : 0.46) + mouseGlow * 0.24) * p.weight;
+				const radius = p.r + 0.3 + mouseGlow * 1.25;
 
-				ctx.shadowColor = rgba(color, 0.12 + mouseGlow * 0.18);
-				ctx.shadowBlur = 3 + mouseGlow * 8;
+				// Cheap soft glow: one larger semi-transparent circle instead of shadowBlur
+				if (mouseGlow > 0.05) {
+					ctx.fillStyle = rgba(color, (0.07 + mouseGlow * 0.09) * p.weight);
+					ctx.beginPath();
+					ctx.arc(p.x, p.y, radius * 2, 0, Math.PI * 2);
+					ctx.fill();
+				}
+
 				ctx.fillStyle = rgba(color, alpha);
 				ctx.beginPath();
-				ctx.arc(p.x, p.y, p.r + 0.3 + mouseGlow * 1.25, 0, Math.PI * 2);
+				ctx.arc(p.x, p.y, radius, 0, Math.PI * 2);
 				ctx.fill();
-				ctx.shadowBlur = 0;
 			}
 		};
 
-		const tick = () => {
+		const FRAME_MS = 1000 / 30;
+		let lastFrame = 0;
+
+		const tick = (now: number) => {
 			rafId = requestAnimationFrame(tick);
 			if (document.hidden) return;
-			update();
+			update(); // physics always runs at full RAF speed for snappy mouse response
+			if (now - lastFrame < FRAME_MS) return;
+			lastFrame = now;
 			draw();
 		};
 
@@ -289,6 +306,7 @@
 
 		return () => {
 			cancelAnimationFrame(rafId);
+			themeObserver.disconnect();
 			window.removeEventListener('pointermove', onPointerMove);
 			window.removeEventListener('pointerleave', onPointerLeave);
 			window.removeEventListener('resize', onResize);
