@@ -2,7 +2,6 @@
 	import '@fontsource-variable/inter/wght.css';
 	import '@fontsource-variable/jetbrains-mono/wght.css';
 	import './layout.css';
-	import favicon from '$lib/assets/favicon.svg';
 	import { onMount } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
@@ -37,7 +36,7 @@
 </script>
 
 <svelte:head>
-	<link rel="icon" href={favicon} />
+	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 	<link rel="canonical" href={canonicalUrl} />
 	<meta name="description" content={DEFAULT_DESCRIPTION} />
 	<meta name="theme-color" content="#070722" />
