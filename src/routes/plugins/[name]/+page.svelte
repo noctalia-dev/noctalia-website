@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
+	import SiteHeader from '$lib/site-header.svelte';
+	import SiteFooter from '$lib/site-footer.svelte';
+	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
 
 	interface Plugin {
@@ -57,26 +57,10 @@
 	}
 </script>
 
-<nav class="nav fade-in">
-	<div class="nav-container">
-		<a href="/" class="nav-brand">
-			<img src="https://assets.noctalia.dev/noctalia-logo.svg" alt="Noctalia" class="nav-logo" />
-			<div class="nav-brand-text">
-				<span class="logo">Noctalia</span>
-				<span class="tagline">quiet by design</span>
-			</div>
-		</a>
-		<div class="nav-links">
-			<a href="/" class="nav-link">Home</a>
-			<a href="/plugins" class="nav-link active">Plugins</a>
-			<a href="/themes" class="nav-link">Themes</a>
-		</div>
-		<ThemeToggle />
-	</div>
-</nav>
+<SiteHeader />
 
-<section class="plugin-page">
-	<div class="container">
+<main class="plugin-page site-main--article">
+	<div class="plugin-inner">
 		<a href="/plugins" class="back-btn">
 			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 				<path d="M19 12H5"></path>
@@ -185,177 +169,31 @@
 			</a>
 		</div>
 	</div>
-</section>
+</main>
 
-<Footer />
+<SiteFooter />
 <ScrollToTop />
 
 <style>
-	.nav {
-		position: sticky;
-		top: 0;
-		z-index: 100;
-		border-bottom: 1px solid var(--mOutline);
-		backdrop-filter: blur(20px) saturate(180%);
-		background: rgba(var(--mSurface-rgb, 7, 7, 34), 0.7);
-		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
-		transition: all 0.3s ease;
-	}
-
-	:global([data-theme='light']) .nav {
-		background: rgba(230, 232, 250, 0.85);
-		box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
-	}
-
-	.nav-container {
-		max-width: 1200px;
-		margin: 0 auto;
-		padding: 1rem 2rem;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 2rem;
-	}
-
-	.nav-brand {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-		text-decoration: none;
-	}
-
-	.nav-logo {
-		width: 40px;
-		height: 40px;
-		transition: transform 0.3s ease;
-		filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
-	}
-
-	.nav-logo:hover {
-		transform: scale(1.1) rotate(5deg);
-	}
-
-	.nav-brand-text {
-		display: flex;
-		flex-direction: column;
-		gap: 0.125rem;
-	}
-
-	.logo {
-		font-size: 1.5rem;
-		font-weight: 700;
-		background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		letter-spacing: -0.02em;
-		line-height: 1;
-	}
-
-	.tagline {
-		font-size: 0.75rem;
-		color: var(--mOnSurfaceVariant);
-		font-weight: 300;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		opacity: 0.8;
-	}
-
-	:global([data-theme='light']) .tagline {
-		color: var(--mOnSurface);
-		opacity: 0.9;
-		font-weight: 500;
-	}
-
-	.nav-links {
-		display: flex;
-		gap: 1.5rem;
-		align-items: center;
-		flex: 1;
-		justify-content: center;
-	}
-
-	.nav-link {
-		color: var(--mOnSurfaceVariant);
-		text-decoration: none;
-		font-weight: 500;
-		padding: 0.5rem 1rem;
-		border-radius: 0.5rem;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		position: relative;
-		overflow: hidden;
-	}
-
-	:global([data-theme='light']) .nav-link:not(:hover):not(.active) {
-		color: var(--mOnSurface);
-		opacity: 0.9;
-		font-weight: 600;
-	}
-
-	.nav-link::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: var(--mPrimary);
-		opacity: 0;
-		transition: opacity 0.3s ease;
-		z-index: 0;
-	}
-
-	.nav-link:hover {
-		color: var(--mPrimary);
-		background: rgba(255, 245, 155, 0.15);
-		transform: translateY(-2px);
-	}
-
-	:global([data-theme='light']) .nav-link:hover {
-		color: var(--mPrimary);
-		background: rgba(93, 101, 245, 0.1);
-	}
-
-	.nav-link:hover::before {
-		opacity: 0.1;
-	}
-
-	.nav-link.active {
-		color: var(--mPrimary);
-		background: rgba(255, 245, 155, 0.15);
-		box-shadow: 0 2px 8px rgba(255, 245, 155, 0.2);
-	}
-
-	:global([data-theme='light']) .nav-link.active {
-		color: var(--mPrimary);
-		background: rgba(93, 101, 245, 0.1);
-		box-shadow: 0 2px 8px rgba(93, 101, 245, 0.15);
-	}
-
-	.nav-link.active::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 1rem;
-		right: 1rem;
-		height: 2px;
-		background: linear-gradient(90deg, var(--mPrimary), var(--mPrimary));
-		border-radius: 2px;
-		box-shadow: 0 0 8px rgba(255, 245, 155, 0.5);
-	}
-
-	:global([data-theme='light']) .nav-link.active::after {
-		background: linear-gradient(90deg, var(--mPrimary), var(--mPrimary));
-		box-shadow: 0 0 8px rgba(93, 101, 245, 0.4);
-	}
-
 	.plugin-page {
-		min-height: 100vh;
-		padding: 2rem 0 4rem;
-		background: linear-gradient(180deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
+		min-height: 70vh;
 	}
 
-	.container {
-		max-width: 900px;
-		margin: 0 auto;
-		padding: 0 2rem;
+	.plugin-inner {
+		box-sizing: border-box;
+		max-width: 56rem;
+		margin-left: auto;
+		margin-right: auto;
+		width: 100%;
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+
+	@media (min-width: 640px) {
+		.plugin-inner {
+			padding-left: 1.25rem;
+			padding-right: 1.25rem;
+		}
 	}
 
 	.back-btn {
@@ -688,21 +526,6 @@
 
 	/* Mobile Responsive */
 	@media (max-width: 768px) {
-		.nav-container {
-			padding: 1rem;
-			flex-wrap: wrap;
-		}
-
-		.nav-links {
-			order: 3;
-			width: 100%;
-			justify-content: flex-start;
-		}
-
-		.container {
-			padding: 0 1rem;
-		}
-
 		.hero-section {
 			aspect-ratio: 4 / 3;
 		}

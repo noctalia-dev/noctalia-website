@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { DOCS_BASE_URL, DOCS_INSTALLATION_URL } from '$lib/site-constants';
 	
 	let mounted = $state(false);
 	
@@ -32,11 +33,11 @@
 			</h1>
 			
 			<p class="hero-description">
-				Built on Quickshell with a warm lavender aesthetic that you can easily customize to match your vibe.
+				Built on a lean, modern stack with a calm, distinctive look you can tune to match your setup.
 			</p>
 			
 			<div class="hero-actions">
-				<a href="https://docs.noctalia.dev" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+				<a href={DOCS_BASE_URL} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
 					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
 						<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
 					</svg>
@@ -44,7 +45,7 @@
 				</a>
 			</div>
 			<p class="hero-hint">
-				To install Noctalia, read the <a href="https://docs.noctalia.dev/getting-started/installation/" target="_blank" rel="noopener noreferrer">installation guide</a>
+				To install Noctalia, read the <a href={DOCS_INSTALLATION_URL} target="_blank" rel="noopener noreferrer">installation guide</a>
 			</p>
 		</div>
 	</div>

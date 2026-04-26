@@ -39,8 +39,8 @@
 	const features = $derived([
 		{
 			icon: '⚡',
-			title: 'Built on Quickshell',
-			description: 'High performance foundation for a smooth experience',
+			title: 'Built for Wayland',
+			description: 'A modern shell for compositors - fast, focused, and ready for your workflow.',
 			type: 'feature'
 		},
 		{

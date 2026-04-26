@@ -1,0 +1,42 @@
+<script lang="ts">
+	import { onMount } from 'svelte';
+
+	let visible = $state(false);
+
+	onMount(() => {
+		const onScroll = () => {
+			visible = window.scrollY > 400;
+		};
+		window.addEventListener('scroll', onScroll, { passive: true });
+		onScroll();
+		return () => window.removeEventListener('scroll', onScroll);
+	});
+
+	function scrollToTop() {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+</script>
+
+<button
+	type="button"
+	class="fixed bottom-6 right-6 z-[60] flex h-11 w-11 items-center justify-center rounded-full border border-accent/35 bg-accent text-on-accent shadow-card transition duration-300 hover:brightness-105 active:brightness-95 md:bottom-8 md:right-8 {visible
+		? 'pointer-events-auto translate-y-0 opacity-100'
+		: 'pointer-events-none translate-y-3 opacity-0'}"
+	onclick={scrollToTop}
+	aria-label="Scroll to top"
+>
+	<svg
+		xmlns="http://www.w3.org/2000/svg"
+		width="20"
+		height="20"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="2"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		aria-hidden="true"
+	>
+		<path d="m18 15-6-6-6 6"></path>
+	</svg>
+</button>

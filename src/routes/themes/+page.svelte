@@ -1,8 +1,8 @@
 <script lang="ts">
 import { onMount } from 'svelte';
-import Navbar from '$lib/components/Navbar.svelte';
-import Footer from '$lib/components/Footer.svelte';
-import ScrollToTop from '$lib/components/ScrollToTop.svelte';
+import SiteHeader from '$lib/site-header.svelte';
+import SiteFooter from '$lib/site-footer.svelte';
+import ScrollToTop from '$lib/scroll-to-top.svelte';
 import Fuse from 'fuse.js';
 
 interface ThemeItem {
@@ -72,13 +72,13 @@ function getSwatches(theme: ThemeItem): string[] {
 
 </script>
 
-<Navbar activePage="themes" />
+<SiteHeader />
 
-<section class="themes-page">
-	<div class="container">
+<main class="themes-page site-main">
+	<div class="site-shell">
 		<div class="page-header">
-			<h1 class="page-title">Palettes</h1>
-			<p class="page-subtitle">Explore color palettes for Noctalia Shell.</p>
+			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Palettes</h1>
+			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Explore color palettes for Noctalia Shell.</p>
 		</div>
 
 		<div class="search-section">
@@ -160,33 +160,16 @@ function getSwatches(theme: ThemeItem): string[] {
 			{/if}
 		{/if}
 	</div>
-</section>
+</main>
 
-<Footer />
+<SiteFooter />
 <ScrollToTop />
 
 <style>
 	/* Page-specific styles */
-		.container { max-width:1200px; margin:2rem auto; padding:0 2rem }
 		.page-header {
 			text-align: center;
-			margin-bottom: 4rem;
-		}
-
-		.page-title {
-			font-size: 3.5rem;
-			font-weight: 700;
-			background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			background-clip: text;
-			letter-spacing: -0.02em;
-			margin-bottom: 1rem;
-		}
-
-		.page-subtitle {
-			font-size: 1.25rem;
-			color: var(--mOnSurfaceVariant);
+			margin-bottom: 3rem;
 		}
 
 		.search-section {

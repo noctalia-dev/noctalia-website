@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Navbar from '$lib/components/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
+	import SiteHeader from '$lib/site-header.svelte';
+	import SiteFooter from '$lib/site-footer.svelte';
+	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
 	import type { BlogPost } from '$lib/blog';
 
@@ -20,193 +20,49 @@
 	}
 </script>
 
-<Navbar activePage="blog" />
+<SiteHeader />
 
-<section class="post-page">
-	<div class="container">
-		<a href="/blog" class="back-link">Back to blog</a>
+<main class="site-main--article">
+	<div class="blog-post-shell">
+		<a
+			href="/blog"
+			class="mb-6 inline-flex items-center gap-2 rounded-md border border-border/55 bg-surface-2/50 px-3 py-2 text-sm font-medium text-fg-dim outline-none transition hover:border-accent/35 hover:text-fg focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
+		>
+			← Back to blog
+		</a>
 
-		<header class="post-header">
-			<h1>{data.post.title}</h1>
-			<p>{data.post.description}</p>
-			<div class="post-meta">
-				<span>{formatDate(data.post.publishedAt)}</span>
-				<span>by {data.post.author}</span>
-			</div>
-		</header>
+		<div class="card-surface overflow-hidden">
+			<header class="border-b border-border/35 px-6 py-8 md:px-10 md:py-10">
+				<h1 class="font-sans text-3xl font-semibold tracking-tight text-fg md:text-4xl">
+					{data.post.title}
+				</h1>
+				<p class="mt-3 text-lg text-fg-dim">{data.post.description}</p>
+				<div class="mt-4 flex flex-wrap gap-x-4 gap-y-1 text-sm text-fg-dim">
+					<span>{formatDate(data.post.publishedAt)}</span>
+					<span>·</span>
+					<span>by {data.post.author}</span>
+				</div>
+				{#if data.post.tags.length}
+					<div class="mt-4 flex flex-wrap gap-2">
+						{#each data.post.tags as tag}
+							<span
+								class="rounded-full border border-accent/30 bg-accent/10 px-2.5 py-0.5 text-xs font-medium text-accent"
+							>
+								{tag}
+							</span>
+						{/each}
+					</div>
+				{/if}
+			</header>
 
-		<article class="post-body">
-			{@html renderMarkdown(data.post.content)}
-		</article>
-
-		<div class="post-tags">
-			{#each data.post.tags as tag}
-				<span class="tag">{tag}</span>
-			{/each}
+			<article
+				class="prose prose-invert prose-headings:font-sans prose-headings:tracking-tight prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-fg prose-code:rounded prose-code:bg-void-deep/90 prose-code:px-1 prose-code:py-0.5 prose-code:text-accent-2 prose-pre:border prose-pre:border-border/50 max-w-none px-6 py-8 text-fg-dim prose-headings:text-fg md:px-10 md:py-10"
+			>
+				{@html renderMarkdown(data.post.content)}
+			</article>
 		</div>
 	</div>
-</section>
+</main>
 
-<Footer />
+<SiteFooter />
 <ScrollToTop />
-
-<style>
-	.post-page {
-		min-height: 100vh;
-		padding: 2.5rem 0 4rem;
-		background: linear-gradient(180deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
-	}
-
-	.container {
-		max-width: 980px;
-		margin: 0 auto;
-		padding: 0 2rem;
-	}
-
-	.back-link {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.35rem;
-		margin-bottom: 1.25rem;
-		text-decoration: none;
-		color: var(--mPrimary);
-		padding: 0.3rem 0.55rem;
-		border-radius: 0.5rem;
-		transition: background 0.2s ease;
-	}
-
-	.back-link:hover {
-		background: color-mix(in srgb, var(--mPrimary) 15%, transparent);
-	}
-
-	.post-header {
-		margin-bottom: 1.5rem;
-	}
-
-	.post-header h1 {
-		font-size: clamp(2rem, 4vw, 3rem);
-		line-height: 1.2;
-		letter-spacing: -0.03em;
-		margin-bottom: 0.65rem;
-		color: var(--mOnSurface);
-	}
-
-	.post-header p {
-		color: var(--mOnSurfaceVariant);
-		font-size: 1.1rem;
-		line-height: 1.6;
-	}
-
-	.post-meta {
-		display: flex;
-		gap: 1rem;
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.9rem;
-		margin-top: 1rem;
-	}
-
-	.post-tags {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.45rem;
-		margin-top: 1rem;
-	}
-
-	.tag {
-		font-size: 0.78rem;
-		padding: 0.2rem 0.6rem;
-		border-radius: 999px;
-		border: 1px solid var(--mOutline);
-		background: color-mix(in srgb, var(--mPrimary) 12%, transparent);
-		color: var(--mPrimary);
-	}
-
-	.post-body {
-		background: linear-gradient(170deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
-		border: 1px solid var(--mOutline);
-		border-radius: 1rem;
-		padding: 2rem;
-		line-height: 1.8;
-		color: var(--mOnSurface);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
-	}
-
-	.post-body :global(h1),
-	.post-body :global(h2),
-	.post-body :global(h3) {
-		margin: 1.7rem 0 0.65rem;
-		line-height: 1.3;
-		letter-spacing: -0.02em;
-		color: var(--mOnSurface);
-	}
-
-	.post-body :global(h1) {
-		font-size: 2rem;
-	}
-
-	.post-body :global(h2) {
-		font-size: 1.55rem;
-	}
-
-	.post-body :global(h3) {
-		font-size: 1.25rem;
-	}
-
-	.post-body :global(p),
-	.post-body :global(ul),
-	.post-body :global(ol) {
-		margin-bottom: 1rem;
-	}
-
-	.post-body :global(ul),
-	.post-body :global(ol) {
-		padding-left: 1.3rem;
-	}
-
-	.post-body :global(li) {
-		margin-bottom: 0.45rem;
-	}
-
-	.post-body :global(strong) {
-		color: var(--mOnSurface);
-	}
-
-	.post-body :global(hr) {
-		border: 0;
-		height: 1px;
-		background: linear-gradient(90deg, transparent, var(--mOutline), transparent);
-		margin: 2rem 0;
-	}
-
-	.post-body :global(a) {
-		color: var(--mPrimary);
-		text-underline-offset: 2px;
-	}
-
-	.post-body :global(img) {
-		display: block;
-		width: 100%;
-		max-width: 100%;
-		height: auto;
-		margin: 1.25rem 0;
-		border-radius: 0.75rem;
-	}
-
-	.post-body :global(blockquote) {
-		margin: 1.2rem 0;
-		padding: 0.7rem 1rem;
-		border-left: 3px solid var(--mPrimary);
-		background: color-mix(in srgb, var(--mPrimary) 8%, transparent);
-		border-radius: 0 0.5rem 0.5rem 0;
-	}
-
-	@media (max-width: 768px) {
-		.container {
-			padding: 0 1rem;
-		}
-
-		.post-body {
-			padding: 1.25rem;
-		}
-	}
-</style>

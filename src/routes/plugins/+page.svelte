@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
-	import Navbar from '$lib/components/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import ScrollToTop from '$lib/components/ScrollToTop.svelte';
+	import SiteHeader from '$lib/site-header.svelte';
+	import SiteFooter from '$lib/site-footer.svelte';
+	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
 	
 	interface Plugin {
@@ -154,13 +154,13 @@
 	}
 </script>
 
-<Navbar activePage="plugins" />
+<SiteHeader />
 
-<section class="plugins-page">
-	<div class="container">
+<main class="plugins-page site-main">
+	<div class="site-shell w-full">
 		<div class="page-header">
-			<h1 class="page-title">Plugins</h1>
-			<p class="page-subtitle">Extend Noctalia with community plugins</p>
+			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Plugins</h1>
+			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Extend Noctalia with community plugins</p>
 		</div>
 		
 		{#if loading}
@@ -328,37 +328,19 @@
 				</div>
 		{/if}
 	</div>
-</section>
+</main>
 
-<Footer />
+<SiteFooter />
 <ScrollToTop />
 
 <style>
 	.plugins-page {
-		min-height: 100vh;
-		padding: 4rem 0;
-		background: linear-gradient(180deg, var(--mSurface) 0%, var(--mSurfaceVariant) 100%);
+		min-height: 60vh;
 	}
-	
+
 	.page-header {
 		text-align: center;
-		margin-bottom: 4rem;
-	}
-	
-	.page-title {
-		font-size: 3.5rem;
-		font-weight: 700;
-		background: linear-gradient(135deg, var(--mPrimary), var(--mPrimary));
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
-		letter-spacing: -0.02em;
-		margin-bottom: 1rem;
-	}
-	
-	.page-subtitle {
-		font-size: 1.25rem;
-		color: var(--mOnSurfaceVariant);
+		margin-bottom: 3rem;
 	}
 	
 	.search-section {
@@ -472,26 +454,40 @@
 	.tag-chip {
 		padding: 0.5rem 1rem;
 		border-radius: 2rem;
-		border: 1px solid var(--mOutline);
-		background: transparent;
+		border: 1px solid rgb(33 33 95 / 0.75);
+		background: rgb(17 17 45 / 0.88);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
 		color: var(--mOnSurfaceVariant);
 		font-size: 0.875rem;
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition:
+			background 0.2s ease,
+			border-color 0.2s ease,
+			color 0.2s ease,
+			box-shadow 0.2s ease;
 		flex: 1 1 auto;
 		text-align: center;
 		min-width: fit-content;
+		box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
 	}
 
 	.tag-chip:hover {
-		border-color: var(--mPrimary);
+		border-color: rgb(255 245 155 / 0.35);
+		background: rgb(21 21 56 / 0.92);
 		color: var(--mPrimary);
+		box-shadow:
+			inset 0 1px 0 0 rgb(255 255 255 / 0.06),
+			0 0 20px -8px rgb(255 245 155 / 0.15);
 	}
 
 	.tag-chip.selected {
 		background: var(--mPrimary);
-		border-color: var(--mPrimary);
+		border-color: rgb(255 245 155 / 0.55);
 		color: var(--mOnPrimary);
+		box-shadow:
+			0 8px 24px -10px rgb(255 245 155 / 0.35),
+			inset 0 1px 0 0 rgb(255 255 255 / 0.25);
 	}
 
 	.official-chip {
@@ -904,23 +900,7 @@
 		box-shadow: 0 8px 30px rgba(93, 101, 245, 0.35);
 	}
 	
-	.btn-secondary {
-		background: transparent;
-		color: var(--mPrimary);
-		border: 2px solid var(--mOutline);
-	}
-	
-	.btn-secondary:hover {
-		background: var(--mPrimary);
-		color: var(--mOnPrimary);
-		border-color: var(--mPrimary);
-	}
-	
 	@media (max-width: 768px) {
-		.page-title {
-			font-size: 2.5rem;
-		}
-
 		.latest-content {
 			grid-template-columns: 1fr;
 		}
