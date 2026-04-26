@@ -6,7 +6,7 @@
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { applyTheme, getTheme } from '$lib/theme';
-	import DotGlowCanvas from '$lib/dot-glow-canvas.svelte';
+	import PlexusCanvas from '$lib/plexus-canvas.svelte';
 	import { DEFAULT_DESCRIPTION, DEFAULT_OG_IMAGE, SITE_NAME, SITE_ORIGIN } from '$lib/site-constants';
 
 	let { children } = $props();
@@ -59,7 +59,7 @@
 
 <div class="page-canvas relative min-h-screen">
 	<div class="ambient-tint fixed inset-0 z-0" aria-hidden="true"></div>
-	<DotGlowCanvas />
+	<PlexusCanvas />
 	<div class="film-grain" aria-hidden="true"></div>
 	<div class="relative z-[1] flex min-h-screen flex-col">{@render children()}</div>
 </div>

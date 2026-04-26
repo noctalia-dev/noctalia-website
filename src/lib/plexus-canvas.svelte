@@ -25,9 +25,9 @@
 	const PARTICLE_COUNT = 100;
 	const LINK_DISTANCE = 170;
 	const MOUSE_RADIUS = 165;
-	const MOUSE_FORCE = 0.012;
-	const MAX_SPEED = 0.38;
-	const HOME_PULL = 0.00028;
+	const MOUSE_FORCE = 0.006;
+	const MAX_SPEED = 0.19;
+	const HOME_PULL = 0.00014;
 	const MAX_LINKS_PER_PARTICLE = 4;
 
 	function parseCssColor(value: string): RGB {
