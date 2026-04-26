@@ -57,7 +57,7 @@
 			</header>
 
 			<article
-				class="prose prose-invert prose-headings:font-sans prose-headings:tracking-tight prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-fg prose-code:rounded prose-code:bg-void-deep/90 prose-code:px-1 prose-code:py-0.5 prose-code:text-accent-2 prose-pre:border prose-pre:border-border/50 prose-img:my-5 prose-img:block prose-img:w-full prose-img:max-w-full prose-img:rounded-xl max-w-none px-6 py-8 text-fg-dim prose-headings:text-fg md:px-10 md:py-10"
+				class="prose prose-invert prose-headings:font-sans prose-headings:tracking-tight prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-fg prose-code:rounded prose-code:bg-void-deep/90 prose-code:px-1 prose-code:py-0.5 prose-code:text-accent-2 prose-pre:border prose-pre:border-border/50 prose-img:my-5 prose-img:w-full prose-img:max-w-full prose-img:rounded-xl max-w-none px-6 py-8 text-fg-dim prose-headings:text-fg md:px-10 md:py-10"
 			>
 				{@html renderMarkdown(data.post.content)}
 			</article>

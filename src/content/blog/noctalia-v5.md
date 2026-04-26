@@ -43,8 +43,8 @@ A rewrite isn't free, and we want to be upfront about what this means:
 1. **Old plugins won't work.** If you built something with QML, it will need to be ported. We know that stings, but the new plugin system will be worth the effort. While the workflow will be different, the performance gains will more than make up for it.
 2. **Feature adjustments.** Some UI elements, like the attached panel on the bar, are being re-evaluated. If we decide to drop or change a feature, it’s strictly to ensure peak performance and stability.
 
-### What about Noctalia v4?
-With development shifting to v5, Noctalia v4 is entering maintenance mode and its codebase will be frozen. We want to be honest with you: we don't have the staff or the bandwidth to actively maintain two versions in parallel, and there will most likely be no new releases of v4 going forward. While we'll do our best to address issues where we can, don't expect the same level of support as before. The path forward is v5.
+### What about Noctalia V4?
+With development shifting to v5, Noctalia V4 is entering maintenance mode and its codebase will be frozen. We want to be honest with you: we don't have the staff or the bandwidth to actively maintain two versions in parallel, and there will most likely be no new releases of V4 going forward. While we'll do our best to address issues where we can, don't expect the same level of support as before. The path forward is v5.
 
 ### What comes next
 
