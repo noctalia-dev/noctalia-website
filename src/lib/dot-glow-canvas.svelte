@@ -23,11 +23,12 @@
 	type RGB = { r: number; g: number; b: number };
 
 	const PARTICLE_COUNT = 100;
-	const LINK_DISTANCE = 205;
+	const LINK_DISTANCE = 170;
 	const MOUSE_RADIUS = 165;
-	const MOUSE_FORCE = 0.024;
-	const MAX_SPEED = 0.2;
-	const HOME_PULL = 0.0012;
+	const MOUSE_FORCE = 0.012;
+	const MAX_SPEED = 0.38;
+	const HOME_PULL = 0.00028;
+	const MAX_LINKS_PER_PARTICLE = 4;
 
 	function parseCssColor(value: string): RGB {
 		const s = value.trim();
@@ -120,7 +121,7 @@
 			const x = cluster.x + Math.cos(angle) * cluster.rx * radius + (rand(i + 3) - 0.5) * 30;
 			const y = cluster.y + Math.sin(angle) * cluster.ry * radius + (rand(i + 4) - 0.5) * 30;
 			const speedAngle = rand(i + 5) * Math.PI * 2;
-			const speed = 0.022 + rand(i + 6) * 0.055;
+			const speed = 0.08 + rand(i + 6) * 0.13;
 			const centerDistance = Math.hypot(x - width * 0.5, y - height * 0.5);
 			const edgeWeight = 0.66 + Math.min(1, centerDistance / (Math.min(width, height) * 0.45)) * 0.34;
 			return {
@@ -169,8 +170,8 @@
 
 				p.vx += (p.homeX - p.x) * HOME_PULL;
 				p.vy += (p.homeY - p.y) * HOME_PULL;
-				p.vx *= 0.992;
-				p.vy *= 0.992;
+				p.vx *= 0.998;
+				p.vy *= 0.998;
 
 				const speed = Math.hypot(p.vx, p.vy);
 				if (speed > MAX_SPEED) {
@@ -202,13 +203,20 @@
 
 			for (let i = 0; i < particles.length; i++) {
 				const a = particles[i]!;
+				const links: { particle: Particle; distance: number }[] = [];
+
 				for (let j = i + 1; j < particles.length; j++) {
 					const b = particles[j]!;
 					const dx = b.x - a.x;
 					const dy = b.y - a.y;
 					const dist = Math.hypot(dx, dy);
 					if (dist >= LINK_DISTANCE) continue;
+					links.push({ particle: b, distance: dist });
+				}
 
+				links.sort((left, right) => left.distance - right.distance);
+
+				for (const { particle: b, distance: dist } of links.slice(0, MAX_LINKS_PER_PARTICLE)) {
 					const proximity = 1 - dist / LINK_DISTANCE;
 					const mouseGlow =
 						mouseActive
@@ -223,24 +231,14 @@
 								)
 							: 0;
 					const alpha =
-						(light ? 0.24 : 0.42) * proximity * Math.min(a.weight, b.weight) + mouseGlow * 0.28;
-
-					ctx.strokeStyle = rgba(lineColor, alpha * 0.36);
-					ctx.lineWidth = 2.4 + proximity * 1.8;
-					ctx.beginPath();
-					ctx.moveTo(a.x, a.y);
-					ctx.lineTo(b.x, b.y);
-					ctx.stroke();
+						(light ? 0.18 : 0.31) * proximity * Math.min(a.weight, b.weight) + mouseGlow * 0.1;
 
 					ctx.strokeStyle = rgba(lineColor, alpha);
-					ctx.lineWidth = 0.9 + proximity * 1.25 + mouseGlow * 0.45;
-					ctx.shadowColor = rgba(lineColor, 0.08 + mouseGlow * 0.34);
-					ctx.shadowBlur = 3 + mouseGlow * 12;
+					ctx.lineWidth = 0.42 + proximity * 0.72 + mouseGlow * 0.12;
 					ctx.beginPath();
 					ctx.moveTo(a.x, a.y);
 					ctx.lineTo(b.x, b.y);
 					ctx.stroke();
-					ctx.shadowBlur = 0;
 				}
 			}
 
@@ -249,10 +247,10 @@
 					? Math.max(0, 1 - Math.hypot(p.x - mouseX, p.y - mouseY) / MOUSE_RADIUS)
 					: 0;
 				const color = mouseGlow > 0.05 ? palette.highlight : palette.node;
-				const alpha = ((light ? 0.34 : 0.52) + mouseGlow * 0.42) * p.weight;
+				const alpha = ((light ? 0.3 : 0.46) + mouseGlow * 0.24) * p.weight;
 
-				ctx.shadowColor = rgba(color, 0.18 + mouseGlow * 0.48);
-				ctx.shadowBlur = 4 + mouseGlow * 18;
+				ctx.shadowColor = rgba(color, 0.12 + mouseGlow * 0.18);
+				ctx.shadowBlur = 3 + mouseGlow * 8;
 				ctx.fillStyle = rgba(color, alpha);
 				ctx.beginPath();
 				ctx.arc(p.x, p.y, p.r + 0.3 + mouseGlow * 1.25, 0, Math.PI * 2);
