@@ -24,7 +24,7 @@
 			<p class="mt-3 text-fg-dim md:text-lg">News from the Noctalia team.</p>
 		</header>
 
-		<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+		<div class="grid gap-5 [grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))]">
 			{#each data.posts as post}
 				<a
 					href="/blog/{post.slug}"
