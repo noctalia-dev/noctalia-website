@@ -21,7 +21,7 @@
 	}
 
 	const linkBase =
-		'whitespace-nowrap rounded-md px-2 py-1.5 text-[12px] font-medium transition duration-200 xl:text-[13px] outline-none focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
+		'inline-flex h-10 min-w-20 items-center justify-center whitespace-nowrap rounded-md px-3.5 text-sm font-medium transition duration-200 outline-none focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
 	const linkIdle = 'text-fg-dim hover:bg-surface-2/80 hover:text-accent';
 	const linkActive = 'nav-pill-active bg-surface-2/95 text-accent';
 
@@ -41,7 +41,7 @@
 	}
 
 	const themeToggleClass =
-		'inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
+		'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
 
 	let mobileMenuTriggerRef = $state<HTMLButtonElement | null>(null);
 
@@ -55,7 +55,7 @@
 	class="site-header-chrome sticky top-0 border-b border-border/40 bg-void-deep/[0.92] backdrop-blur-xl backdrop-saturate-125"
 >
 	<div
-		class="relative mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-5"
+		class="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-5"
 	>
 		<a
 			href="/"
@@ -64,13 +64,13 @@
 			<img
 				src={logoUrl}
 				alt=""
-				class="h-8 w-8 shrink-0 drop-shadow-[0_4px_14px_rgb(255_245_155/0.22)] transition group-hover:drop-shadow-[0_6px_20px_rgb(255_245_155/0.35)] sm:h-9 sm:w-9"
-				width="36"
-				height="36"
+				class="h-9 w-9 shrink-0 drop-shadow-[0_4px_14px_rgb(255_245_155/0.22)] transition group-hover:drop-shadow-[0_6px_20px_rgb(255_245_155/0.35)] sm:h-10 sm:w-10"
+				width="40"
+				height="40"
 			/>
 			<span class="flex min-w-0 flex-col leading-tight">
-				<span class="text-[15px] font-semibold tracking-tight sm:text-base">Noctalia</span>
-				<span class="hidden text-[10px] font-medium uppercase tracking-[0.12em] text-fg-dim sm:block">
+				<span class="text-base font-semibold tracking-tight sm:text-[17px]">Noctalia</span>
+				<span class="hidden text-[11px] font-medium uppercase tracking-[0.12em] text-fg-dim sm:block">
 					quiet by design
 				</span>
 			</span>
@@ -121,7 +121,7 @@
 				href={DOCS_BASE_URL}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="hidden h-9 items-center rounded-md border border-border/60 bg-surface-2/30 px-2.5 text-xs font-medium text-fg-dim shadow-sm outline-none transition duration-200 hover:border-accent-2/50 hover:text-accent-2 focus-visible:ring-2 focus-visible:ring-accent-2/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep sm:inline-flex md:px-3"
+				class="hidden h-10 min-w-20 items-center justify-center rounded-md border border-border/60 bg-surface-2/30 px-4 text-sm font-medium text-fg-dim shadow-sm outline-none transition duration-200 hover:border-accent-2/50 hover:text-accent-2 focus-visible:ring-2 focus-visible:ring-accent-2/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep sm:inline-flex"
 			>
 				Docs
 			</a>
@@ -129,7 +129,7 @@
 				href={docsInstallUrl}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="btn-primary-glow inline-flex h-9 items-center rounded-md bg-accent px-3.5 text-xs font-semibold text-on-accent outline-none transition duration-200 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep active:brightness-95 sm:px-4 sm:text-sm"
+				class="btn-primary-glow inline-flex h-10 min-w-28 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent outline-none transition duration-200 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep active:brightness-95"
 			>
 				Get started
 			</a>
@@ -137,7 +137,7 @@
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
 					bind:ref={mobileMenuTriggerRef}
-					class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep md:hidden"
+					class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep md:hidden"
 					aria-label="Open menu"
 				>
 					<svg

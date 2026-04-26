@@ -195,7 +195,7 @@ html[data-theme='light'] {
 			0 0 0 1px rgb(255 245 155 / 0.18) inset;
 	}
 
-	/* Radial highlight follows pointer inside glass cards (home + similar) */
+	/* Static radial highlight for glass cards; calmer than pointer-tracked glow. */
 	.spotlight-surface {
 		--spot-x: 50%;
 		--spot-y: 42%;
@@ -377,30 +377,11 @@ html[data-theme='light'] {
 }
 
 /*
- * Dotted canvas + ambient tint  -  NOT inside @layer utilities so Tailwind never wins the cascade.
- * Dot grid on the page; corner washes are on fixed `.ambient-tint` only.
+ * Ambient page tint  -  NOT inside @layer utilities so Tailwind never wins the cascade.
+ * The organic plexus canvas handles line/node texture; the page itself stays smooth.
  */
-/* Dots only here  -  vignettes live on `.ambient-tint` (fixed) so the grid stays even down the page */
 .page-canvas {
 	background-color: var(--color-void-deep);
-	background-image:
-		radial-gradient(
-			circle at 1px 1px,
-			color-mix(in srgb, var(--color-accent-3) 22%, transparent) 1px,
-			transparent 0
-		),
-		radial-gradient(
-			circle at 1px 1px,
-			color-mix(in srgb, var(--color-accent) 10%, transparent) 1px,
-			transparent 0
-		);
-	background-size:
-		24px 24px,
-		24px 24px;
-	background-position:
-		0 0,
-		12px 12px;
-	background-repeat: repeat, repeat;
 }
 
 .ambient-tint {
@@ -433,29 +414,23 @@ html[data-theme='light'] {
 }
 
 /*
- * Home hero: soft orbs nudge with pointer. --atm-x / --atm-y ∈ [-1, 1] from +page.svelte.
+ * Home hero: soft static atmosphere behind the first viewport.
  */
-.home-atmosphere {
-	--atm-x: 0;
-	--atm-y: 0;
-}
-
 .home-atmosphere__blob {
-	will-change: transform;
+	opacity: 0.82;
 }
 
 .home-atmosphere__blob--1 {
-	transform: translate3d(calc(var(--atm-x, 0) * 22px), calc(var(--atm-y, 0) * -18px), 0);
+	transform: translate3d(-0.75rem, -0.5rem, 0);
 }
 
 .home-atmosphere__blob--2 {
-	transform: translate3d(calc(var(--atm-x, 0) * -16px), calc(var(--atm-y, 0) * 14px), 0);
+	transform: translate3d(0.5rem, 1rem, 0);
 }
 
 .home-atmosphere__blob--3 {
 	left: 50%;
-	transform: translate3d(-50%, 0, 0)
-		translate3d(calc(var(--atm-x, 0) * 12px), calc(var(--atm-y, 0) * 10px), 0);
+	transform: translate3d(-50%, 0.5rem, 0);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -469,8 +444,8 @@ html[data-theme='light'] {
 	}
 }
 
-/* Per-dot glow is drawn in `dot-glow-canvas.svelte` (canvas, fixed). */
-.dot-glow-canvas {
+/* Organic plexus background is drawn in `dot-glow-canvas.svelte` (canvas, fixed). */
+.plexus-canvas {
 	display: block;
 	pointer-events: none;
 	position: fixed;
@@ -478,8 +453,8 @@ html[data-theme='light'] {
 	z-index: 0;
 	width: 100%;
 	height: 100%;
-	/* Balance vibrancy vs readability over the grid */
-	opacity: 0.935;
+	/* Balance vibrancy vs readability over the page content */
+	opacity: 1;
 }
 
 /*
@@ -564,20 +539,6 @@ a.card-surface:focus-visible {
 	);
 }
 
-html[data-theme='light'] .page-canvas {
-	background-image:
-		radial-gradient(
-			circle at 1px 1px,
-			color-mix(in srgb, var(--color-accent) 17%, transparent) 1px,
-			transparent 0
-		),
-		radial-gradient(
-			circle at 1px 1px,
-			color-mix(in srgb, var(--color-accent) 10%, transparent) 1px,
-			transparent 0
-		);
-}
-
 html[data-theme='light'] .ambient-tint {
 	background-image:
 		radial-gradient(
@@ -602,9 +563,9 @@ html[data-theme='light'] .ambient-tint {
 		);
 }
 
-html[data-theme='light'] .dot-glow-canvas {
-	/* Dark pigments + source-over in canvas; keep near full strength so cursor glow reads */
-	opacity: 0.9;
+html[data-theme='light'] .plexus-canvas {
+	/* Dark pigments + source-over in canvas; keep the mesh visible on the light palette. */
+	opacity: 0.96;
 }
 
 html[data-theme='light'] .film-grain {
@@ -716,4 +677,3 @@ html[data-theme='light'] .home-atmosphere__blob--2 {
 html[data-theme='light'] .home-atmosphere__blob--3 {
 	background-color: color-mix(in srgb, var(--color-accent-3) 18%, transparent) !important;
 }
-

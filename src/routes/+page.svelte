@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import SiteHeader from '$lib/site-header.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import Reveal from '$lib/reveal.svelte';
@@ -9,34 +8,6 @@
 	import { DOCS_BASE_URL, DOCS_INSTALLATION_URL } from '$lib/site-constants';
 
 	let { data } = $props<{ data: { pluginCount: number; releaseCount: number } }>();
-
-	let atmosphereEl = $state<HTMLDivElement | null>(null);
-
-	onMount(() => {
-		if (typeof window === 'undefined') return;
-		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-		if (window.matchMedia('(pointer: coarse)').matches) return;
-
-		const root = atmosphereEl;
-		if (!root) return;
-
-		let raf = 0;
-		const onMove = (e: PointerEvent) => {
-			if (raf) return;
-			raf = requestAnimationFrame(() => {
-				const w = window.innerWidth || 1;
-				const h = window.innerHeight || 1;
-				const nx = (e.clientX / w - 0.5) * 2;
-				const ny = (e.clientY / h - 0.5) * 2;
-				root.style.setProperty('--atm-x', nx.toFixed(4));
-				root.style.setProperty('--atm-y', ny.toFixed(4));
-				raf = 0;
-			});
-		};
-
-		window.addEventListener('pointermove', onMove, { passive: true });
-		return () => window.removeEventListener('pointermove', onMove);
-	});
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
 	const showcaseVideoUrl = 'https://assets.noctalia.dev/video/noctalia-showcase-short.mp4';
@@ -99,7 +70,6 @@
 	<!-- Shared atmosphere across hero + spotlight so the canvas doesn’t “reset” at the fold -->
 	<div class="relative isolate">
 		<div
-			bind:this={atmosphereEl}
 			class="home-atmosphere pointer-events-none absolute inset-0 -z-10 overflow-hidden"
 			aria-hidden="true"
 		>
