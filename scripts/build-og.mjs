@@ -1,17 +1,25 @@
 /**
- * Writes PNGs into static/og/** for Open Graph. Run automatically before `vite build` (see package.json "prebuild").
- * Mint line = `pathLabel`; body = the same `description` as in `src/lib/seo.ts` for that URL.
- * Logo is vertically centered with the text block (Satori `alignItems: 'center'` on the row).
+ * Writes WebP files into static/og/** for Open Graph. Run before `vite build` (package.json "prebuild").
+ * Satori + Resvg render a PNG raster, then `sharp` encodes WebP. Paths match `src/lib/seo.ts`.
+ * Skips re-encoding when inputs are unchanged (see LAYOUT_VERSION, static/og/.og-input-hashes.json).
  */
+import { createHash } from 'node:crypto';
+import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
 import { createElement as h } from 'react';
+import sharp from 'sharp';
 import satori from 'satori';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
+
+const CACHE_FILE = join(root, 'static/og', '.og-input-hashes.json');
+const WEBP_OPTIONS = { quality: 88, effort: 4 };
+/** Bump when layout, font usage, or WebP settings change so all images rebuild. */
+const LAYOUT_VERSION = 1;
 
 const NOCTALIA_LOGO_SVG_URL = 'https://assets.noctalia.dev/noctalia-logo.svg';
 
@@ -36,6 +44,37 @@ function isValidPlugin(plugin) {
 	if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) return false;
 	if (RESERVED_IDS.includes(id.toLowerCase())) return false;
 	return true;
+}
+
+function buildGlobalDigest(fontW400, fontW600, logoDataUrl) {
+	return createHash('sha256')
+		.update(String(LAYOUT_VERSION), 'utf8')
+		.update(JSON.stringify(WEBP_OPTIONS), 'utf8')
+		.update(fontW400)
+		.update(fontW600)
+		.update(logoDataUrl || '', 'utf8')
+		.digest('hex');
+}
+
+function inputDigestForImage(globalDigest, outPathRel, pathLabel, bodyText) {
+	return createHash('sha256')
+		.update(globalDigest, 'utf8')
+		.update(`\0${outPathRel}\0${pathLabel}\0${bodyText}`, 'utf8')
+		.digest('hex');
+}
+
+async function loadInputCache() {
+	try {
+		const raw = await readFile(CACHE_FILE, 'utf8');
+		return JSON.parse(raw);
+	} catch {
+		return {};
+	}
+}
+
+async function saveInputCache(map) {
+	await mkdir(join(root, 'static/og'), { recursive: true });
+	await writeFile(CACHE_FILE, JSON.stringify(map, null, '\t') + '\n', 'utf8');
 }
 
 async function loadLogoDataUrl() {
@@ -234,18 +273,27 @@ function buildTree(pathLabel, bodyText, logoDataUrl) {
 	);
 }
 
-async function writeOg(outPathRel, pathLabel, bodyText, logoDataUrl) {
-	const fonts = [
-		{ name: 'Inter', data: await interLatin(400), weight: 400, style: 'normal' },
-		{ name: 'Inter', data: await interLatin(600), weight: 600, style: 'normal' },
-	];
+/**
+ * @param {Array<{ name: string; data: Buffer; weight: number; style: 'normal' }>} fonts
+ * @param {Record<string, string>} nextCache
+ */
+async function writeOg(outPathRel, pathLabel, bodyText, logoDataUrl, fonts, globalDigest, prevCache, nextCache) {
+	const digest = inputDigestForImage(globalDigest, outPathRel, pathLabel, bodyText);
+	const abs = join(root, 'static', outPathRel);
+	if (prevCache[outPathRel] === digest && existsSync(abs)) {
+		nextCache[outPathRel] = digest;
+		console.log(`Up-to-date static/${outPathRel}`);
+		return;
+	}
+
 	const tree = buildTree(pathLabel, bodyText, logoDataUrl);
 	const svg = await satori(tree, { width: 1200, height: 630, fonts });
 	const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
 	const out = resvg.render();
-	const abs = join(root, 'static', outPathRel);
+	const webp = await sharp(out.asPng()).webp(WEBP_OPTIONS).toBuffer();
 	await mkdir(dirname(abs), { recursive: true });
-	await writeFile(abs, out.asPng());
+	await writeFile(abs, webp);
+	nextCache[outPathRel] = digest;
 	console.log(`Wrote static/${outPathRel}`);
 }
 
@@ -268,21 +316,27 @@ async function main() {
 	}
 
 	const logo = await loadLogoDataUrl();
+	const fontW400 = await interLatin(400);
+	const fontW600 = await interLatin(600);
+	const fonts = [
+		{ name: 'Inter', data: fontW400, weight: 400, style: 'normal' },
+		{ name: 'Inter', data: fontW600, weight: 600, style: 'normal' },
+	];
+	const globalDigest = buildGlobalDigest(fontW400, fontW600, logo);
+	const prevCache = await loadInputCache();
+	/** Rel path → input sha; rewritten each run (drops removed routes). */
+	const nextCache = /** @type {Record<string, string>} */ ({});
 
-	await writeOg('og.png', 'Home', 'Noctalia - a lightweight Wayland shell.', logo);
-	await writeOg('og/blog.png', 'Blog', 'News from the Noctalia team.', logo);
-	await writeOg(
-		'og/plugins.png',
-		'Plugins',
-		'Browse community and official plugins to extend your Noctalia setup.',
-		logo
-	);
-	await writeOg('og/palettes.png', 'Palettes', 'Explore color palettes for Noctalia Shell.', logo);
-	await writeOg(
-		'og/privacy.png',
+	const w = (rel, pathLabel, body) => writeOg(rel, pathLabel, body, logo, fonts, globalDigest, prevCache, nextCache);
+
+	await w('og.webp', 'Home', 'Noctalia - a lightweight Wayland shell.');
+	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
+	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');
+	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia Shell.');
+	await w(
+		'og/privacy.webp',
 		'Privacy',
-		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.',
-		logo
+		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.'
 	);
 
 	const blogDir = join(root, 'src/content/blog');
@@ -293,7 +347,7 @@ async function main() {
 		const raw = await readFile(join(blogDir, name), 'utf8');
 		const desc = parseDescriptionFromMd(raw) || 'News from the Noctalia team.';
 		const postTitle = parseTitleFromMd(raw) || 'Blog';
-		await writeOg(`og/blog/${slug}.png`, postTitle, desc, logo);
+		await w(`og/blog/${slug}.webp`, postTitle, desc);
 	}
 
 	try {
@@ -303,7 +357,7 @@ async function main() {
 			const plugins = (data.plugins || []).filter(isValidPlugin);
 			for (const p of plugins) {
 				const mint = 'Plugin: ' + p.name;
-				await writeOg(`og/plugin/${p.id}.png`, mint, p.description, logo);
+				await w(`og/plugin/${p.id}.webp`, mint, p.description);
 			}
 		} else {
 			console.warn('Skipping plugin OG images: registry returned', res.status);
@@ -311,6 +365,8 @@ async function main() {
 	} catch (e) {
 		console.warn('Skipping plugin OG images (offline or network error):', e?.message || e);
 	}
+
+	await saveInputCache(nextCache);
 }
 
 main().catch((e) => {

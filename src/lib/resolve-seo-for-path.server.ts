@@ -47,7 +47,7 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 					description: 'This blog post does not exist or was removed.',
 					pathLabel: 'Blog',
 					ogType: 'website' as const,
-					ogImagePath: '/og.png'
+					ogImagePath: '/og.webp'
 				},
 				normalizedPath,
 				notFound: true,
@@ -69,7 +69,7 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 					description: 'This plugin is not in the public registry.',
 					pathLabel: 'Plugin',
 					ogType: 'website' as const,
-					ogImagePath: '/og.png'
+					ogImagePath: '/og.webp'
 				},
 				normalizedPath,
 				notFound: true,

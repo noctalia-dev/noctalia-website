@@ -8,8 +8,9 @@ node_modules
 /.svelte-kit
 /build
 
-# Generated on `npm run build` (prebuild); keep repo free of 100+ PNGs
+# Generated Open Graph WebPs (`node scripts/build-og.mjs`)
 /static/og/
+/static/og.webp
 
 # OS
 .DS_Store

@@ -23,28 +23,28 @@ export const SEO_HOME: PageSeo = {
 	title: DEFAULT_OG_TITLE,
 	description: DEFAULT_DESCRIPTION,
 	pathLabel: 'Home',
-	ogImagePath: '/og.png'
+	ogImagePath: '/og.webp'
 };
 
 export const SEO_BLOG_INDEX: PageSeo = {
 	title: `Blog  -  ${SITE_NAME}`,
 	description: 'News from the Noctalia team.',
 	pathLabel: 'Blog',
-	ogImagePath: '/og/blog.png'
+	ogImagePath: '/og/blog.webp'
 };
 
 export const SEO_PLUGINS_INDEX: PageSeo = {
 	title: `Plugins  -  ${SITE_NAME}`,
 	description: 'Browse community and official plugins to extend your Noctalia setup.',
 	pathLabel: 'Plugins',
-	ogImagePath: '/og/plugins.png'
+	ogImagePath: '/og/plugins.webp'
 };
 
 export const SEO_THEMES: PageSeo = {
 	title: `Palettes  -  ${SITE_NAME}`,
 	description: 'Explore color palettes for Noctalia Shell.',
 	pathLabel: 'Palettes',
-	ogImagePath: '/og/palettes.png'
+	ogImagePath: '/og/palettes.webp'
 };
 
 export const SEO_PRIVACY: PageSeo = {
@@ -52,14 +52,14 @@ export const SEO_PRIVACY: PageSeo = {
 	description:
 		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.',
 	pathLabel: 'Privacy',
-	ogImagePath: '/og/privacy.png'
+	ogImagePath: '/og/privacy.webp'
 };
 
 export const SEO_EMBED_PREVIEW: PageSeo = {
 	title: `Embed preview  -  ${SITE_NAME}`,
 	description: 'Preview how link unfurls can look. For development only; crawlers use each URL’s own HTML.',
 	pathLabel: 'Dev',
-	ogImagePath: '/og.png'
+	ogImagePath: '/og.webp'
 };
 
 export function seoBlogPost(post: { slug: string; title: string; description: string }): PageSeo {
@@ -69,7 +69,7 @@ export function seoBlogPost(post: { slug: string; title: string; description: st
 		/** Mint line on OG art; matches the post title (not the literal words “Blog post”). */
 		pathLabel: post.title,
 		ogType: 'article',
-		ogImagePath: `/og/blog/${post.slug}.png`
+		ogImagePath: `/og/blog/${post.slug}.webp`
 	};
 }
 
@@ -80,6 +80,6 @@ export function seoPlugin(plugin: { id: string; name: string; description: strin
 		title: `${plugin.name}  -  ${SITE_NAME}`,
 		description: plugin.description,
 		pathLabel,
-		ogImagePath: `/og/plugin/${plugin.id}.png`
+		ogImagePath: `/og/plugin/${plugin.id}.webp`
 	};
 }
