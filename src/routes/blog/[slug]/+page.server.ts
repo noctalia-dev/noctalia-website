@@ -1,5 +1,6 @@
 import { error } from '@sveltejs/kit';
 import { getAllBlogPosts, getBlogPostBySlug } from '$lib/blog';
+import { seoBlogPost } from '$lib/seo';
 
 export async function entries() {
 	const posts = await getAllBlogPosts();
@@ -13,5 +14,5 @@ export async function load({ params }: { params: { slug: string } }) {
 		throw error(404, 'Post not found');
 	}
 
-	return { post };
+	return { post, seo: seoBlogPost(post) };
 }

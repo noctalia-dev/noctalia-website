@@ -8,6 +8,9 @@ node_modules
 /.svelte-kit
 /build
 
+# Generated on `npm run build` (prebuild); keep repo free of 100+ PNGs
+/static/og/
+
 # OS
 .DS_Store
 Thumbs.db

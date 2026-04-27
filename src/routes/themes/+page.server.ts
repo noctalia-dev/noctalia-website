@@ -1,4 +1,5 @@
 import coreColorschemes from '$lib/data/core-colorschemes.json';
+import { SEO_THEMES } from '$lib/seo';
 
 const coreSwatchKeys = ['mPrimary', 'mSecondary', 'mTertiary', 'mError', 'mSurface', 'mSurfaceVariant'];
 const communitySwatchKeys = ['primary', 'secondary', 'tertiary', 'error', 'surface', 'surfaceVariant'];
@@ -38,5 +39,5 @@ export async function load() {
 		console.error('Error fetching community palettes:', error);
 	}
 
-	return { coreThemes, communityThemes };
+	return { coreThemes, communityThemes, seo: SEO_THEMES };
 }

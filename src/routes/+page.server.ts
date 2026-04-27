@@ -1,3 +1,5 @@
+import { SEO_HOME } from '$lib/seo';
+
 async function getPluginCount(): Promise<number> {
 	try {
 		const response = await fetch(
@@ -52,5 +54,5 @@ async function getReleaseCount(): Promise<number> {
 
 export async function load() {
 	const [pluginCount, releaseCount] = await Promise.all([getPluginCount(), getReleaseCount()]);
-	return { pluginCount, releaseCount };
+	return { pluginCount, releaseCount, seo: SEO_HOME };
 }
