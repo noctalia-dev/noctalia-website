@@ -50,14 +50,15 @@ export const SEO_THEMES: PageSeo = {
 export const SEO_PRIVACY: PageSeo = {
 	title: `Privacy  -  ${SITE_NAME}`,
 	description:
-		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.',
+		'What Noctalia Shell collects, how Google Calendar OAuth works, and your rights. Open source and transparent.',
 	pathLabel: 'Privacy',
 	ogImagePath: '/og/privacy.webp'
 };
 
 export const SEO_EMBED_PREVIEW: PageSeo = {
 	title: `Embed preview  -  ${SITE_NAME}`,
-	description: 'Preview how link unfurls can look. For development only; crawlers use each URL’s own HTML.',
+	description:
+		'Preview how link unfurls can look. For development only; crawlers use each URL’s own HTML.',
 	pathLabel: 'Dev',
 	ogImagePath: '/og.webp'
 };
