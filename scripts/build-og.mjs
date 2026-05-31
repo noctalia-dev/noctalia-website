@@ -334,6 +334,11 @@ async function main() {
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');
 	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia Shell.');
 	await w(
+		'og/contributors.webp',
+		'Contributors',
+		'Meet the people who contribute to Noctalia Shell on GitHub.'
+	);
+	await w(
 		'og/privacy.webp',
 		'Privacy',
 		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.'

@@ -4,6 +4,7 @@ import { SITE_NAME } from '$lib/site-constants';
 import {
 	type PathSeoPreview,
 	SEO_BLOG_INDEX,
+	SEO_CONTRIBUTORS,
 	SEO_EMBED_PREVIEW,
 	SEO_HOME,
 	SEO_PLUGINS_INDEX,
@@ -83,6 +84,9 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 	}
 	if (normalizedPath === '/privacy' || normalizedPath === '/privacy/') {
 		return { seo: SEO_PRIVACY, normalizedPath: '/privacy', notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/contributors' || normalizedPath === '/contributors/') {
+		return { seo: SEO_CONTRIBUTORS, normalizedPath: '/contributors', notFound: false, unknown: false };
 	}
 
 	// e.g. /docs deep links, future routes

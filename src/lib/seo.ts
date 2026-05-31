@@ -47,6 +47,13 @@ export const SEO_THEMES: PageSeo = {
 	ogImagePath: '/og/palettes.webp'
 };
 
+export const SEO_CONTRIBUTORS: PageSeo = {
+	title: `Contributors  -  ${SITE_NAME}`,
+	description: 'Meet the people who contribute to Noctalia Shell on GitHub.',
+	pathLabel: 'Contributors',
+	ogImagePath: '/og/contributors.webp'
+};
+
 export const SEO_PRIVACY: PageSeo = {
 	title: `Privacy  -  ${SITE_NAME}`,
 	description:
