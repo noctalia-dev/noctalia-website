@@ -1,3 +1,5 @@
+import { githubFetch } from '$lib/github.server';
+
 const REQUIRED_FIELDS = ['id', 'name', 'version', 'author', 'description', 'license', 'lastUpdated'] as const;
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
 
@@ -32,7 +34,7 @@ export async function getRegistryPlugins(): Promise<any[]> {
 		return pluginsCache.plugins;
 	}
 	try {
-		const response = await fetch(
+		const response = await githubFetch(
 			'https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json'
 		);
 		if (!response.ok) throw new Error('Failed to fetch plugins');

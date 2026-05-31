@@ -1,4 +1,5 @@
 import { SEO_HOME } from '$lib/seo';
+import { githubFetch } from '$lib/github.server';
 
 async function getPluginCount(): Promise<number> {
 	try {
@@ -23,9 +24,8 @@ async function getReleaseCount(): Promise<number> {
 		const maxPages = 10;
 
 		while (hasMore && ghPage <= maxPages) {
-			const response = await fetch(
-				`https://api.github.com/repos/noctalia-dev/noctalia-shell/releases?per_page=100&page=${ghPage}`,
-				{ headers: { Accept: 'application/vnd.github.v3+json' } }
+			const response = await githubFetch(
+				`https://api.github.com/repos/noctalia-dev/noctalia-shell/releases?per_page=100&page=${ghPage}`
 			);
 
 			if (!response.ok) break;

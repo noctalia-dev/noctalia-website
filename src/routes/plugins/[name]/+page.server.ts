@@ -1,6 +1,7 @@
 import { error } from '@sveltejs/kit';
 import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
 import { seoPlugin } from '$lib/seo';
+import { githubFetch } from '$lib/github.server';
 
 const readmeCache = new Map<string, { content: string | null; timestamp: number }>();
 const CACHE_TTL = 60 * 60 * 1000;
@@ -27,7 +28,7 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 	}
 	const readmeUrl = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${plugin.id}/README.md`;
 	try {
-		const response = await fetch(readmeUrl);
+		const response = await githubFetch(readmeUrl);
 		if (!response.ok) {
 			readmeCache.set(plugin.id, { content: null, timestamp: now });
 			return null;

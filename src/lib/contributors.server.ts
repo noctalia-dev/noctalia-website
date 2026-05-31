@@ -6,6 +6,8 @@ export type Contributor = {
 };
 
 const REPO_URL = 'https://github.com/noctalia-dev/noctalia-shell';
+import { githubFetch } from '$lib/github.server';
+
 const CONTRIBUTORS_URL = 'https://api.github.com/repos/noctalia-dev/noctalia-shell/contributors';
 
 function parseContributor(raw: {
@@ -30,9 +32,7 @@ export async function getShellContributors(): Promise<Contributor[]> {
 	const maxPages = 10;
 
 	while (hasMore && page <= maxPages) {
-		const response = await fetch(`${CONTRIBUTORS_URL}?per_page=100&page=${page}`, {
-			headers: { Accept: 'application/vnd.github.v3+json' }
-		});
+		const response = await githubFetch(`${CONTRIBUTORS_URL}?per_page=100&page=${page}`);
 		if (!response.ok) {
 			console.error('Failed to fetch contributors, status:', response.status);
 			break;
