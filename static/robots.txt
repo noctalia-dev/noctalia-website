@@ -1,3 +1,5 @@
-# allow crawling everything by default
 User-agent: *
-Disallow:
+Disallow: /embed-preview
+Disallow: /google571506760e630235.html
+
+Sitemap: https://noctalia.dev/sitemap.xml
