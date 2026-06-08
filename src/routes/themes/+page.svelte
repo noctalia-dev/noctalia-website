@@ -83,10 +83,7 @@ function getSwatches(theme: ThemeItem): string[] {
 
 		<div class="search-section">
 			<div class="search-container">
-				<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<circle cx="11" cy="11" r="8"></circle>
-					<path d="m21 21-4.35-4.35"></path>
-				</svg>
+				<i class="ti ti-search search-icon" aria-hidden="true"></i>
 				<input
 					type="text"
 					class="search-input"
@@ -96,16 +93,13 @@ function getSwatches(theme: ThemeItem): string[] {
 				/>
 				{#if searchQuery}
 					<button
-						class="search-clear"
-						onclick={() => searchQuery = ''}
-						aria-label="Clear search"
-					>
-						<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-							<path d="M18 6L6 18"></path>
-							<path d="M6 6l12 12"></path>
-						</svg>
-					</button>
-				{/if}
+					class="search-clear"
+					onclick={() => searchQuery = ''}
+					aria-label="Clear search"
+				>
+					<i class="ti ti-x text-lg leading-none" aria-hidden="true"></i>
+				</button>
+			{/if}
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
@@ -200,6 +194,8 @@ function getSwatches(theme: ThemeItem): string[] {
 
 		.search-icon {
 			color: var(--mOnSurfaceVariant);
+			font-size: 1.25rem;
+			line-height: 1;
 			margin-right: 0.75rem;
 			flex-shrink: 0;
 		}

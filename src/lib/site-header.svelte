@@ -98,25 +98,13 @@
 				onclick={onThemeToggle}
 				aria-label={themeMode === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'}
 				aria-pressed={themeMode === 'light'}
-			>
-				{#if themeMode === 'dark'}
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-						/>
-					</svg>
-				{:else}
-					<svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24" aria-hidden="true">
-						<path
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"
-						/>
-					</svg>
-				{/if}
-			</button>
+				>
+					{#if themeMode === 'dark'}
+						<i class="ti ti-sun text-base leading-none" aria-hidden="true"></i>
+					{:else}
+						<i class="ti ti-moon text-base leading-none" aria-hidden="true"></i>
+					{/if}
+				</button>
 			<a
 				href={DOCS_BASE_URL}
 				target="_blank"
@@ -137,20 +125,11 @@
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
 					bind:ref={mobileMenuTriggerRef}
-					class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep md:hidden"
-					aria-label="Open menu"
-				>
-					<svg
-						class="h-4 w-4"
-						fill="none"
-						stroke="currentColor"
-						stroke-width="2"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
+						class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep md:hidden"
+						aria-label="Open menu"
 					>
-						<path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16" />
-					</svg>
-				</DropdownMenu.Trigger>
+						<i class="ti ti-menu-2 text-base leading-none" aria-hidden="true"></i>
+					</DropdownMenu.Trigger>
 				<DropdownMenu.Portal>
 					<DropdownMenu.Content
 						align="end"

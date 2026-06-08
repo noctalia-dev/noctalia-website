@@ -173,32 +173,26 @@
 				<p>Error: {error}</p>
 			</div>
 		{:else}
-			<div class="search-section">
-				<div class="search-container">
-					<svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<circle cx="11" cy="11" r="8"></circle>
-						<path d="m21 21-4.35-4.35"></path>
-					</svg>
-					<input
-						type="text"
-						class="search-input"
+				<div class="search-section">
+					<div class="search-container">
+						<i class="ti ti-search search-icon" aria-hidden="true"></i>
+						<input
+							type="text"
+							class="search-input"
 						placeholder="Search plugins by name, description or author..."
 						bind:value={searchQuery}
 						autocomplete="off"
 					/>
 					{#if searchQuery}
 						<button 
-							class="search-clear"
-							onclick={() => searchQuery = ''}
-							aria-label="Clear search"
-						>
-							<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M18 6L6 18"></path>
-								<path d="M6 6l12 12"></path>
-							</svg>
-						</button>
-					{/if}
-				</div>
+								class="search-clear"
+								onclick={() => searchQuery = ''}
+								aria-label="Clear search"
+							>
+								<i class="ti ti-x text-lg leading-none" aria-hidden="true"></i>
+							</button>
+						{/if}
+					</div>
 				{#if searchQuery || selectedTags.length > 0 || showOfficialOnly}
 					<div class="search-results-info">
 						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
@@ -213,9 +207,7 @@
 					class:selected={showOfficialOnly}
 					onclick={() => showOfficialOnly = !showOfficialOnly}
 				>
-					<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-						<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-					</svg>
+					<i class="ti ti-shield-check text-sm leading-none" aria-hidden="true"></i>
 					Official
 				</button>
 				{#each availableTags as tag}
@@ -297,13 +289,11 @@
 								<div class="plugin-info">
 									<div class="plugin-name-row">
 										<h3 class="plugin-name">{plugin.name}</h3>
-										{#if plugin.official}
-											<span class="official-badge" title="Official Plugin">
-												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-													<path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-												</svg>
-											</span>
-										{/if}
+											{#if plugin.official}
+												<span class="official-badge" title="Official Plugin">
+													<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
+												</span>
+											{/if}
 									</div>
 									<p class="plugin-description">{plugin.description}</p>
 									{#if plugin.tags && plugin.tags.length > 0}
@@ -371,6 +361,8 @@
 	
 	.search-icon {
 		color: var(--mOnSurfaceVariant);
+		font-size: 1.25rem;
+		line-height: 1;
 		margin-right: 0.75rem;
 		flex-shrink: 0;
 	}
@@ -496,7 +488,7 @@
 		gap: 0.375rem;
 	}
 
-	.official-chip svg {
+	.official-chip .ti {
 		flex-shrink: 0;
 	}
 
@@ -798,11 +790,11 @@
 		flex-shrink: 0;
 	}
 
-	.official-badge svg {
+	.official-badge .ti {
 		filter: drop-shadow(0 0 4px rgba(255, 245, 155, 0.4));
 	}
 
-	:global([data-theme='light']) .official-badge svg {
+	:global([data-theme='light']) .official-badge .ti {
 		filter: drop-shadow(0 0 4px rgba(93, 101, 245, 0.3));
 	}
 
@@ -914,4 +906,3 @@
 		}
 	}
 </style>
-

@@ -119,28 +119,15 @@
 			</Reveal>
 			<Reveal delay={290}>
 				<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-					<a
-						href={DOCS_BASE_URL}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="inline-flex items-center gap-2 rounded-md border border-border/65 bg-surface-2/85 px-5 py-2.5 text-sm font-medium text-fg shadow-md outline-none transition duration-300 hover:-translate-y-0.5 hover:border-accent/45 hover:text-accent hover:shadow-lg focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
-					>
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="18"
-							height="18"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="currentColor"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							aria-hidden="true"
+						<a
+							href={DOCS_BASE_URL}
+							target="_blank"
+							rel="noopener noreferrer"
+							class="inline-flex items-center gap-2 rounded-md border border-border/65 bg-surface-2/85 px-5 py-2.5 text-sm font-medium text-fg shadow-md outline-none transition duration-300 hover:-translate-y-0.5 hover:border-accent/45 hover:text-accent hover:shadow-lg focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
 						>
-							<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
-						</svg>
-						Documentation
-					</a>
+							<i class="ti ti-book text-lg leading-none" aria-hidden="true"></i>
+							Documentation
+						</a>
 					<a
 						href={docsInstallUrl}
 						target="_blank"

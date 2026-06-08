@@ -38,9 +38,7 @@
 			
 			<div class="hero-actions">
 				<a href={DOCS_BASE_URL} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-					<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-						<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
-					</svg>
+					<i class="ti ti-book text-lg leading-none" aria-hidden="true"></i>
 					<span>Documentation</span>
 				</a>
 			</div>
@@ -385,7 +383,7 @@
 	}
 	
 	.btn-primary span,
-	.btn-primary svg {
+	.btn-primary .ti {
 		position: relative;
 		z-index: 1;
 	}
@@ -448,4 +446,3 @@
 		}
 	}
 </style>
-

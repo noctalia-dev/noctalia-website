@@ -59,15 +59,12 @@
 
 <SiteHeader />
 
-<main class="plugin-page site-main--article">
-	<div class="plugin-inner">
-		<a href="/plugins" class="back-btn">
-			<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-				<path d="M19 12H5"></path>
-				<path d="M12 19l-7-7 7-7"></path>
-			</svg>
-			Back to plugins
-		</a>
+	<main class="plugin-page site-main--article">
+		<div class="plugin-inner">
+			<a href="/plugins" class="back-btn">
+				<i class="ti ti-arrow-left text-xl leading-none" aria-hidden="true"></i>
+				Back to plugins
+			</a>
 
 		<div class="hero-section">
 			<div class="hero-image">
@@ -82,56 +79,36 @@
 			</div>
 			<div class="hero-overlay"></div>
 			<div class="hero-content">
-				<h1 class="hero-title">
-					{data.plugin.name}
-					{#if data.plugin.official}
-						<span class="official-badge" title="Official Noctalia Plugin">
-							<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-								<path d="M9 12l2 2 4-4"></path>
-							</svg>
-						</span>
-					{/if}
-				</h1>
+					<h1 class="hero-title">
+						{data.plugin.name}
+						{#if data.plugin.official}
+							<span class="official-badge" title="Official Noctalia Plugin">
+								<i class="ti ti-shield-check text-[1.75rem] leading-none" aria-hidden="true"></i>
+							</span>
+						{/if}
+					</h1>
 				<p class="hero-description">{data.plugin.description}</p>
 			</div>
 		</div>
 
-		<div class="badge-row">
-			<span class="badge">
-				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M12 20h9"></path>
-					<path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-				</svg>
-				v{data.plugin.version}
-			</span>
-			<span class="badge">
-				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-					<circle cx="12" cy="7" r="4"></circle>
-				</svg>
-				{data.plugin.author}
-			</span>
-			<span class="badge">
-				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-					<polyline points="14 2 14 8 20 8"></polyline>
-					<line x1="16" y1="13" x2="8" y2="13"></line>
-					<line x1="16" y1="17" x2="8" y2="17"></line>
-					<polyline points="10 9 9 9 8 9"></polyline>
-				</svg>
-				{data.plugin.license}
-			</span>
-			<span class="badge">
-				<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-					<line x1="16" y1="2" x2="16" y2="6"></line>
-					<line x1="8" y1="2" x2="8" y2="6"></line>
-					<line x1="3" y1="10" x2="21" y2="10"></line>
-				</svg>
-				{formatDate(data.plugin.lastUpdated)}
-			</span>
-		</div>
+			<div class="badge-row">
+				<span class="badge">
+					<i class="ti ti-edit text-sm leading-none" aria-hidden="true"></i>
+					v{data.plugin.version}
+				</span>
+				<span class="badge">
+					<i class="ti ti-user text-sm leading-none" aria-hidden="true"></i>
+					{data.plugin.author}
+				</span>
+				<span class="badge">
+					<i class="ti ti-file-description text-sm leading-none" aria-hidden="true"></i>
+					{data.plugin.license}
+				</span>
+				<span class="badge">
+					<i class="ti ti-calendar text-sm leading-none" aria-hidden="true"></i>
+					{formatDate(data.plugin.lastUpdated)}
+				</span>
+			</div>
 
 		{#if data.plugin.tags && data.plugin.tags.length > 0}
 			<div class="tag-row">
@@ -156,18 +133,12 @@
 				target="_blank"
 				rel="noopener noreferrer"
 				class="github-btn"
-			>
-				<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-					<path d="M9 18c-4.51 2-5-2-7-2"></path>
-				</svg>
-				View on GitHub
-				<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-					<line x1="7" y1="17" x2="17" y2="7"></line>
-					<polyline points="7 7 17 7 17 17"></polyline>
-				</svg>
-			</a>
-		</div>
+				>
+					<i class="ti ti-brand-github text-xl leading-none" aria-hidden="true"></i>
+					View on GitHub
+					<i class="ti ti-external-link text-base leading-none" aria-hidden="true"></i>
+				</a>
+			</div>
 	</div>
 </main>
 
@@ -339,7 +310,7 @@
 		color: var(--mOnSurface);
 	}
 
-	.badge svg {
+	.badge .ti {
 		color: var(--mPrimary);
 		opacity: 0.8;
 	}

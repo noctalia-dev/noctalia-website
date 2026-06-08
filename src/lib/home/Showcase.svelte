@@ -227,23 +227,16 @@
 						type="button"
 					>
 						<div class="preview-play-button">
-							<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<polygon points="5 3 19 12 5 21 5 3"></polygon>
-							</svg>
+							<i class="ti ti-player-play preview-play-icon" aria-hidden="true"></i>
 						</div>
 					</button>
-				{/if}
-				<div class="video-controls" class:dragging={isDragging}>
+					{/if}
+					<div class="video-controls" class:dragging={isDragging}>
 					<button class="play-pause-btn" onclick={togglePlay} aria-label={isPlaying ? 'Pause' : 'Play'}>
 						{#if isPlaying}
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<rect x="6" y="4" width="4" height="16"></rect>
-								<rect x="14" y="4" width="4" height="16"></rect>
-							</svg>
+							<i class="ti ti-player-pause control-icon" aria-hidden="true"></i>
 						{:else}
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<polygon points="5 3 19 12 5 21 5 3"></polygon>
-							</svg>
+							<i class="ti ti-player-play control-icon" aria-hidden="true"></i>
 						{/if}
 					</button>
 					<div class="progress-container">
@@ -279,13 +272,9 @@
 					</div>
 					<button class="fullscreen-btn" onclick={toggleFullscreen} aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}>
 						{#if isFullscreen}
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
-							</svg>
+							<i class="ti ti-minimize control-icon" aria-hidden="true"></i>
 						{:else}
-							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-								<path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
-							</svg>
+							<i class="ti ti-maximize control-icon" aria-hidden="true"></i>
 						{/if}
 					</button>
 				</div>
@@ -452,9 +441,10 @@
 			0 0 0 4px color-mix(in srgb, var(--mSurface) 40%, transparent 60%);
 	}
 	
-	.preview-play-button svg {
-		width: 32px;
-		height: 32px;
+	.preview-play-icon {
+		display: block;
+		font-size: 32px;
+		line-height: 1;
 		margin-left: 4px;
 	}
 	
@@ -511,11 +501,11 @@
 		margin: 0;
 	}
 	
-	.play-pause-btn svg,
-	.fullscreen-btn svg {
+	.play-pause-btn .control-icon,
+	.fullscreen-btn .control-icon {
 		display: block;
-		width: 20px;
-		height: 20px;
+		font-size: 20px;
+		line-height: 1;
 		margin: 0;
 		padding: 0;
 	}
@@ -626,10 +616,9 @@
 			height: 40px;
 		}
 		
-		.play-pause-btn svg,
-		.fullscreen-btn svg {
-			width: 18px;
-			height: 18px;
+		.play-pause-btn .control-icon,
+		.fullscreen-btn .control-icon {
+			font-size: 18px;
 		}
 		
 		.progress-handle {
