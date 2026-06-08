@@ -25,7 +25,7 @@ async function getReleaseCount(): Promise<number> {
 
 		while (hasMore && ghPage <= maxPages) {
 			const response = await githubFetch(
-				`https://api.github.com/repos/noctalia-dev/noctalia-shell/releases?per_page=100&page=${ghPage}`
+				`https://api.github.com/repos/noctalia-dev/noctalia/releases?per_page=100&page=${ghPage}`
 			);
 
 			if (!response.ok) break;

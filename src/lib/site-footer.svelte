@@ -12,7 +12,7 @@
 		{ href: DOCS_BASE_URL, label: 'Docs', external: true },
 		{ href: 'https://discord.noctalia.dev', label: 'Discord', external: true },
 		{
-			href: 'https://github.com/noctalia-dev/noctalia-shell',
+			href: 'https://github.com/noctalia-dev/noctalia',
 			label: 'GitHub',
 			external: true
 		},

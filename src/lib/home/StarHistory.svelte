@@ -38,7 +38,7 @@
 			<div class="graph-glow"></div>
 			<img
 				src="https://api.noctalia.dev/stars"
-				alt="GitHub star history graph for noctalia-shell"
+				alt="GitHub star history graph for noctalia"
 				class="star-graph"
 				loading="lazy"
 			/>

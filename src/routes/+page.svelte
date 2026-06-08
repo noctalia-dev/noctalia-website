@@ -151,7 +151,7 @@
 						<span aria-hidden="true">→</span>
 					</a>
 					<a
-						href="https://github.com/noctalia-dev/noctalia-shell"
+						href="https://github.com/noctalia-dev/noctalia"
 						target="_blank"
 						rel="noopener noreferrer"
 						class="inline-flex items-center gap-2 rounded-md border border-border/65 bg-surface-2/85 px-5 py-2.5 text-sm font-medium text-fg shadow-md outline-none transition duration-300 hover:-translate-y-0.5 hover:border-accent-2/55 hover:text-accent-2 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-accent-2/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
@@ -270,7 +270,7 @@
 						{#snippet children()}
 							<img
 								src="https://api.noctalia.dev/stars"
-								alt="GitHub star history graph for noctalia-shell"
+								alt="GitHub star history graph for noctalia"
 								class="block h-auto w-full rounded-sm"
 								width="1200"
 								height="514"

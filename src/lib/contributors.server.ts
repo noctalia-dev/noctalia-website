@@ -5,10 +5,10 @@ export type Contributor = {
 	contributions: number;
 };
 
-const REPO_URL = 'https://github.com/noctalia-dev/noctalia-shell';
+const REPO_URL = 'https://github.com/noctalia-dev/noctalia';
 import { githubFetch } from '$lib/github.server';
 
-const CONTRIBUTORS_URL = 'https://api.github.com/repos/noctalia-dev/noctalia-shell/contributors';
+const CONTRIBUTORS_URL = 'https://api.github.com/repos/noctalia-dev/noctalia/contributors';
 
 function parseContributor(raw: {
 	login?: string;

@@ -238,7 +238,7 @@
 					>
 						The telemetry module is fully open-source and auditable in our
 						<a
-							href="https://github.com/noctalia-dev/noctalia-shell"
+							href="https://github.com/noctalia-dev/noctalia"
 							class="text-accent underline-offset-4 hover:underline"
 							target="_blank"
 							rel="noopener noreferrer">GitHub repository</a
@@ -273,7 +273,7 @@
 				<p class="text-fg-dim">
 					For questions or concerns, open an issue on our
 					<a
-						href="https://github.com/noctalia-dev/noctalia-shell"
+						href="https://github.com/noctalia-dev/noctalia"
 						class="text-accent underline-offset-4 hover:underline"
 						target="_blank"
 						rel="noopener noreferrer">GitHub repository</a
