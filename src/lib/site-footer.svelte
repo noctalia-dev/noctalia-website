@@ -6,6 +6,7 @@
 
 	const links = [
 		{ href: '/blog', label: 'Blog', external: false },
+		{ href: '/rss.xml', label: 'RSS Feed', external: false },
 		{ href: '/plugins', label: 'Plugins', external: false },
 		{ href: '/themes', label: 'Palettes', external: false },
 		{ href: '/contributors', label: 'Contributors', external: false },

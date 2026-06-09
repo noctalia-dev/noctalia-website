@@ -55,6 +55,7 @@
 <svelte:head>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 	<link rel="canonical" href={canonicalUrl} />
+	<link rel="alternate" type="application/rss+xml" href="/rss+xml" />
 	<meta name="description" content={metaDescription} />
 	<meta name="theme-color" content="#070722" />
 
