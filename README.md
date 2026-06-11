@@ -1,6 +1,6 @@
 # noctalia-website
 
-The official website for [Noctalia](https://noctalia.app), built with SvelteKit and deployed as a static site.
+The official website for [Noctalia](https://noctalia.dev), built with SvelteKit and deployed as a static site.
 
 ## Setup
 
