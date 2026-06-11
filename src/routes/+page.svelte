@@ -51,7 +51,7 @@
 			{
 				icon: 'plugins',
 				title: 'Plugins Available',
-				body: `${data.pluginCount} community plugins to extend functionality`,
+				body: `${data.pluginCount} official v5 plugins so far and growing — v4 had 132 community plugins`,
 				stat: { value: `${data.pluginCount}+` }
 			},
 			{

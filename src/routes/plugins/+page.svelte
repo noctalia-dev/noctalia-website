@@ -12,32 +12,33 @@
 		version: string;
 		author: string;
 		description: string;
-		repository: string;
-		minNoctaliaVersion: string;
-		license: string;
-		lastUpdated: string;
+		minNoctalia: string;
 		tags?: string[];
 		official?: boolean;
+		repo: string;
 	}
-	
+
 	let { data } = $props<{ data: { plugins: Plugin[] } }>();
-	
+
 	let plugins = $state<Plugin[]>([]);
 	let allPlugins = $state<Plugin[]>([]);
 	let loading = $state(false);
 	let error = $state<string | null>(null);
-	let latestUpdate = $state<Plugin | null>(null);
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
 	let selectedTags = $state<string[]>([]);
 	let availableTags = $state<string[]>([]);
-	let showOfficialOnly = $state(false);
-	
+
+	// Split the (filtered) list into the two sources rendered as separate sections.
+	let officialPlugins = $derived(plugins.filter(p => p.official));
+	let communityPlugins = $derived(plugins.filter(p => !p.official));
+	// Does the catalog contain any community plugins at all (ignoring filters)?
+	let hasCommunitySource = $derived(allPlugins.some(p => !p.official));
+	let isFiltering = $derived(Boolean(searchQuery || selectedTags.length > 0));
+
 	onMount(() => {
-		// Sort plugins by last updated
-		allPlugins = data.plugins.sort((a: Plugin, b: Plugin) =>
-			new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-		);
+		// Preserve catalog order
+		allPlugins = data.plugins;
 
 		// Extract all unique tags
 		const tagSet = new Set<string>();
@@ -62,25 +63,15 @@
 
 		plugins = allPlugins;
 
-		// Get the most recently updated plugin
-		if (plugins.length > 0) {
-			latestUpdate = plugins[0];
-		}
-
 		// Check for tag query parameter
 		const urlTag = $page.url.searchParams.get('tag');
 		if (urlTag && availableTags.includes(urlTag)) {
 			selectedTags = [urlTag];
 		}
 	});
-	
+
 	$effect(() => {
 		let filtered = allPlugins;
-
-		// Apply official filter
-		if (showOfficialOnly) {
-			filtered = filtered.filter(plugin => plugin.official === true);
-		}
 
 		// Apply tag filter (OR logic - show plugins matching any selected tag)
 		if (selectedTags.length > 0) {
@@ -110,19 +101,18 @@
 	function clearFilters() {
 		selectedTags = [];
 		searchQuery = '';
-		showOfficialOnly = false;
 	}
-	
-	function getPreviewUrl(pluginId: string, format: 'png' | 'jpg' = 'png'): string {
-		return `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${pluginId}/preview.${format}`;
+
+	function getPreviewUrl(plugin: Plugin, format: 'png' | 'jpg' = 'png'): string {
+		return `https://raw.githubusercontent.com/noctalia-dev/${plugin.repo}/main/${plugin.id}/preview.${format}`;
 	}
-	
-	function handleImageError(e: Event, pluginId: string) {
+
+	function handleImageError(e: Event, plugin: Plugin) {
 		const target = e.target as HTMLImageElement;
 		const currentSrc = target.src;
-		
+
 		if (currentSrc.includes('.png')) {
-			target.src = getPreviewUrl(pluginId, 'jpg');
+			target.src = getPreviewUrl(plugin, 'jpg');
 			target.onerror = () => {
 				target.style.display = 'none';
 				const placeholder = target.nextElementSibling as HTMLElement;
@@ -134,24 +124,6 @@
 			if (placeholder) placeholder.style.display = 'flex';
 		}
 	}
-	
-	function getPluginUrl(pluginId: string): string {
-		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
-	}
-	
-	function formatRelativeDate(dateString: string): string {
-		const date = new Date(dateString);
-		const now = new Date();
-		const diffMs = now.getTime() - date.getTime();
-		const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-		
-		if (diffDays === 0) return 'Today';
-		if (diffDays === 1) return 'Yesterday';
-		if (diffDays < 7) return `${diffDays} days ago`;
-		if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-		if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-		return `${Math.floor(diffDays / 365)} years ago`;
-	}
 </script>
 
 <SiteHeader />
@@ -160,7 +132,7 @@
 	<div class="site-shell w-full">
 		<div class="page-header">
 			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Plugins</h1>
-			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Extend Noctalia with community plugins</p>
+			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Extend Noctalia with official and community plugins</p>
 		</div>
 		
 		{#if loading}
@@ -193,7 +165,7 @@
 							</button>
 						{/if}
 					</div>
-				{#if searchQuery || selectedTags.length > 0 || showOfficialOnly}
+				{#if searchQuery || selectedTags.length > 0}
 					<div class="search-results-info">
 						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
 						<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
@@ -202,14 +174,6 @@
 			</div>
 
 			<div class="tag-filters">
-				<button
-					class="tag-chip official-chip"
-					class:selected={showOfficialOnly}
-					onclick={() => showOfficialOnly = !showOfficialOnly}
-				>
-					<i class="ti ti-shield-check text-sm leading-none" aria-hidden="true"></i>
-					Official
-				</button>
 				{#each availableTags as tag}
 					<button
 						class="tag-chip"
@@ -221,101 +185,92 @@
 				{/each}
 			</div>
 			
-			{#if latestUpdate && !searchQuery && selectedTags.length === 0 && !showOfficialOnly}
-				<div class="latest-update">
-					<div class="latest-badge">Latest Update</div>
-					<div class="latest-content">
-						<div class="latest-preview">
-							<img 
-								src={getPreviewUrl(latestUpdate!.id)} 
-								alt={latestUpdate!.name}
-								onerror={(e) => handleImageError(e, latestUpdate!.id)}
+				{#snippet pluginCard(plugin: Plugin)}
+					<a href="/plugins/{plugin.id}" class="plugin-card">
+						<div class="plugin-preview">
+							<img
+								src={getPreviewUrl(plugin)}
+								alt={plugin.name}
+								onerror={(e) => handleImageError(e, plugin)}
 							/>
 							<div class="preview-placeholder" style="display: none;">
 								<div class="placeholder-icon">📦</div>
 							</div>
-						</div>
-						<div class="latest-info">
-							<h2 class="latest-name">{latestUpdate.name}</h2>
-							<p class="latest-description">{latestUpdate.description}</p>
-							<div class="latest-meta">
-								<span class="latest-version">v{latestUpdate.version}</span>
-								<span class="latest-author">by {latestUpdate.author.split('<')[0].trim()}</span>
-								<span class="latest-date">Updated {formatRelativeDate(latestUpdate.lastUpdated)}</span>
-							</div>
-							<div class="latest-actions">
-								<a
-									href="/plugins/{latestUpdate.id}"
-									class="btn btn-primary"
-								>
-									View Details
-								</a>
+							<div class="preview-overlay">
+								<span class="preview-text">View Details</span>
 							</div>
 						</div>
+						<div class="plugin-info">
+							<div class="plugin-name-row">
+								<h3 class="plugin-name">{plugin.name}</h3>
+								{#if plugin.official}
+									<span class="official-badge" title="Official Plugin">
+										<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
+									</span>
+								{/if}
+							</div>
+							<p class="plugin-description">{plugin.description}</p>
+							{#if plugin.tags && plugin.tags.length > 0}
+								<div class="plugin-tags">
+									{#each plugin.tags as tag}
+										<span class="plugin-tag">{tag}</span>
+									{/each}
+								</div>
+							{/if}
+							<div class="plugin-footer">
+								<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
+								<span class="plugin-version">v{plugin.version}</span>
+							</div>
+							{#if plugin.minNoctalia}
+								<div class="plugin-updated">
+									Requires Noctalia {plugin.minNoctalia}+
+								</div>
+							{/if}
+						</div>
+					</a>
+				{/snippet}
+
+				{#if isFiltering && plugins.length === 0}
+					<div class="no-results">
+						<div class="no-results-icon">🔍</div>
+						<h3>No plugins found</h3>
+						<p>Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}>clear all filters</button></p>
 					</div>
-				</div>
-			{/if}
-			
-				<div class="plugins-section">
-					<h2 class="section-title">
-						{searchQuery || selectedTags.length > 0 || showOfficialOnly ? 'Results' : 'All Plugins'}
-					</h2>
-					{#if plugins.length === 0 && (searchQuery || selectedTags.length > 0 || showOfficialOnly)}
-						<div class="no-results">
-							<div class="no-results-icon">🔍</div>
-							<h3>No plugins found</h3>
-							<p>Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}>clear all filters</button></p>
-						</div>
-					{:else}
-						<div class="plugins-grid">
-						{#each plugins as plugin}
-							<a 
-								href="/plugins/{plugin.id}"
-								class="plugin-card"
-							>
-								<div class="plugin-preview">
-									<img 
-										src={getPreviewUrl(plugin.id)} 
-										alt={plugin.name}
-										onerror={(e) => handleImageError(e, plugin.id)}
-									/>
-									<div class="preview-placeholder" style="display: none;">
-										<div class="placeholder-icon">📦</div>
-									</div>
-									<div class="preview-overlay">
-										<span class="preview-text">View Details</span>
-									</div>
-								</div>
-								<div class="plugin-info">
-									<div class="plugin-name-row">
-										<h3 class="plugin-name">{plugin.name}</h3>
-											{#if plugin.official}
-												<span class="official-badge" title="Official Plugin">
-													<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
-												</span>
-											{/if}
-									</div>
-									<p class="plugin-description">{plugin.description}</p>
-									{#if plugin.tags && plugin.tags.length > 0}
-										<div class="plugin-tags">
-											{#each plugin.tags as tag}
-												<span class="plugin-tag">{tag}</span>
-											{/each}
-										</div>
-									{/if}
-									<div class="plugin-footer">
-										<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
-										<span class="plugin-version">v{plugin.version}</span>
-									</div>
-									<div class="plugin-updated">
-										Updated {formatRelativeDate(plugin.lastUpdated)}
-									</div>
-								</div>
-							</a>
-						{/each}
-						</div>
-					{/if}
-				</div>
+				{:else}
+					<div class="plugins-section">
+						<h2 class="section-title">Official Plugins</h2>
+						{#if officialPlugins.length > 0}
+							<div class="plugins-grid">
+								{#each officialPlugins as plugin}
+									{@render pluginCard(plugin)}
+								{/each}
+							</div>
+						{:else}
+							<p class="source-empty">No official plugins match your filters.</p>
+						{/if}
+					</div>
+
+					<hr class="source-separator" />
+
+					<div class="plugins-section">
+						<h2 class="section-title">Community Plugins</h2>
+						{#if communityPlugins.length > 0}
+							<div class="plugins-grid">
+								{#each communityPlugins as plugin}
+									{@render pluginCard(plugin)}
+								{/each}
+							</div>
+						{:else if isFiltering}
+							<p class="source-empty">No community plugins match your filters.</p>
+						{:else}
+							<div class="source-coming-soon">
+								<div class="coming-soon-icon">🌱</div>
+								<h3>Community plugins are coming soon</h3>
+								<p>Build your own and share it with the Noctalia community.</p>
+							</div>
+						{/if}
+					</div>
+				{/if}
 		{/if}
 	</div>
 </main>
@@ -482,16 +437,6 @@
 			inset 0 1px 0 0 rgb(255 255 255 / 0.25);
 	}
 
-	.official-chip {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.375rem;
-	}
-
-	.official-chip .ti {
-		flex-shrink: 0;
-	}
-
 	.no-results {
 		text-align: center;
 		padding: 4rem 2rem;
@@ -555,114 +500,10 @@
 		to { transform: rotate(360deg); }
 	}
 	
-	.latest-update {
-		margin-bottom: 4rem;
-		padding: 2.5rem;
-		border-radius: 1.5rem;
-		background: linear-gradient(135deg, var(--mSurfaceVariant), var(--mSurface));
-		border: 2px solid var(--mOutline);
-		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-		position: relative;
-		overflow: hidden;
-	}
-	
-	.latest-badge {
-		display: inline-block;
-		padding: 0.5rem 1rem;
-		background: var(--mPrimary);
-		color: var(--mOnPrimary);
-		border-radius: 0.5rem;
-		font-size: 0.875rem;
-		font-weight: 600;
-		margin-bottom: 1.5rem;
-		text-transform: uppercase;
-		letter-spacing: 0.1em;
-	}
-	
-	.latest-content {
-		display: grid;
-		grid-template-columns: 400px 1fr;
-		gap: 2.5rem;
-		align-items: center;
-	}
-	
-	.latest-preview {
-		border-radius: 1rem;
-		overflow: hidden;
-		background: var(--mSurface);
-		border: 1px solid var(--mOutline);
-		aspect-ratio: 16 / 9;
-		position: relative;
-	}
-	
-	.latest-preview img {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-	}
-	
-	.latest-info {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	
-	.latest-name {
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--mOnSurface);
-		letter-spacing: -0.02em;
-	}
-	
-	.latest-description {
-		font-size: 1.125rem;
-		color: var(--mOnSurfaceVariant);
-		line-height: 1.7;
-	}
-	
-	.latest-meta {
-		display: flex;
-		gap: 1.5rem;
-		flex-wrap: wrap;
-		align-items: center;
-	}
-	
-	.latest-version {
-		padding: 0.5rem 1rem;
-		background: rgba(255, 245, 155, 0.2);
-		color: var(--mPrimary);
-		border-radius: 0.5rem;
-		font-weight: 600;
-		font-size: 0.9375rem;
-	}
-	
-	:global([data-theme='light']) .latest-version {
-		background: rgba(93, 101, 245, 0.15);
-		color: var(--mPrimary);
-	}
-	
-	.latest-author {
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.9375rem;
-	}
-	
-	.latest-date {
-		color: var(--mPrimary);
-		font-size: 0.9375rem;
-		font-weight: 500;
-		opacity: 0.8;
-	}
-	
-	.latest-actions {
-		display: flex;
-		gap: 1rem;
-		margin-top: 0.5rem;
-	}
-	
 	.plugins-section {
 		margin-top: 4rem;
 	}
-	
+
 	.section-title {
 		font-size: 2.5rem;
 		font-weight: 700;
@@ -670,7 +511,44 @@
 		margin-bottom: 2rem;
 		letter-spacing: -0.02em;
 	}
-	
+
+	.source-separator {
+		margin-top: 4rem;
+		border: none;
+		border-top: 1px solid var(--mOutline);
+	}
+
+	.source-empty {
+		color: var(--mOnSurfaceVariant);
+		font-size: 1rem;
+	}
+
+	.source-coming-soon {
+		text-align: center;
+		padding: 3rem 2rem;
+		border: 1px dashed var(--mOutline);
+		border-radius: 1rem;
+		background: var(--mSurfaceVariant);
+		color: var(--mOnSurfaceVariant);
+	}
+
+	.coming-soon-icon {
+		font-size: 3rem;
+		margin-bottom: 0.75rem;
+		opacity: 0.7;
+	}
+
+	.source-coming-soon h3 {
+		font-size: 1.5rem;
+		color: var(--mOnSurface);
+		margin-bottom: 0.5rem;
+	}
+
+	.source-coming-soon p {
+		font-size: 1rem;
+		line-height: 1.6;
+	}
+
 	.plugins-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -856,51 +734,7 @@
 	}
 	
 	
-	.btn {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		gap: 0.5rem;
-		padding: 0.875rem 1.5rem;
-		border-radius: 0.75rem;
-		font-weight: 600;
-		font-size: 1rem;
-		text-decoration: none;
-		border: none;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-	
-	.btn-primary {
-		background: var(--mPrimary);
-		color: var(--mOnPrimary);
-		box-shadow: 0 4px 20px rgba(255, 245, 155, 0.3);
-		transition: all 0.3s ease;
-	}
-	
-	.btn-primary:hover {
-		transform: translateY(-2px);
-		box-shadow: 0 8px 30px rgba(255, 245, 155, 0.4);
-		filter: brightness(1.1);
-	}
-	
-	:global([data-theme='light']) .btn-primary {
-		box-shadow: 0 4px 20px rgba(93, 101, 245, 0.25);
-	}
-	
-	:global([data-theme='light']) .btn-primary:hover {
-		box-shadow: 0 8px 30px rgba(93, 101, 245, 0.35);
-	}
-	
 	@media (max-width: 768px) {
-		.latest-content {
-			grid-template-columns: 1fr;
-		}
-
-		.latest-preview {
-			max-width: 100%;
-		}
-
 		.plugins-grid {
 			grid-template-columns: 1fr;
 		}

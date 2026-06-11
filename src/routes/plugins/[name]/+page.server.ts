@@ -6,9 +6,9 @@ import { githubFetch } from '$lib/github.server';
 const readmeCache = new Map<string, { content: string | null; timestamp: number }>();
 const CACHE_TTL = 60 * 60 * 1000;
 
-function rewriteRelativeUrls(content: string, pluginId: string): string {
-	const rawBase = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${pluginId}/`;
-	const githubBase = `https://github.com/noctalia-dev/noctalia-plugins/blob/main/${pluginId}/`;
+function rewriteRelativeUrls(content: string, repo: string, pluginId: string): string {
+	const rawBase = `https://raw.githubusercontent.com/noctalia-dev/${repo}/main/${pluginId}/`;
+	const githubBase = `https://github.com/noctalia-dev/${repo}/blob/main/${pluginId}/`;
 	let result = content.replace(
 		/!\[([^\]]*)\]\((?!https?:\/\/)(?!\/)([^)]+)\)/g,
 		(_, alt, path) => `![${alt}](${rawBase}${path})`
@@ -26,7 +26,7 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 	if (cached && now - cached.timestamp < CACHE_TTL) {
 		return cached.content;
 	}
-	const readmeUrl = `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${plugin.id}/README.md`;
+	const readmeUrl = `https://raw.githubusercontent.com/noctalia-dev/${plugin.repo}/main/${plugin.id}/README.md`;
 	try {
 		const response = await githubFetch(readmeUrl);
 		if (!response.ok) {
@@ -34,7 +34,7 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 			return null;
 		}
 		const raw = await response.text();
-		const content = rewriteRelativeUrls(raw, plugin.id);
+		const content = rewriteRelativeUrls(raw, plugin.repo, plugin.id);
 		readmeCache.set(plugin.id, { content, timestamp: now });
 		return content;
 	} catch (err) {

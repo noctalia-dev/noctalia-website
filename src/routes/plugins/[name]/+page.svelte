@@ -10,27 +10,25 @@
 		version: string;
 		author: string;
 		description: string;
-		repository: string;
-		minNoctaliaVersion: string;
-		license: string;
-		lastUpdated: string;
+		minNoctalia: string;
 		tags?: string[];
 		official?: boolean;
+		repo: string;
 	}
 
 	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
 
 
-	function getPreviewUrl(pluginId: string, format: 'png' | 'jpg' = 'png'): string {
-		return `https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/${pluginId}/preview.${format}`;
+	function getPreviewUrl(format: 'png' | 'jpg' = 'png'): string {
+		return `https://raw.githubusercontent.com/noctalia-dev/${data.plugin.repo}/main/${data.plugin.id}/preview.${format}`;
 	}
 
-	function handleImageError(e: Event, pluginId: string) {
+	function handleImageError(e: Event) {
 		const target = e.target as HTMLImageElement;
 		const currentSrc = target.src;
 
 		if (currentSrc.includes('.png')) {
-			target.src = getPreviewUrl(pluginId, 'jpg');
+			target.src = getPreviewUrl('jpg');
 			target.onerror = () => {
 				target.style.display = 'none';
 				const placeholder = target.nextElementSibling as HTMLElement;
@@ -43,13 +41,8 @@
 		}
 	}
 
-	function getPluginUrl(pluginId: string): string {
-		return `https://github.com/noctalia-dev/noctalia-plugins/tree/main/${pluginId}`;
-	}
-
-	function formatDate(dateString: string): string {
-		const date = new Date(dateString);
-		return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+	function getPluginUrl(): string {
+		return `https://github.com/noctalia-dev/${data.plugin.repo}/tree/main/${data.plugin.id}`;
 	}
 
 	function renderMarkdown(content: string): string {
@@ -69,9 +62,9 @@
 		<div class="hero-section">
 			<div class="hero-image">
 				<img
-					src={getPreviewUrl(data.plugin.id)}
+					src={getPreviewUrl()}
 					alt={data.plugin.name}
-					onerror={(e) => handleImageError(e, data.plugin.id)}
+					onerror={(e) => handleImageError(e)}
 				/>
 				<div class="preview-placeholder" style="display: none;">
 					<div class="placeholder-icon">📦</div>
@@ -100,14 +93,12 @@
 					<i class="ti ti-user text-sm leading-none" aria-hidden="true"></i>
 					{data.plugin.author}
 				</span>
-				<span class="badge">
-					<i class="ti ti-file-description text-sm leading-none" aria-hidden="true"></i>
-					{data.plugin.license}
-				</span>
-				<span class="badge">
-					<i class="ti ti-calendar text-sm leading-none" aria-hidden="true"></i>
-					{formatDate(data.plugin.lastUpdated)}
-				</span>
+				{#if data.plugin.minNoctalia}
+					<span class="badge">
+						<i class="ti ti-versions text-sm leading-none" aria-hidden="true"></i>
+						Requires Noctalia {data.plugin.minNoctalia}+
+					</span>
+				{/if}
 			</div>
 
 		{#if data.plugin.tags && data.plugin.tags.length > 0}
@@ -129,7 +120,7 @@
 
 		<div class="actions">
 			<a
-				href={getPluginUrl(data.plugin.id)}
+				href={getPluginUrl()}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="github-btn"

@@ -1,15 +1,11 @@
 import { SEO_HOME } from '$lib/seo';
 import { githubFetch } from '$lib/github.server';
+import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
 
 async function getPluginCount(): Promise<number> {
 	try {
-		const response = await fetch(
-			'https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json'
-		);
-		if (response.ok) {
-			const data = await response.json();
-			return data.plugins?.length || 0;
-		}
+		const plugins = await getRegistryPlugins();
+		return plugins.filter(isValidPlugin).length;
 	} catch (err) {
 		console.error('Error fetching plugin count:', err);
 	}

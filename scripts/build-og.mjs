@@ -12,6 +12,7 @@ import { Resvg } from '@resvg/resvg-js';
 import { createElement as h } from 'react';
 import sharp from 'sharp';
 import satori from 'satori';
+import { parse as parseToml } from 'smol-toml';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -32,8 +33,11 @@ function clip(s, max = 240) {
 	return `${t.slice(0, max - 1).trim()}…`;
 }
 
-const REQUIRED_FIELDS = ['id', 'name', 'version', 'author', 'description', 'license', 'lastUpdated'];
+const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'];
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
+
+/** Plugin sources, rendered in this order (official first, then community). */
+const PLUGIN_SOURCES = ['official-plugins', 'community-plugins'];
 
 function isValidPlugin(plugin) {
 	if (!plugin || typeof plugin !== 'object') return false;
@@ -41,7 +45,7 @@ function isValidPlugin(plugin) {
 		if (typeof plugin[field] !== 'string' || !plugin[field].trim()) return false;
 	}
 	const id = plugin.id;
-	if (!/^[a-z0-9][a-z0-9-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) return false;
+	if (!/^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) return false;
 	if (RESERVED_IDS.includes(id.toLowerCase())) return false;
 	return true;
 }
@@ -355,20 +359,40 @@ async function main() {
 		await w(`og/blog/${slug}.webp`, postTitle, desc);
 	}
 
-	try {
-		const res = await fetch('https://raw.githubusercontent.com/noctalia-dev/noctalia-plugins/main/registry.json');
-		if (res.ok) {
-			const data = await res.json();
-			const plugins = (data.plugins || []).filter(isValidPlugin);
-			for (const p of plugins) {
-				const mint = 'Plugin: ' + p.name;
-				await w(`og/plugin/${p.id}.webp`, mint, p.description);
+	for (const repo of PLUGIN_SOURCES) {
+		const base = `https://raw.githubusercontent.com/noctalia-dev/${repo}/main`;
+		try {
+			const res = await fetch(`${base}/catalog.toml`);
+			if (!res.ok) {
+				console.warn(`Skipping ${repo} OG images: catalog returned`, res.status);
+				continue;
 			}
-		} else {
-			console.warn('Skipping plugin OG images: registry returned', res.status);
+			const catalog = parseToml(await res.text());
+			const rows = Array.isArray(catalog.plugin) ? catalog.plugin : [];
+			for (const row of rows) {
+				const slug = typeof row.id === 'string' ? row.id.split('/').pop() : '';
+				const plugin = {
+					id: slug,
+					name: typeof row.name === 'string' ? row.name : '',
+					version: typeof row.version === 'string' ? row.version : '',
+					author: typeof row.author === 'string' ? row.author : '',
+					description: ''
+				};
+				try {
+					const manifestRes = await fetch(`${base}/${slug}/plugin.toml`);
+					if (manifestRes.ok) {
+						const manifest = parseToml(await manifestRes.text());
+						if (typeof manifest.description === 'string') plugin.description = manifest.description;
+					}
+				} catch {
+					/* description stays empty */
+				}
+				if (!isValidPlugin(plugin)) continue;
+				await w(`og/plugin/${plugin.id}.webp`, 'Plugin: ' + plugin.name, plugin.description);
+			}
+		} catch (e) {
+			console.warn(`Skipping ${repo} OG images (offline or network error):`, e?.message || e);
 		}
-	} catch (e) {
-		console.warn('Skipping plugin OG images (offline or network error):', e?.message || e);
 	}
 
 	await saveInputCache(nextCache);
