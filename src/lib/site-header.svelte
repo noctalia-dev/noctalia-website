@@ -92,6 +92,16 @@
 		</nav>
 
 		<div class="relative z-10 flex shrink-0 items-center justify-end gap-2 md:gap-2.5">
+			<a
+				href="/rss.xml"
+				target="_blank"
+				rel="noopener noreferrer"
+				class={themeToggleClass}
+				aria-label="Open RSS feed"
+				title="RSS feed"
+			>
+				<i class="ti ti-rss text-base leading-none" aria-hidden="true"></i>
+			</a>
 			<button
 				type="button"
 				class={themeToggleClass}
