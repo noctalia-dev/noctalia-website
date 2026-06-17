@@ -15,7 +15,7 @@ export async function load() {
 			communityThemes = themes.map((theme: any) => ({
 				name: theme.name,
 				path: '',
-				html_url: 'https://github.com/noctalia-dev/noctalia-colorschemes',
+				html_url: 'https://github.com/noctalia-dev/community-palettes',
 				swatches: extractCommunitySwatches(theme.dark),
 				darkSwatches: extractCommunitySwatches(theme.dark),
 				lightSwatches: extractCommunitySwatches(theme.light)
