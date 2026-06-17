@@ -1,11 +1,11 @@
 <script lang="ts">
-import { onMount } from 'svelte';
-import SiteHeader from '$lib/site-header.svelte';
-import SiteFooter from '$lib/site-footer.svelte';
-import ScrollToTop from '$lib/scroll-to-top.svelte';
-import Fuse from 'fuse.js';
+	import {onMount} from 'svelte';
+	import SiteHeader from '$lib/site-header.svelte';
+	import SiteFooter from '$lib/site-footer.svelte';
+	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import Fuse from 'fuse.js';
 
-interface ThemeItem {
+	interface ThemeItem {
 	name: string;
 	path: string;
 	html_url: string;
@@ -14,28 +14,19 @@ interface ThemeItem {
 	lightSwatches: string[];
 }
 
-let { data } = $props<{ data: { coreThemes: ThemeItem[], communityThemes: ThemeItem[] } }>();
-let coreThemes = $state<ThemeItem[]>([]);
+let { data } = $props<{ data: { communityThemes: ThemeItem[] } }>();
 let communityThemes = $state<ThemeItem[]>([]);
-let allCoreThemes = $state<ThemeItem[]>([]);
 let allCommunityThemes = $state<ThemeItem[]>([]);
 let searchQuery = $state('');
-let fuse: Fuse<ThemeItem & { isCore: boolean }> | null = $state(null);
+let fuse: Fuse<ThemeItem> | null = $state(null);
 let isDarkMode = $state(true);
 
 onMount(() => {
-	allCoreThemes = data.coreThemes || [];
 	allCommunityThemes = data.communityThemes || [];
-	coreThemes = allCoreThemes.slice();
 	communityThemes = allCommunityThemes.slice();
 
-	// Combine both for search, tagging each with isCore
-	const allThemes = [
-		...allCoreThemes.map(t => ({ ...t, isCore: true })),
-		...allCommunityThemes.map(t => ({ ...t, isCore: false }))
-	];
 
-	fuse = new Fuse(allThemes, {
+	fuse = new Fuse(allCommunityThemes, {
 		keys: ['name'],
 		threshold: 0.35,
 		includeScore: true
@@ -57,13 +48,10 @@ onMount(() => {
 
 $effect(() => {
 	if (!searchQuery.trim() || !fuse) {
-		coreThemes = allCoreThemes.slice();
 		communityThemes = allCommunityThemes.slice();
 		return;
 	}
-	const results = fuse.search(searchQuery).map((r) => r.item);
-	coreThemes = results.filter(t => t.isCore);
-	communityThemes = results.filter(t => !t.isCore);
+	communityThemes = fuse.search(searchQuery).map((r) => r.item);
 });
 
 function getSwatches(theme: ThemeItem): string[] {
@@ -103,34 +91,14 @@ function getSwatches(theme: ThemeItem): string[] {
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
-					Found {coreThemes.length + communityThemes.length} {coreThemes.length + communityThemes.length === 1 ? 'palette' : 'palettes'}
+					Found {communityThemes.length} {communityThemes.length === 1 ? 'palette' : 'palettes'}
 				</div>
 			{/if}
 		</div>
 
-		{#if coreThemes.length === 0 && communityThemes.length === 0}
+		{#if communityThemes.length === 0}
 			<div class="empty">No palettes found.</div>
 		{:else}
-			{#if coreThemes.length > 0}
-				<div class="section">
-					<h2 class="section-title">Core Palettes</h2>
-					<p class="section-subtitle">Built-in palettes included with Noctalia.</p>
-					<div class="themes-grid">
-						{#each coreThemes as theme}
-							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
-								<div class="theme-card-header">
-									<h3 class="theme-name">{theme.name}</h3>
-								</div>
-								<div class="swatches">
-									{#each getSwatches(theme) as col}
-										<div class="swatch" style="background:{col}" title={col}></div>
-									{/each}
-								</div>
-							</a>
-						{/each}
-					</div>
-				</div>
-			{/if}
 
 			{#if communityThemes.length > 0}
 				<div class="section">
