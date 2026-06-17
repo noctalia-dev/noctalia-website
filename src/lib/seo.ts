@@ -40,7 +40,7 @@ export const SEO_PLUGINS_INDEX: PageSeo = {
 	ogImagePath: '/og/plugins.webp'
 };
 
-export const SEO_THEMES: PageSeo = {
+export const SEO_PALETTES: PageSeo = {
 	title: `Palettes  -  ${SITE_NAME}`,
 	description: 'Explore color palettes for Noctalia Shell.',
 	pathLabel: 'Palettes',

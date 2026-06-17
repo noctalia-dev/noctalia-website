@@ -8,7 +8,7 @@
 		{ href: '/blog', label: 'Blog', external: false },
 		{ href: '/rss.xml', label: 'RSS Feed', external: false },
 		{ href: '/plugins', label: 'Plugins', external: false },
-		{ href: '/themes', label: 'Palettes', external: false },
+		{ href: '/palettes', label: 'Palettes', external: false },
 		{ href: '/contributors', label: 'Contributors', external: false },
 		{ href: DOCS_BASE_URL, label: 'Docs', external: true },
 		{ href: 'https://discord.noctalia.dev', label: 'Discord', external: true },

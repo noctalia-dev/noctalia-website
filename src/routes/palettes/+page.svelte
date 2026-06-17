@@ -1,68 +1,78 @@
 <script lang="ts">
-	import {onMount} from 'svelte';
+	import { onMount } from 'svelte';
 	import SiteHeader from '$lib/site-header.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
 
-	interface ThemeItem {
-	name: string;
-	path: string;
-	html_url: string;
-	swatches: string[];
-	darkSwatches: string[];
-	lightSwatches: string[];
-}
-
-let { data } = $props<{ data: { communityThemes: ThemeItem[] } }>();
-let communityThemes = $state<ThemeItem[]>([]);
-let allCommunityThemes = $state<ThemeItem[]>([]);
-let searchQuery = $state('');
-let fuse: Fuse<ThemeItem> | null = $state(null);
-let isDarkMode = $state(true);
-
-onMount(() => {
-	allCommunityThemes = data.communityThemes || [];
-	communityThemes = allCommunityThemes.slice();
-
-
-	fuse = new Fuse(allCommunityThemes, {
-		keys: ['name'],
-		threshold: 0.35,
-		includeScore: true
-	});
-
-	// Detect current theme mode
-	const currentTheme = document.documentElement.getAttribute('data-theme');
-	isDarkMode = currentTheme !== 'light';
-
-	// Listen for theme changes
-	const observer = new MutationObserver(() => {
-		const theme = document.documentElement.getAttribute('data-theme');
-		isDarkMode = theme !== 'light';
-	});
-
-	observer.observe(document.documentElement, { attributes: true });
-	return () => observer.disconnect();
-});
-
-$effect(() => {
-	if (!searchQuery.trim() || !fuse) {
-		communityThemes = allCommunityThemes.slice();
-		return;
+	interface PaletteItem {
+		name: string;
+		path: string;
+		swatches: string[];
+		darkSwatches: string[];
+		lightSwatches: string[];
 	}
-	communityThemes = fuse.search(searchQuery).map((r) => r.item);
-});
 
-function getSwatches(theme: ThemeItem): string[] {
-	return isDarkMode ? theme.darkSwatches : theme.lightSwatches;
-}
+	let { data } = $props<{ data: { corePalettes: PaletteItem[], communityPalettes: PaletteItem[] } }>();
+	let corePalettes = $state<PaletteItem[]>([]);
+	let communityPalettes = $state<PaletteItem[]>([]);
+	let allCorePalettes = $state<PaletteItem[]>([]);
+	let allCommunityPalettes = $state<PaletteItem[]>([]);
+	let searchQuery = $state('');
+	let fuse: Fuse<PaletteItem & { isCore: boolean }> | null = $state(null);
+	let isDarkMode = $state(true);
 
+	onMount(() => {
+		allCorePalettes = data.corePalettes || [];
+		allCommunityPalettes = data.communityPalettes || [];
+		corePalettes = allCorePalettes.slice();
+		communityPalettes = allCommunityPalettes.slice();
+
+		// Combine both for search, tagging each with isCore
+		const allPalettes = [
+			...allCorePalettes.map(p => ({ ...p, isCore: true })),
+			...allCommunityPalettes.map(p => ({ ...p, isCore: false }))
+		];
+
+		fuse = new Fuse(allPalettes, {
+			keys: ['name'],
+			threshold: 0.35,
+			includeScore: true
+		});
+
+		// Detect current theme mode
+		const currentTheme = document.documentElement.getAttribute('data-theme');
+		isDarkMode = currentTheme !== 'light';
+
+		// Listen for theme changes
+		const observer = new MutationObserver(() => {
+			const theme = document.documentElement.getAttribute('data-theme');
+			isDarkMode = theme !== 'light';
+		});
+
+		observer.observe(document.documentElement, { attributes: true });
+		return () => observer.disconnect();
+	});
+
+	$effect(() => {
+		if (!searchQuery.trim() || !fuse) {
+			corePalettes = allCorePalettes.slice();
+			communityPalettes = allCommunityPalettes.slice();
+			return;
+		}
+		const results = fuse.search(searchQuery).map((r) => r.item);
+		corePalettes = results.filter(p => p.isCore);
+		communityPalettes = results.filter(p => !p.isCore);
+	});
+
+	function getSwatches(palette: PaletteItem): string[] {
+		return isDarkMode ? palette.darkSwatches : palette.lightSwatches;
+	}
 </script>
 
 <SiteHeader />
 
-<main class="themes-page site-main">
+<main class="palettes-page site-main">
 	<div class="site-shell">
 		<div class="page-header">
 			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Palettes</h1>
@@ -91,31 +101,54 @@ function getSwatches(theme: ThemeItem): string[] {
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
-					Found {communityThemes.length} {communityThemes.length === 1 ? 'palette' : 'palettes'}
+					Found {corePalettes.length + communityPalettes.length} {corePalettes.length + communityPalettes.length === 1 ? 'palette' : 'palettes'}
 				</div>
 			{/if}
 		</div>
 
-		{#if communityThemes.length === 0}
+		{#if corePalettes.length === 0 && communityPalettes.length === 0}
 			<div class="empty">No palettes found.</div>
 		{:else}
-
-			{#if communityThemes.length > 0}
+			{#if corePalettes.length > 0}
 				<div class="section">
-					<h2 class="section-title">Community Palettes</h2>
-					<p class="section-subtitle">Palettes created by the community, downloadable within Noctalia.</p>
-					<div class="themes-grid">
-						{#each communityThemes as theme}
-							<a class="theme-card" href={theme.html_url} target="_blank" rel="noopener noreferrer">
-								<div class="theme-card-header">
-									<h3 class="theme-name">{theme.name}</h3>
+					<h2 class="section-title">Core Palettes</h2>
+					<p class="section-subtitle">Built-in palettes included with Noctalia.</p>
+					<div class="palettes-grid">
+						{#each corePalettes as palette}
+							<div class="palette-card">
+								<div class="palette-card-header">
+									<h3 class="palette-name">{palette.name}</h3>
 								</div>
 								<div class="swatches">
-									{#each getSwatches(theme) as col}
+									{#each getSwatches(palette) as col}
 										<div class="swatch" style="background:{col}" title={col}></div>
 									{/each}
 								</div>
-							</a>
+							</div>
+						{/each}
+					</div>
+				</div>
+			{/if}
+
+			{#if communityPalettes.length > 0}
+				<div class="section">
+					<h2 class="section-title">Community Palettes</h2>
+					<p class="section-subtitle">
+						Palettes created by the community, downloadable within Noctalia.
+						<a class="section-link" href="https://github.com/noctalia-dev/community-palettes" target="_blank" rel="noopener noreferrer">Contribute on GitHub</a>
+					</p>
+					<div class="palettes-grid">
+						{#each communityPalettes as palette}
+							<div class="palette-card">
+								<div class="palette-card-header">
+									<h3 class="palette-name">{palette.name}</h3>
+								</div>
+								<div class="swatches">
+									{#each getSwatches(palette) as col}
+										<div class="swatch" style="background:{col}" title={col}></div>
+									{/each}
+								</div>
+							</div>
 						{/each}
 					</div>
 				</div>
@@ -229,13 +262,12 @@ function getSwatches(theme: ThemeItem): string[] {
 		margin-bottom: 1.5rem;
 	}
 
-	.themes-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:1.25rem }
-	.theme-card {
+	.palettes-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:1.25rem }
+	.palette-card {
 		background: var(--mSurface);
 		border: 1.5px solid var(--mOutline);
 		padding: 1.25rem;
 		border-radius: 1rem;
-		cursor: pointer;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
@@ -246,7 +278,19 @@ function getSwatches(theme: ThemeItem): string[] {
 		overflow: hidden;
 	}
 
-	.theme-card::before {
+	.section-link {
+		margin-left: 0.5rem;
+		font-size: 0.875rem;
+		color: var(--mPrimary);
+		text-decoration: none;
+		white-space: nowrap;
+	}
+
+	.section-link:hover {
+		text-decoration: underline;
+	}
+
+	.palette-card::before {
 		content: '';
 		position: absolute;
 		inset: 0;
@@ -256,17 +300,17 @@ function getSwatches(theme: ThemeItem): string[] {
 		pointer-events: none;
 	}
 
-	.theme-card:hover {
+	.palette-card:hover {
 		transform: translateY(-8px);
 		border-color: var(--mPrimary);
 		box-shadow: 0 16px 40px rgba(255, 245, 155, 0.15), 0 0 0 1px rgba(255, 245, 155, 0.2);
 	}
 
-	:global([data-theme='light']) .theme-card:hover {
+	:global([data-theme='light']) .palette-card:hover {
 		box-shadow: 0 16px 40px rgba(93, 101, 245, 0.15), 0 0 0 1px rgba(93, 101, 245, 0.2);
 	}
 
-	.theme-card-header {
+	.palette-card-header {
 		display: flex;
 		flex-direction: column;
 		gap: 0.5rem;
@@ -274,7 +318,7 @@ function getSwatches(theme: ThemeItem): string[] {
 		z-index: 1;
 	}
 
-	.theme-name {
+	.palette-name {
 		margin: 0;
 		font-size: 1.125rem;
 		font-weight: 600;
@@ -299,20 +343,20 @@ function getSwatches(theme: ThemeItem): string[] {
 		transition: transform 0.2s ease;
 	}
 
-	.theme-card:hover .swatch {
+	.palette-card:hover .swatch {
 		transform: scale(1.05);
 	}
 
 	.empty { padding:2rem; text-align:center; color:var(--mOnSurfaceVariant) }
 
 	@media (max-width: 1024px) {
-		.themes-grid { grid-template-columns: repeat(3, 1fr); }
+		.palettes-grid { grid-template-columns: repeat(3, 1fr); }
 	}
 
 	@media (max-width: 768px) {
-		.themes-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
-		.theme-card { padding: 1rem; }
-		.theme-name { font-size: 1rem; }
+		.palettes-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+		.palette-card { padding: 1rem; }
+		.palette-name { font-size: 1rem; }
 		.swatches { gap: 6px; }
 	}
 

@@ -9,7 +9,7 @@ import {
 	SEO_HOME,
 	SEO_PLUGINS_INDEX,
 	SEO_PRIVACY,
-	SEO_THEMES,
+	SEO_PALETTES,
 	seoBlogPost,
 	seoPlugin
 } from '$lib/seo';
@@ -79,8 +79,8 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 		}
 		return { seo: seoPlugin(raw), normalizedPath, notFound: false, unknown: false };
 	}
-	if (normalizedPath === '/themes' || normalizedPath === '/themes/') {
-		return { seo: SEO_THEMES, normalizedPath: '/themes', notFound: false, unknown: false };
+	if (normalizedPath === '/palettes' || normalizedPath === '/palettes/') {
+		return { seo: SEO_PALETTES, normalizedPath: '/palettes', notFound: false, unknown: false };
 	}
 	if (normalizedPath === '/privacy' || normalizedPath === '/privacy/') {
 		return { seo: SEO_PRIVACY, normalizedPath: '/privacy', notFound: false, unknown: false };

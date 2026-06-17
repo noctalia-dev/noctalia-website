@@ -12,7 +12,7 @@
 		{ href: '/', label: 'Home' },
 		{ href: '/blog', label: 'Blog' },
 		{ href: '/plugins', label: 'Plugins' },
-		{ href: '/themes', label: 'Palettes' }
+		{ href: '/palettes', label: 'Palettes' }
 	] as const;
 
 	function navActive(href: string, pathname: string): boolean {

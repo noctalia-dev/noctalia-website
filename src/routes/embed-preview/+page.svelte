@@ -81,7 +81,7 @@
 		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/plugins"
 			>Plugins</a
 		>
-		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/themes"
+		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/palettes"
 			>Palettes</a
 		>
 		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/privacy"
