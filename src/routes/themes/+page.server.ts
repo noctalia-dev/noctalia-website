@@ -1,21 +1,9 @@
-import coreColorschemes from '$lib/data/core-colorschemes.json';
 import { SEO_THEMES } from '$lib/seo';
 
-const coreSwatchKeys = ['mPrimary', 'mSecondary', 'mTertiary', 'mError', 'mSurface', 'mSurfaceVariant'];
 const communitySwatchKeys = ['primary', 'secondary', 'tertiary', 'error', 'surface', 'surfaceVariant'];
-const extractSwatches = (variant: any) => coreSwatchKeys.map(k => variant?.[k]).filter(Boolean);
 const extractCommunitySwatches = (variant: any) => communitySwatchKeys.map(k => variant?.[k]).filter(Boolean);
 
 export async function load() {
-	// Process core themes from static file
-	const coreThemes = (coreColorschemes.themes || []).map((theme: any) => ({
-		name: theme.name,
-		path: theme.path,
-		html_url: `https://github.com/noctalia-dev/noctalia/tree/main/Assets/ColorScheme/${encodeURIComponent(theme.path)}`,
-		swatches: extractSwatches(theme.dark),
-		darkSwatches: extractSwatches(theme.dark),
-		lightSwatches: extractSwatches(theme.light)
-	})).sort((a: any, b: any) => a.name.localeCompare(b.name));
 
 	// Fetch community themes from API
 	let communityThemes: any[] = [];
@@ -27,7 +15,7 @@ export async function load() {
 			communityThemes = themes.map((theme: any) => ({
 				name: theme.name,
 				path: '',
-				html_url: 'https://github.com/noctalia-dev/noctalia-colorschemes',
+				html_url: 'https://github.com/noctalia-dev/community-palettes',
 				swatches: extractCommunitySwatches(theme.dark),
 				darkSwatches: extractCommunitySwatches(theme.dark),
 				lightSwatches: extractCommunitySwatches(theme.light)
@@ -39,5 +27,5 @@ export async function load() {
 		console.error('Error fetching community palettes:', error);
 	}
 
-	return { coreThemes, communityThemes, seo: SEO_THEMES };
+	return { communityThemes, seo: SEO_THEMES };
 }
