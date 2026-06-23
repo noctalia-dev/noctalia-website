@@ -103,26 +103,15 @@
 		searchQuery = '';
 	}
 
-	function getPreviewUrl(plugin: Plugin, format: 'png' | 'jpg' = 'png'): string {
-		return `https://raw.githubusercontent.com/noctalia-dev/${plugin.repo}/main/${plugin.id}/preview.${format}`;
+	function getPreviewUrl(plugin: Plugin): string {
+		return `https://raw.githubusercontent.com/noctalia-dev/${plugin.repo}/main/${plugin.id}/thumbnail.webp`;
 	}
 
-	function handleImageError(e: Event, plugin: Plugin) {
+	function handleImageError(e: Event) {
 		const target = e.target as HTMLImageElement;
-		const currentSrc = target.src;
-
-		if (currentSrc.includes('.png')) {
-			target.src = getPreviewUrl(plugin, 'jpg');
-			target.onerror = () => {
-				target.style.display = 'none';
-				const placeholder = target.nextElementSibling as HTMLElement;
-				if (placeholder) placeholder.style.display = 'flex';
-			};
-		} else {
-			target.style.display = 'none';
-			const placeholder = target.nextElementSibling as HTMLElement;
-			if (placeholder) placeholder.style.display = 'flex';
-		}
+		target.style.display = 'none';
+		const placeholder = target.nextElementSibling as HTMLElement;
+		if (placeholder) placeholder.style.display = 'flex';
 	}
 </script>
 
@@ -191,7 +180,7 @@
 							<img
 								src={getPreviewUrl(plugin)}
 								alt={plugin.name}
-								onerror={(e) => handleImageError(e, plugin)}
+								onerror={handleImageError}
 							/>
 							<div class="preview-placeholder" style="display: none;">
 								<div class="placeholder-icon">📦</div>
