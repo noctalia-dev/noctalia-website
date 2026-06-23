@@ -32,7 +32,7 @@ export const GET: RequestHandler = async () => {
 		...STATIC_PAGES.map((p) => url(`${SITE_ORIGIN}${p.path}`, p)),
 		...plugins.filter(isValidPlugin).map((p) =>
 			url(`${SITE_ORIGIN}/plugins/${p.id}`, {
-				lastmod: p.lastUpdated.slice(0, 10),
+				lastmod: typeof p.lastUpdated === 'string' ? p.lastUpdated.slice(0, 10) : undefined,
 				changefreq: 'monthly',
 				priority: '0.7',
 			})
