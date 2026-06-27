@@ -12,7 +12,7 @@
 			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">
 				Privacy Policy
 			</h1>
-			<p class="mt-3 text-fg-dim">Last updated: May 30, 2026</p>
+			<p class="mt-3 text-fg-dim">Last updated: June 27, 2026</p>
 		</header>
 
 		<div class="card-surface space-y-10 p-6 md:p-10">
@@ -36,8 +36,21 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
+						<strong class="text-fg">API access logs are disabled:</strong> We do not keep server access
+						logs for <span class="text-fg">api.noctalia.dev</span>. Opt-in telemetry is stored
+						separately as telemetry records, not as access logs.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
 						<strong class="text-fg">Calendar access is optional:</strong> Google Calendar access is used
 						only when you connect your Google account.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						<strong class="text-fg">Automatic location is optional:</strong> IP-based location lookup is
+						used only when you enable auto-location.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -151,7 +164,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						Telemetry data is stored securely at
+						Opt-in telemetry records are stored securely in a telemetry database at
 						<a
 							href="https://noctalia.dev"
 							class="text-accent underline-offset-4 hover:underline"
@@ -159,6 +172,12 @@
 							rel="noopener noreferrer">noctalia.dev</a
 						>
 						on our private bare metal server hosted at OVH - Canada.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						The telemetry database is separate from server access logs. Server access logs are
+						disabled for <span class="text-fg">api.noctalia.dev</span>.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -212,6 +231,44 @@
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
 						Calendar data is not used for telemetry, analytics, advertising, or sold or shared with
+						third parties.
+					</li>
+				</ul>
+			</section>
+
+			<section class="space-y-3">
+				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+					Automatic location lookup
+				</h2>
+				<p class="text-fg-dim">
+					Noctalia Shell can optionally use approximate location to support weather, night light, and
+					automatic theme schedules. This is controlled by the <span class="text-fg">auto_locate</span>
+					setting and is disabled unless you enable it.
+				</p>
+				<ul class="list-none space-y-2 text-fg-dim">
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						When auto-location is enabled, Noctalia Shell contacts
+						<span class="text-fg">api.noctalia.dev</span> to resolve approximate coordinates from the
+						request IP address.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						The IP address is used transiently to answer the lookup request. It is not added to
+						telemetry and is not stored by the auto-location service.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						Noctalia does not keep server access logs for
+						<span class="text-fg">api.noctalia.dev</span>, including auto-location requests.
+					</li>
+					<li
+						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
+					>
+						Auto-location requests are not used for analytics, advertising, or sold or shared with
 						third parties.
 					</li>
 				</ul>
