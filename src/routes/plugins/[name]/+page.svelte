@@ -59,18 +59,6 @@
 					<div class="placeholder-icon">📦</div>
 				</div>
 			</div>
-			<div class="hero-overlay"></div>
-			<div class="hero-content">
-					<h1 class="hero-title">
-						{data.plugin.name}
-						{#if data.plugin.official}
-							<span class="official-badge" title="Official Noctalia Plugin">
-								<i class="ti ti-shield-check text-[1.75rem] leading-none" aria-hidden="true"></i>
-							</span>
-						{/if}
-					</h1>
-				<p class="hero-description">{data.plugin.description}</p>
-			</div>
 		</div>
 
 			<div class="badge-row">
@@ -191,41 +179,6 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-	}
-
-	.hero-overlay {
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(
-			to top,
-			rgba(0, 0, 0, 0.85) 0%,
-			rgba(0, 0, 0, 0.4) 50%,
-			rgba(0, 0, 0, 0.1) 100%
-		);
-	}
-
-	.hero-content {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		padding: 2rem;
-	}
-
-	.hero-title {
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: #fff;
-		margin-bottom: 0.5rem;
-		letter-spacing: -0.02em;
-		text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-	}
-
-	.hero-description {
-		font-size: 1.125rem;
-		color: rgba(255, 255, 255, 0.85);
-		line-height: 1.6;
-		max-width: 600px;
 	}
 
 	.preview-placeholder {
@@ -461,36 +414,10 @@
 		box-shadow: 0 8px 24px rgba(93, 101, 245, 0.35);
 	}
 
-	/* Official Badge */
-	.official-badge {
-		display: inline-flex;
-		align-items: center;
-		vertical-align: middle;
-		color: var(--mPrimary);
-		filter: drop-shadow(0 0 8px rgba(255, 245, 155, 0.6));
-		margin-left: 0.5rem;
-	}
-
-	:global([data-theme='light']) .official-badge {
-		filter: drop-shadow(0 0 8px rgba(93, 101, 245, 0.5));
-	}
-
 	/* Mobile Responsive */
 	@media (max-width: 768px) {
 		.hero-section {
 			aspect-ratio: 4 / 3;
-		}
-
-		.hero-title {
-			font-size: 1.75rem;
-		}
-
-		.hero-description {
-			font-size: 1rem;
-		}
-
-		.hero-content {
-			padding: 1.5rem;
 		}
 
 		.badge-row {
