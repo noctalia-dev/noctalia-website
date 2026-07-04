@@ -15,6 +15,6 @@ export const OG_IMAGE_HEIGHT = 630;
 /** Default card when a route has no `seo.ogImagePath` (e.g. error pages). Filled by `prebuild` → `node scripts/build-og.mjs`. */
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og.webp`;
 
-/** Published documentation (v4) */
-export const DOCS_BASE_URL = 'https://docs.noctalia.dev/v4';
-export const DOCS_INSTALLATION_URL = 'https://docs.noctalia.dev/v4/getting-started/installation/';
+/** Published documentation (v5) */
+export const DOCS_BASE_URL = 'https://docs.noctalia.dev/v5';
+export const DOCS_INSTALLATION_URL = 'https://docs.noctalia.dev/v5/getting-started/installation/';
