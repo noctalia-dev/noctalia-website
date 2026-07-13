@@ -19,8 +19,10 @@ const root = join(__dirname, '..');
 
 const CACHE_FILE = join(root, 'static/og', '.og-input-hashes.json');
 const WEBP_OPTIONS = { quality: 88, effort: 4 };
+/** Matches the card gradient's base, so a fit-inside thumbnail sits on the same dark field. */
+const OG_BACKGROUND = { r: 10, g: 10, b: 42, alpha: 1 };
 /** Bump when layout, font usage, or WebP settings change so all images rebuild. */
-const LAYOUT_VERSION = 1;
+const LAYOUT_VERSION = 2;
 
 const NOCTALIA_LOGO_SVG_URL = 'https://assets.noctalia.dev/noctalia-logo.svg';
 
@@ -67,6 +69,15 @@ function inputDigestForImage(globalDigest, outPathRel, pathLabel, bodyText) {
 	return createHash('sha256')
 		.update(globalDigest, 'utf8')
 		.update(`\0${outPathRel}\0${pathLabel}\0${bodyText}`, 'utf8')
+		.digest('hex');
+}
+
+/** Cache key for an image built from bytes we fetched (a plugin thumbnail) rather than text. */
+function inputDigestForBytes(globalDigest, outPathRel, bytes) {
+	return createHash('sha256')
+		.update(globalDigest, 'utf8')
+		.update(`\0${outPathRel}\0`, 'utf8')
+		.update(bytes)
 		.digest('hex');
 }
 
@@ -304,6 +315,41 @@ async function writeOg(outPathRel, pathLabel, bodyText, logoDataUrl, fonts, glob
 	console.log(`Wrote static/${outPathRel}`);
 }
 
+/** The plugin's thumbnail bytes, or null if the repo has none (or the fetch fails). */
+async function fetchThumbnail(url) {
+	try {
+		const res = await fetch(url);
+		if (!res.ok) return null;
+		return Buffer.from(await res.arrayBuffer());
+	} catch {
+		return null;
+	}
+}
+
+/**
+ * A plugin's own thumbnail as its OG card, so sharing a plugin page shows the plugin.
+ * The thumbnail is 16:9 and the OG canvas is 1.91:1, so it is fit inside (never cropped -
+ * the generator puts the plugin title near the top edge) on the card background.
+ */
+async function writeOgThumbnail(outPathRel, thumbnail, globalDigest, prevCache, nextCache) {
+	const digest = inputDigestForBytes(globalDigest, outPathRel, thumbnail);
+	const abs = join(root, 'static', outPathRel);
+	if (prevCache[outPathRel] === digest && existsSync(abs)) {
+		nextCache[outPathRel] = digest;
+		console.log(`Up-to-date static/${outPathRel}`);
+		return;
+	}
+
+	const webp = await sharp(thumbnail)
+		.resize(1200, 630, { fit: 'contain', background: OG_BACKGROUND })
+		.webp(WEBP_OPTIONS)
+		.toBuffer();
+	await mkdir(dirname(abs), { recursive: true });
+	await writeFile(abs, webp);
+	nextCache[outPathRel] = digest;
+	console.log(`Wrote static/${outPathRel} (plugin thumbnail)`);
+}
+
 function parseDescriptionFromMd(raw) {
 	const m = raw.match(/^description:\s*(.+)$/m);
 	if (!m) return '';
@@ -391,7 +437,16 @@ async function main() {
 					/* description stays empty */
 				}
 				if (!isValidPlugin(plugin)) continue;
-				await w(`og/plugin/${source.slug}/${plugin.id}.webp`, 'Plugin: ' + plugin.name, plugin.description);
+
+				const outPathRel = `og/plugin/${source.slug}/${plugin.id}.webp`;
+				const thumbnail = await fetchThumbnail(`${base}/${plugin.id}/thumbnail.webp`);
+				if (thumbnail) {
+					await writeOgThumbnail(outPathRel, thumbnail, globalDigest, prevCache, nextCache);
+				} else {
+					// No thumbnail in the repo: fall back to the generated title/description card.
+					console.warn(`No thumbnail for ${source.slug}/${plugin.id}; using the generated card`);
+					await w(outPathRel, 'Plugin: ' + plugin.name, plugin.description);
+				}
 			}
 		} catch (e) {
 			console.warn(`Skipping ${source.repo} OG images (offline or network error):`, e?.message || e);
