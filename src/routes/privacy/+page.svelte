@@ -18,7 +18,7 @@
 		<div class="card-surface space-y-10 p-6 md:p-10">
 			<p class="text-lg leading-relaxed text-fg-dim">
 				We believe that open source software should be transparent about what it does. This policy
-				describes exactly what data Noctalia Shell collects or accesses, why we collect or access
+				describes exactly what data Noctalia collects or accesses, why we collect or access
 				it, and how we handle it.
 			</p>
 
@@ -55,7 +55,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Calendar data stays local:</strong> Noctalia Shell reads calendar
+						<strong class="text-fg">Calendar data stays local:</strong> Noctalia reads calendar
 						data locally on your device. Calendar content is not sent to or stored on Noctalia servers.
 					</li>
 					<li
@@ -82,7 +82,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Version:</strong> Noctalia Shell version.
+						<strong class="text-fg">Version:</strong> Noctalia version.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -109,7 +109,7 @@
 					Why we collect telemetry
 				</h2>
 				<p class="text-fg-dim">
-					Telemetry helps us make better decisions about Noctalia Shell development:
+					Telemetry helps us make better decisions about Noctalia development:
 				</p>
 				<ul class="list-none space-y-2 text-fg-dim">
 					<li
@@ -204,7 +204,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						Noctalia Shell reads your Google Calendar data locally on your device to display
+						Noctalia reads your Google Calendar data locally on your device to display
 						calendar information in the shell.
 					</li>
 					<li
@@ -241,7 +241,7 @@
 					Automatic location lookup
 				</h2>
 				<p class="text-fg-dim">
-					Noctalia Shell can optionally use approximate location to support weather, night light, and
+					Noctalia can optionally use approximate location to support weather, night light, and
 					automatic theme schedules. This is controlled by the <span class="text-fg">auto_locate</span>
 					setting and is disabled unless you enable it.
 				</p>
@@ -249,7 +249,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						When auto-location is enabled, Noctalia Shell contacts
+						When auto-location is enabled, Noctalia contacts
 						<span class="text-fg">api.noctalia.dev</span> to resolve approximate coordinates from the
 						request IP address.
 					</li>
@@ -282,12 +282,12 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						You can disable telemetry at any time in Noctalia Shell settings.
+						You can disable telemetry at any time in Noctalia settings.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						You can disconnect Google Calendar in Noctalia Shell or revoke Noctalia's access from
+						You can disconnect Google Calendar in Noctalia or revoke Noctalia's access from
 						your Google Account at any time.
 					</li>
 					<li

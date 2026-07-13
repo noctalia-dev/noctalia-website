@@ -42,14 +42,14 @@ export const SEO_PLUGINS_INDEX: PageSeo = {
 
 export const SEO_PALETTES: PageSeo = {
 	title: `Palettes  -  ${SITE_NAME}`,
-	description: 'Explore color palettes for Noctalia Shell.',
+	description: 'Explore color palettes for Noctalia.',
 	pathLabel: 'Palettes',
 	ogImagePath: '/og/palettes.webp'
 };
 
 export const SEO_CONTRIBUTORS: PageSeo = {
 	title: `Contributors  -  ${SITE_NAME}`,
-	description: 'Meet the people who contribute to Noctalia Shell on GitHub.',
+	description: 'Meet the people who contribute to Noctalia on GitHub.',
 	pathLabel: 'Contributors',
 	ogImagePath: '/og/contributors.webp'
 };
@@ -57,7 +57,7 @@ export const SEO_CONTRIBUTORS: PageSeo = {
 export const SEO_PRIVACY: PageSeo = {
 	title: `Privacy  -  ${SITE_NAME}`,
 	description:
-		'What Noctalia Shell collects, how Google Calendar OAuth works, and your rights. Open source and transparent.',
+		'What Noctalia collects, how Google Calendar OAuth works, and your rights. Open source and transparent.',
 	pathLabel: 'Privacy',
 	ogImagePath: '/og/privacy.webp'
 };

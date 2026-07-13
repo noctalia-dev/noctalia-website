@@ -385,16 +385,16 @@ async function main() {
 	await w('og.webp', 'Home', 'Noctalia - a lightweight Wayland shell.');
 	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');
-	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia Shell.');
+	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia.');
 	await w(
 		'og/contributors.webp',
 		'Contributors',
-		'Meet the people who contribute to Noctalia Shell on GitHub.'
+		'Meet the people who contribute to Noctalia on GitHub.'
 	);
 	await w(
 		'og/privacy.webp',
 		'Privacy',
-		'What Noctalia Shell collects, how we use it, and your rights. Open source, transparent, opt-in only.'
+		'What Noctalia collects, how we use it, and your rights. Open source, transparent, opt-in only.'
 	);
 
 	const blogDir = join(root, 'src/content/blog');

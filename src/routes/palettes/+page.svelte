@@ -76,7 +76,7 @@
 	<div class="site-shell">
 		<div class="page-header">
 			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Palettes</h1>
-			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Explore color palettes for Noctalia Shell.</p>
+			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Explore color palettes for Noctalia.</p>
 		</div>
 
 		<div class="search-section">

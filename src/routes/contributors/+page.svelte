@@ -27,7 +27,7 @@
 					rel="noopener noreferrer"
 					class="font-medium text-accent transition hover:brightness-110"
 				>
-					Noctalia Shell
+					Noctalia
 				</a>.
 			</p>
 			{#if data.contributors.length > 0}
