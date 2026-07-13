@@ -22,7 +22,9 @@ function rewriteRelativeUrls(content: string, repo: string, pluginId: string): s
 
 async function fetchReadme(plugin: any): Promise<string | null> {
 	const now = Date.now();
-	const cached = readmeCache.get(plugin.id);
+	// Folder names repeat across sources, so the cache key carries the source too.
+	const cacheKey = `${plugin.repo}/${plugin.id}`;
+	const cached = readmeCache.get(cacheKey);
 	if (cached && now - cached.timestamp < CACHE_TTL) {
 		return cached.content;
 	}
@@ -30,28 +32,29 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 	try {
 		const response = await githubFetch(readmeUrl);
 		if (!response.ok) {
-			readmeCache.set(plugin.id, { content: null, timestamp: now });
+			readmeCache.set(cacheKey, { content: null, timestamp: now });
 			return null;
 		}
 		const raw = await response.text();
 		const content = rewriteRelativeUrls(raw, plugin.repo, plugin.id);
-		readmeCache.set(plugin.id, { content, timestamp: now });
+		readmeCache.set(cacheKey, { content, timestamp: now });
 		return content;
 	} catch (err) {
-		console.error(`Error fetching README for ${plugin.id}:`, err);
-		readmeCache.set(plugin.id, { content: null, timestamp: now });
+		console.error(`Error fetching README for ${cacheKey}:`, err);
+		readmeCache.set(cacheKey, { content: null, timestamp: now });
 		return null;
 	}
 }
 
 export async function entries() {
 	const plugins = await getRegistryPlugins();
-	return plugins.filter(isValidPlugin).map((plugin: any) => ({ name: plugin.id }));
+	return plugins.filter(isValidPlugin).map((plugin: any) => ({ source: plugin.source, name: plugin.id }));
 }
 
-export async function load({ params }: { params: { name: string } }) {
+export async function load({ params }: { params: { source: string; name: string } }) {
 	const plugins = await getRegistryPlugins();
-	const plugin = plugins.find((p: any) => p.id === params.name);
+	// A folder name is unique only within its source, so both parts identify the plugin.
+	const plugin = plugins.find((p: any) => p.source === params.source && p.id === params.name);
 	if (!plugin || !isValidPlugin(plugin)) {
 		throw error(404, 'Plugin not found');
 	}

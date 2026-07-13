@@ -12,7 +12,7 @@
 		description: string;
 		minNoctalia: string;
 		tags?: string[];
-		official?: boolean;
+		source: string;
 		repo: string;
 	}
 

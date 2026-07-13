@@ -36,8 +36,11 @@ function clip(s, max = 240) {
 const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'];
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
 
-/** Plugin sources, rendered in this order (official first, then community). */
-const PLUGIN_SOURCES = ['official-plugins', 'community-plugins'];
+/** Plugin sources, rendered in this order (official first, then community). Keyed by URL slug. */
+const PLUGIN_SOURCES = [
+	{ repo: 'official-plugins', slug: 'official' },
+	{ repo: 'community-plugins', slug: 'community' }
+];
 
 function isValidPlugin(plugin) {
 	if (!plugin || typeof plugin !== 'object') return false;
@@ -359,12 +362,12 @@ async function main() {
 		await w(`og/blog/${slug}.webp`, postTitle, desc);
 	}
 
-	for (const repo of PLUGIN_SOURCES) {
-		const base = `https://raw.githubusercontent.com/noctalia-dev/${repo}/main`;
+	for (const source of PLUGIN_SOURCES) {
+		const base = `https://raw.githubusercontent.com/noctalia-dev/${source.repo}/main`;
 		try {
 			const res = await fetch(`${base}/catalog.toml`);
 			if (!res.ok) {
-				console.warn(`Skipping ${repo} OG images: catalog returned`, res.status);
+				console.warn(`Skipping ${source.repo} OG images: catalog returned`, res.status);
 				continue;
 			}
 			const catalog = parseToml(await res.text());
@@ -388,10 +391,10 @@ async function main() {
 					/* description stays empty */
 				}
 				if (!isValidPlugin(plugin)) continue;
-				await w(`og/plugin/${plugin.id}.webp`, 'Plugin: ' + plugin.name, plugin.description);
+				await w(`og/plugin/${source.slug}/${plugin.id}.webp`, 'Plugin: ' + plugin.name, plugin.description);
 			}
 		} catch (e) {
-			console.warn(`Skipping ${repo} OG images (offline or network error):`, e?.message || e);
+			console.warn(`Skipping ${source.repo} OG images (offline or network error):`, e?.message || e);
 		}
 	}
 

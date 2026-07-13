@@ -28,7 +28,7 @@ function normalizePathname(raw: string): string {
 export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoPreview> {
 	const normalizedPath = normalizePathname(pathInput);
 	const segments = normalizedPath.split('/').filter(Boolean);
-	const [a, b] = segments;
+	const [a, b, c] = segments;
 
 	if (normalizedPath === '/' || normalizedPath === '') {
 		return { seo: SEO_HOME, normalizedPath: '/', notFound: false, unknown: false };
@@ -60,9 +60,10 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 	if (normalizedPath === '/plugins' || normalizedPath === '/plugins/') {
 		return { seo: SEO_PLUGINS_INDEX, normalizedPath: '/plugins', notFound: false, unknown: false };
 	}
-	if (a === 'plugins' && b) {
+	if (a === 'plugins' && b && c) {
+		// /plugins/<source>/<plugin> - a folder name is unique only within its source.
 		const plugins = await getRegistryPlugins();
-		const raw = plugins.find((p) => p.id === b);
+		const raw = plugins.find((p) => p.source === b && p.id === c);
 		if (!raw || !isValidPlugin(raw)) {
 			return {
 				seo: {

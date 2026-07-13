@@ -4,10 +4,15 @@ import { githubFetch } from '$lib/github.server';
 const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'] as const;
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
 
-/** Plugin sources, listed/rendered in this order: official first, then community. */
+/**
+ * Plugin sources, listed/rendered in this order: official first, then community.
+ * `slug` namespaces a plugin's URL (/plugins/<slug>/<plugin>): folder names are only unique
+ * within one source, so `noctalia/timer` and `someone/timer` can coexist across the two repos.
+ * It also says which source a plugin came from - test `source === 'official'`.
+ */
 const PLUGIN_SOURCES = [
-	{ repo: 'official-plugins', official: true },
-	{ repo: 'community-plugins', official: false }
+	{ repo: 'official-plugins', slug: 'official' },
+	{ repo: 'community-plugins', slug: 'community' }
 ] as const;
 
 const pluginsCache = {
@@ -51,7 +56,7 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 		description: '',
 		minNoctalia: typeof row.min_noctalia === 'string' ? row.min_noctalia : '',
 		tags: Array.isArray(row.tags) ? row.tags : [],
-		official: source.official,
+		source: source.slug,
 		repo: source.repo
 	};
 	if (!slug) return base;

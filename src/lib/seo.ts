@@ -81,13 +81,18 @@ export function seoBlogPost(post: { slug: string; title: string; description: st
 	};
 }
 
-export function seoPlugin(plugin: { id: string; name: string; description: string }): PageSeo {
+export function seoPlugin(plugin: {
+	id: string;
+	source: string;
+	name: string;
+	description: string;
+}): PageSeo {
 	/** Embeds / OG mint line: reads like “Plugin: Tailscale” under “Noctalia”. */
 	const pathLabel = 'Plugin: ' + plugin.name;
 	return {
 		title: `${plugin.name}  -  ${SITE_NAME}`,
 		description: plugin.description,
 		pathLabel,
-		ogImagePath: `/og/plugin/${plugin.id}.webp`
+		ogImagePath: `/og/plugin/${plugin.source}/${plugin.id}.webp`
 	};
 }

@@ -14,7 +14,7 @@
 		description: string;
 		minNoctalia: string;
 		tags?: string[];
-		official?: boolean;
+		source: string;
 		repo: string;
 	}
 
@@ -30,10 +30,10 @@
 	let availableTags = $state<string[]>([]);
 
 	// Split the (filtered) list into the two sources rendered as separate sections.
-	let officialPlugins = $derived(plugins.filter(p => p.official));
-	let communityPlugins = $derived(plugins.filter(p => !p.official));
+	let officialPlugins = $derived(plugins.filter(p => p.source === 'official'));
+	let communityPlugins = $derived(plugins.filter(p => p.source !== 'official'));
 	// Does the catalog contain any community plugins at all (ignoring filters)?
-	let hasCommunitySource = $derived(allPlugins.some(p => !p.official));
+	let hasCommunitySource = $derived(allPlugins.some(p => p.source !== 'official'));
 	let isFiltering = $derived(Boolean(searchQuery || selectedTags.length > 0));
 
 	onMount(() => {
@@ -175,7 +175,7 @@
 			</div>
 			
 				{#snippet pluginCard(plugin: Plugin)}
-					<a href="/plugins/{plugin.id}" class="plugin-card">
+					<a href="/plugins/{plugin.source}/{plugin.id}" class="plugin-card">
 						<div class="plugin-preview">
 							<img
 								src={getPreviewUrl(plugin)}
@@ -192,7 +192,7 @@
 						<div class="plugin-info">
 							<div class="plugin-name-row">
 								<h3 class="plugin-name">{plugin.name}</h3>
-								{#if plugin.official}
+								{#if plugin.source === 'official'}
 									<span class="official-badge" title="Official Plugin">
 										<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
 									</span>
