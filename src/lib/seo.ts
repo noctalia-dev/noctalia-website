@@ -62,6 +62,13 @@ export const SEO_PRIVACY: PageSeo = {
 	ogImagePath: '/og/privacy.webp'
 };
 
+export const SEO_NOT_FOUND: PageSeo = {
+	title: `Page not found  -  ${SITE_NAME}`,
+	description: 'This page does not exist or was moved.',
+	pathLabel: 'Not found',
+	ogImagePath: '/og.webp'
+};
+
 export const SEO_EMBED_PREVIEW: PageSeo = {
 	title: `Embed preview  -  ${SITE_NAME}`,
 	description:
