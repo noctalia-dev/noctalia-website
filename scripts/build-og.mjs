@@ -384,6 +384,7 @@ async function main() {
 
 	await w('og.webp', 'Home', 'Noctalia - a lightweight Wayland shell.');
 	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
+	await w('og/changelog.webp', 'Changelog', 'Release notes for Noctalia v5 and later.');
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');
 	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia.');
 	await w(

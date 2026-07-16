@@ -40,6 +40,13 @@ export const SEO_PLUGINS_INDEX: PageSeo = {
 	ogImagePath: '/og/plugins.webp'
 };
 
+export const SEO_CHANGELOG_INDEX: PageSeo = {
+	title: `Changelog  -  ${SITE_NAME}`,
+	description: 'Release notes for Noctalia v5 and later.',
+	pathLabel: 'Changelog',
+	ogImagePath: '/og/changelog.webp'
+};
+
 export const SEO_PALETTES: PageSeo = {
 	title: `Palettes  -  ${SITE_NAME}`,
 	description: 'Explore color palettes for Noctalia.',

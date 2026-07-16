@@ -4,6 +4,7 @@ import { SITE_NAME } from '$lib/site-constants';
 import {
 	type PathSeoPreview,
 	SEO_BLOG_INDEX,
+	SEO_CHANGELOG_INDEX,
 	SEO_CONTRIBUTORS,
 	SEO_EMBED_PREVIEW,
 	SEO_HOME,
@@ -56,6 +57,9 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 			};
 		}
 		return { seo: seoBlogPost(post), normalizedPath, notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/changelogs' || normalizedPath === '/changelogs/') {
+		return { seo: SEO_CHANGELOG_INDEX, normalizedPath: '/changelogs', notFound: false, unknown: false };
 	}
 	if (normalizedPath === '/plugins' || normalizedPath === '/plugins/') {
 		return { seo: SEO_PLUGINS_INDEX, normalizedPath: '/plugins', notFound: false, unknown: false };

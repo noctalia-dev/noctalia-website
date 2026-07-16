@@ -78,6 +78,9 @@
 			class="text-accent underline-offset-2 hover:underline"
 			href="/embed-preview?path=/blog/announcing-noctalia-v5">Sample post</a
 		>
+		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/changelogs"
+			>Changelog</a
+		>
 		<a class="text-accent underline-offset-2 hover:underline" href="/embed-preview?path=/plugins"
 			>Plugins</a
 		>

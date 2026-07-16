@@ -11,6 +11,7 @@
 	const siteNav = [
 		{ href: '/', label: 'Home' },
 		{ href: '/blog', label: 'Blog' },
+		{ href: '/changelogs', label: 'Changelog' },
 		{ href: '/plugins', label: 'Plugins' },
 		{ href: '/palettes', label: 'Palettes' }
 	] as const;
