@@ -29,9 +29,13 @@
 	let selectedTags = $state<string[]>([]);
 	let availableTags = $state<string[]>([]);
 
-	// Split the (filtered) list into the two sources rendered as separate sections.
-	let officialPlugins = $derived(plugins.filter(p => p.source === 'official'));
-	let communityPlugins = $derived(plugins.filter(p => p.source !== 'official'));
+	// Split the (filtered) list into the two sources rendered as separate sections, sorted alphabetically.
+	let officialPlugins = $derived(
+		plugins.filter(p => p.source === 'official').sort((a, b) => a.name.localeCompare(b.name))
+	);
+	let communityPlugins = $derived(
+		plugins.filter(p => p.source !== 'official').sort((a, b) => a.name.localeCompare(b.name))
+	);
 	// Does the catalog contain any community plugins at all (ignoring filters)?
 	let hasCommunitySource = $derived(allPlugins.some(p => p.source !== 'official'));
 	let isFiltering = $derived(Boolean(searchQuery || selectedTags.length > 0));
