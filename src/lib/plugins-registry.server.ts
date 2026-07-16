@@ -54,7 +54,7 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 		version: typeof row.version === 'string' ? row.version : '',
 		author: typeof row.author === 'string' ? row.author : '',
 		description: '',
-		minNoctalia: typeof row.min_noctalia === 'string' ? row.min_noctalia : '',
+		apiVersion: typeof row.plugin_api === 'number' ? row.plugin_api : null,
 		tags: Array.isArray(row.tags) ? row.tags : [],
 		source: source.slug,
 		repo: source.repo

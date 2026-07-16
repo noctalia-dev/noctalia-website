@@ -10,7 +10,7 @@
 		version: string;
 		author: string;
 		description: string;
-		minNoctalia: string;
+		apiVersion: number | null;
 		tags?: string[];
 		source: string;
 		repo: string;
@@ -70,10 +70,10 @@
 					<i class="ti ti-user text-sm leading-none" aria-hidden="true"></i>
 					{data.plugin.author}
 				</span>
-				{#if data.plugin.minNoctalia}
+				{#if data.plugin.apiVersion !== null}
 					<span class="badge">
 						<i class="ti ti-versions text-sm leading-none" aria-hidden="true"></i>
-						Requires Noctalia {data.plugin.minNoctalia}+
+						Plugin API {data.plugin.apiVersion}
 					</span>
 				{/if}
 			</div>

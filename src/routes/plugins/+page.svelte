@@ -12,7 +12,6 @@
 		version: string;
 		author: string;
 		description: string;
-		minNoctalia: string;
 		tags?: string[];
 		source: string;
 		repo: string;
@@ -214,11 +213,6 @@
 								<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
 								<span class="plugin-version">v{plugin.version}</span>
 							</div>
-							{#if plugin.minNoctalia}
-								<div class="plugin-updated">
-									Requires Noctalia {plugin.minNoctalia}+
-								</div>
-							{/if}
 						</div>
 					</a>
 				{/snippet}
@@ -718,14 +712,6 @@
 		background: rgba(93, 101, 245, 0.1);
 		color: var(--mPrimary);
 	}
-	
-	.plugin-updated {
-		font-size: 0.75rem;
-		color: var(--mOnSurfaceVariant);
-		opacity: 0.7;
-		margin-top: 0.5rem;
-	}
-	
 	
 	@media (max-width: 768px) {
 		.plugins-grid {
