@@ -364,7 +364,7 @@ function parseTitleFromMd(raw) {
 
 async function main() {
 	if (process.env.SKIP_OG === '1' || process.env.SKIP_OG === 'true') {
-		console.log('SKIP_OG set — skipping build-og.mjs');
+		console.log('SKIP_OG set - skipping build-og.mjs');
 		return;
 	}
 

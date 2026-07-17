@@ -45,13 +45,13 @@
 			{
 				icon: 'compositors',
 				title: 'Compositors Supported',
-				body: 'Niri, Hyprland, Sway, Scroll, MangoWC, and Labwc',
-				stat: { value: '6+' }
+				body: 'Niri, Hyprland, Sway, Scroll, MangoWC, Labwc, and Triad, plus generic support for compositors implementing standard workspace and toplevel protocols',
+				stat: { value: '7+' }
 			},
 			{
 				icon: 'plugins',
 				title: 'Plugins Available',
-				body: `${data.pluginCount} official v5 plugins so far and growing — v4 had 132 community plugins`,
+				body: `${data.pluginCount} official v5 plugins so far and growing, v4 had 132 community plugins`,
 				stat: { value: `${data.pluginCount}+` }
 			},
 			{

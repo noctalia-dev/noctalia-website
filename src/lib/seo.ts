@@ -87,7 +87,7 @@ export const SEO_EMBED_PREVIEW: PageSeo = {
 export function seoBlogPost(post: { slug: string; title: string; description: string }): PageSeo {
 	return {
 		title: `${post.title}  -  ${SITE_NAME}`,
-		description: post.description || `Blog  —  ${SITE_NAME}`,
+		description: post.description || `Blog - ${SITE_NAME}`,
 		/** Mint line on OG art; matches the post title (not the literal words “Blog post”). */
 		pathLabel: post.title,
 		ogType: 'article',
