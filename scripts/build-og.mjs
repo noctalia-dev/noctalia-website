@@ -397,6 +397,11 @@ async function main() {
 		'Privacy',
 		'What Noctalia collects, how we use it, and your rights. Open source, transparent, opt-in only.'
 	);
+	await w(
+		'og/ethos.webp',
+		'Our Ethos',
+		'How we work with the people who use and build Noctalia - a gift exchange, not a support contract.'
+	);
 
 	const blogDir = join(root, 'src/content/blog');
 	const entries = await readdir(blogDir);

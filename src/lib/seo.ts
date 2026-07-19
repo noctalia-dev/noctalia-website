@@ -69,6 +69,14 @@ export const SEO_PRIVACY: PageSeo = {
 	ogImagePath: '/og/privacy.webp'
 };
 
+export const SEO_ETHOS: PageSeo = {
+	title: `Our Ethos  -  ${SITE_NAME}`,
+	description:
+		'How we work with the people who use and build Noctalia - a gift exchange, not a support contract.',
+	pathLabel: 'Ethos',
+	ogImagePath: '/og/ethos.webp'
+};
+
 export const SEO_NOT_FOUND: PageSeo = {
 	title: `Page not found  -  ${SITE_NAME}`,
 	description: 'This page does not exist or was moved.',

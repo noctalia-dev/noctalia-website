@@ -7,6 +7,7 @@ import {
 	SEO_CHANGELOG_INDEX,
 	SEO_CONTRIBUTORS,
 	SEO_EMBED_PREVIEW,
+	SEO_ETHOS,
 	SEO_HOME,
 	SEO_PLUGINS_INDEX,
 	SEO_PRIVACY,
@@ -89,6 +90,9 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 	}
 	if (normalizedPath === '/privacy' || normalizedPath === '/privacy/') {
 		return { seo: SEO_PRIVACY, normalizedPath: '/privacy', notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/ethos' || normalizedPath === '/ethos/') {
+		return { seo: SEO_ETHOS, normalizedPath: '/ethos', notFound: false, unknown: false };
 	}
 	if (normalizedPath === '/contributors' || normalizedPath === '/contributors/') {
 		return { seo: SEO_CONTRIBUTORS, normalizedPath: '/contributors', notFound: false, unknown: false };

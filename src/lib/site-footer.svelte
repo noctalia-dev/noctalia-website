@@ -10,6 +10,7 @@
 		{ href: '/plugins', label: 'Plugins', external: false },
 		{ href: '/palettes', label: 'Palettes', external: false },
 		{ href: '/contributors', label: 'Contributors', external: false },
+		{ href: '/ethos', label: 'Our Ethos', external: false },
 		{ href: DOCS_BASE_URL, label: 'Docs', external: true },
 		{ href: 'https://discord.noctalia.dev', label: 'Discord', external: true },
 		{
