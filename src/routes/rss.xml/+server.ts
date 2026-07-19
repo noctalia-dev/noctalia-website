@@ -1,6 +1,8 @@
 // src/routes/rss.xml/+server.ts
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import { marked } from 'marked';
+import { getChangelogReleases } from '$lib/releases.server';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;
@@ -74,33 +76,61 @@ export const GET: RequestHandler = async () => {
 				})
 		)
 	)
-		.filter((post): post is NonNullable<typeof post> => post !== null)
-		.sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime());
+		.filter((post): post is NonNullable<typeof post> => post !== null);
 
-	const items = posts
-		.map(
-			(post) => `
+	const releases = await getChangelogReleases();
+
+	type FeedEntry = { publishedAt: Date; xml: string };
+
+	const postEntries: FeedEntry[] = posts.map((post) => ({
+		publishedAt: post.publishedAt,
+		xml: `
 <item>
 	<title>${escapeXml(post.title)}</title>
 	<link>${escapeXml(post.link)}</link>
 	<guid>${escapeXml(post.link)}</guid>
 	<pubDate>${post.publishedAt.toUTCString()}</pubDate>
+	<category>Blog</category>
 	<description>${escapeXml(post.description)}</description>
 </item>`
-		)
-		.join('\n');
+	}));
+
+	const releaseEntries: FeedEntry[] = releases.map((release) => {
+		const publishedAt = new Date(release.publishedAt);
+		const title = `Noctalia ${release.tagName}${release.prerelease ? ' (Pre-release)' : ''}`;
+		const link = `${SITE_URL}/changelogs#${release.tagName}`;
+		const guid = release.htmlUrl || link;
+		const html = marked.parse(release.body, { async: false }) as string;
+
+		return {
+			publishedAt,
+			xml: `
+<item>
+	<title>${escapeXml(title)}</title>
+	<link>${escapeXml(link)}</link>
+	<guid>${escapeXml(guid)}</guid>
+	<pubDate>${publishedAt.toUTCString()}</pubDate>
+	<category>Release</category>
+	<description><![CDATA[${html}]]></description>
+</item>`
+		};
+	});
+
+	const entries = [...postEntries, ...releaseEntries].sort(
+		(a, b) => b.publishedAt.getTime() - a.publishedAt.getTime()
+	);
+
+	const items = entries.map((entry) => entry.xml).join('\n');
 
 	const lastBuildDate =
-		posts.length > 0
-			? posts[0].publishedAt.toUTCString()
-			: new Date().toUTCString();
+		entries.length > 0 ? entries[0].publishedAt.toUTCString() : new Date().toUTCString();
 
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
-	<title>Noctalia Blog</title>
+	<title>Noctalia</title>
 	<link>${SITE_URL}/blog</link>
-	<description>Noctalia blog updates</description>
+	<description>Blog posts and release notes from the Noctalia team.</description>
 	<language>en-us</language>
 	<lastBuildDate>${lastBuildDate}</lastBuildDate>
 	<atom:link href="${SITE_URL}/rss.xml" rel="self" type="application/rss+xml" />

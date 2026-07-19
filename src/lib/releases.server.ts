@@ -73,3 +73,34 @@ export async function getAllReleases(): Promise<GithubRelease[]> {
 		return releasesCache.releases;
 	}
 }
+
+const MIN_MAJOR_VERSION = 5;
+
+function majorVersion(tagName: string): number | null {
+	const match = tagName.match(/^v?(\d+)\./);
+	return match ? Number(match[1]) : null;
+}
+
+/** GitHub release bodies open with a "# Release vX.Y.Z" header; callers render the tag as their own heading. */
+function stripLeadingReleaseHeader(body: string): string {
+	return body.replace(/^#\s*Release\s+v[\d.]+[^\n]*\n?/, '').trim();
+}
+
+/** GitHub's own `prerelease` flag isn't reliably set when publishing betas, so also check the tag itself. */
+function isPrerelease(release: GithubRelease): boolean {
+	return release.prerelease || /-(?:beta|alpha|rc)/i.test(release.tagName);
+}
+
+/** Releases for the public changelog: v5+ only, newest first, prerelease normalized, leading heading stripped. Shared by the changelog page and the RSS feed. */
+export async function getChangelogReleases(): Promise<GithubRelease[]> {
+	return (await getAllReleases())
+		.filter((release) => (majorVersion(release.tagName) ?? -1) >= MIN_MAJOR_VERSION)
+		.map((release) => ({
+			...release,
+			body: stripLeadingReleaseHeader(release.body),
+			prerelease: isPrerelease(release)
+		}))
+		.sort(
+			(a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
+		);
+}
