@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import type { SlideImage } from '$lib/slideshow-images';
 
 	let {
@@ -17,6 +18,21 @@
 	let tabHidden = $state(false);
 	let reducedMotion = $state(false);
 	let el = $state<HTMLElement | null>(null);
+
+	/** Shuffled viewing order (indices into `images`); null until hydration so
+	   SSR and the client render the same initial DOM (no hydration mismatch). */
+	let order = $state<number[] | null>(null);
+	const displayImages = $derived(order ? order.map((i) => images[i]) : images);
+
+	onMount(() => {
+		const indices = images.map((_, i) => i);
+		// Fisher-Yates shuffle.
+		for (let i = indices.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[indices[i], indices[j]] = [indices[j], indices[i]];
+		}
+		order = indices;
+	});
 
 	function goTo(index: number) {
 		const n = images.length;
@@ -68,7 +84,7 @@
 		aria-label="Noctalia screenshots"
 		style:--slide-duration="{interval + 1000}ms"
 	>
-		{#each images as image, i (image.src)}
+		{#each displayImages as image, i (image.src)}
 			<div
 				class="slideshow__slide {i === active ? 'slideshow__slide--active' : ''} {leaving.includes(
 					i
@@ -124,7 +140,7 @@
 			</button>
 
 			<div class="absolute bottom-3 left-1/2 flex -translate-x-1/2 items-center gap-2">
-				{#each images as image, i (image.src)}
+				{#each displayImages as image, i (image.src)}
 					<button
 						type="button"
 						class="slideshow__dot {i === active ? 'slideshow__dot--active' : ''}"
