@@ -7,7 +7,6 @@
 	const links = [
 		{ href: '/blog', label: 'Blog', external: false },
 		{ href: '/changelogs', label: 'Changelog', external: false },
-		{ href: '/rss.xml', label: 'RSS Feed', external: false },
 		{ href: '/plugins', label: 'Plugins', external: false },
 		{ href: '/palettes', label: 'Palettes', external: false },
 		{ href: '/contributors', label: 'Contributors', external: false },
@@ -18,6 +17,7 @@
 			label: 'GitHub',
 			external: true
 		},
+		{ href: '/rss.xml', label: 'RSS Feed', external: false },
 		{ href: '/privacy', label: 'Privacy', external: false }
 	] as const;
 </script>
