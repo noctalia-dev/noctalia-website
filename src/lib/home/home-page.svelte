@@ -190,7 +190,7 @@
 						{#snippet children()}
 							{#if media === 'slideshow'}
 								{#if slideshowImages.length > 0}
-									<Slideshow images={slideshowImages} />
+									<Slideshow images={slideshowImages} interval={4500} />
 								{:else}
 									<div
 										class="flex aspect-video w-full items-center justify-center p-6 text-center text-sm text-fg-dim"
