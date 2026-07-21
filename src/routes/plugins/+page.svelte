@@ -380,9 +380,6 @@
 		gap: 0.5rem;
 		justify-content: center;
 		margin-bottom: 2rem;
-		max-width: 700px;
-		margin-left: auto;
-		margin-right: auto;
 	}
 
 	.tag-chip {
@@ -403,6 +400,7 @@
 		flex: 1 1 auto;
 		text-align: center;
 		min-width: fit-content;
+		max-width: 12rem;
 		box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
 	}
 
