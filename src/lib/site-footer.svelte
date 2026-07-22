@@ -46,9 +46,6 @@
 					<p class="text-[10px] font-medium uppercase tracking-[0.12em] text-fg-dim">
 						quiet by design
 					</p>
-					<p class="mt-1 max-w-[14rem] text-[11px] leading-snug text-fg-dim/90 sm:max-w-none">
-						Wayland shell · built on modern tech
-					</p>
 				</div>
 			</div>
 
