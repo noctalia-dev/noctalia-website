@@ -41,7 +41,7 @@
 			},
 			{
 				icon: 'minimal',
-				title: 'Minimalist Design',
+				title: 'Quiet by Design',
 				body: 'Clean, uncluttered interface that gets out of your way.',
 				stat: null
 			},
@@ -179,7 +179,7 @@
 						See It In Action
 					</h2>
 					<p class="mt-3 max-w-2xl text-fg-dim">
-						Experience the beauty and simplicity of Noctalia's minimalist design
+						Take a closer look at Noctalia's clean, cohesive design.
 					</p>
 				</Reveal>
 				<Reveal delay={90}>
