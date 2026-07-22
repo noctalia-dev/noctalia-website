@@ -42,31 +42,31 @@
 			{
 				icon: 'minimal',
 				title: 'Minimalist Design',
-				body: 'Clean, uncluttered interface that gets out of your way',
+				body: 'Clean, uncluttered interface that gets out of your way.',
 				stat: null
 			},
 			{
 				icon: 'custom',
 				title: 'Easily Customizable',
-				body: 'Tailor every aspect to match your personal style',
+				body: 'Tailor every aspect to match your personal style.',
 				stat: null
 			},
 			{
 				icon: 'compositors',
 				title: 'Compositors Supported',
-				body: 'Niri, Hyprland, Sway, Scroll, MangoWC, Labwc, and Triad, plus generic support for compositors implementing standard workspace and toplevel protocols',
+				body: 'Works across leading Wayland compositors, with broader support through standard protocols.',
 				stat: { value: '7+' }
 			},
 			{
 				icon: 'plugins',
 				title: 'Plugins Available',
-				body: `${data.pluginCount} official v5 plugins so far and growing, v4 had 132 community plugins`,
+				body: 'Extend your setup with a growing ecosystem of official and community plugins.',
 				stat: { value: `${data.pluginCount}+` }
 			},
 			{
 				icon: 'releases',
 				title: 'Releases',
-				body: `${data.releaseCount} stable releases and counting`,
+				body: 'Regular releases and steady improvements since July 2025.',
 				stat: { value: `${data.releaseCount}+` }
 			}
 		] satisfies FeatureCard[]
@@ -95,7 +95,7 @@
 
 	<!-- Hero (copy aligned with noctalia-website Hero.svelte) -->
 	<section class="relative section-hero">
-		<div class="relative mx-auto max-w-4xl text-center">
+		<div class="relative mx-auto max-w-5xl text-center">
 			<Reveal>
 				<div class="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-5">
 					<img
@@ -117,8 +117,8 @@
 				<h1
 					class="text-balance font-sans text-3xl font-semibold leading-snug tracking-tight text-fg md:text-5xl md:leading-tight"
 				>
-					A beautiful, minimal desktop shell<br />
-					for <span class="text-accent-2 drop-shadow-[0_0_24px_rgb(155_254_206/0.35)]">Wayland</span>
+					A sleek, customizable desktop shell <br />
+					crafted for <span class="text-accent-2 drop-shadow-[0_0_24px_rgb(155_254_206/0.35)]">Wayland</span>
 				</h1>
 			</Reveal>
 			<Reveal delay={200}>
