@@ -351,20 +351,22 @@
 
 	.empty { padding:2rem; text-align:center; color:var(--mOnSurfaceVariant) }
 
-	@media (max-width: 1024px) {
-		.palettes-grid { grid-template-columns: repeat(3, 1fr); }
+	@media (max-width: 1200px) {
+		.palettes-grid { grid-template-columns: repeat(5, 1fr); }
+	}
+
+	@media (max-width: 992px) {
+		.palettes-grid { grid-template-columns: repeat(4, 1fr); }
 	}
 
 	@media (max-width: 768px) {
-		.palettes-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+		.palettes-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
 		.palette-card { padding: 1rem; }
-		.palette-name { font-size: 1rem; }
 		.swatches { gap: 6px; }
 	}
 
 	@media (max-width:640px) {
 		.search-container { min-width: 160px }
-		.swatch { width:36px; height:36px }
 	}
 
 </style>
