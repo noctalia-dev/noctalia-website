@@ -262,7 +262,7 @@
 		margin-bottom: 1.5rem;
 	}
 
-	.palettes-grid { display:grid; grid-template-columns: repeat(5, 1fr); gap:1.25rem }
+	.palettes-grid { display:grid; grid-template-columns: repeat(6, 1fr); gap:1.25rem }
 	.palette-card {
 		background: var(--mSurface);
 		border: 1.5px solid var(--mOutline);
@@ -320,7 +320,9 @@
 
 	.palette-name {
 		margin: 0;
-		font-size: 1.125rem;
+		font-size: 1rem;
+		line-height: 1.3;
+		min-height: 2.6em; /* reserve 2 lines so swatches stay aligned across the row */
 		font-weight: 600;
 		color: var(--mOnSurface);
 		letter-spacing: -0.01em;
