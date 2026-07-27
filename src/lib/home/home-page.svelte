@@ -183,9 +183,12 @@
 					</p>
 				</Reveal>
 				<Reveal delay={90}>
+					<!-- --slideshow-corner-radius is the single knob for the card border,
+					     its ring, and the slideshow/screenshot corners inside. -->
 					<SpotlightSurface
 						tag="div"
 						class="card-surface mx-auto mt-10 overflow-hidden p-0 ring-1 ring-inset ring-white/[0.06]"
+						style="--slideshow-corner-radius: 0.75rem; border-radius: var(--slideshow-corner-radius)"
 					>
 						{#snippet children()}
 							{#if media === 'slideshow'}

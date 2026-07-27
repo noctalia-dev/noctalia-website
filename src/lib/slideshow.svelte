@@ -178,11 +178,19 @@
 		aspect-ratio: 16 / 9;
 		overflow: hidden;
 		outline: none;
+		/* Corner rounding for the screenshots and the outer frame (via overflow:
+		   hidden). Inherited from the card wrapper in home-page.svelte when used
+		   there; the fallback keeps standalone usage rounded too. Override on the
+		   component or an ancestor to test different values. */
+		border-radius: var(--slideshow-corner-radius, 0.75rem);
 	}
 
 	.slideshow__slide {
 		position: absolute;
 		inset: 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		opacity: 0;
 		transition: opacity 1s ease-in-out;
 		pointer-events: none;
@@ -212,13 +220,15 @@
 		user-select: none;
 	}
 
-	/* The screenshot itself is always shown in its entirety: contain, never cover.
-	   Base transform is the full-frame state, used under reduced motion. */
+	/* The screenshot is sized by its intrinsic aspect ratio (like object-fit:
+	   contain) so the element box hugs the image exactly. That lets the
+	   border-radius mask the actual image corners — hiding the black corners
+	   some screenshots have — regardless of aspect ratio (16:9, 16:10, 4:3…). */
 	.slideshow__img {
 		position: relative;
-		width: 100%;
-		height: 100%;
-		object-fit: contain;
+		max-width: 100%;
+		max-height: 100%;
+		border-radius: var(--slideshow-corner-radius, 0.75rem);
 		user-select: none;
 	}
 
