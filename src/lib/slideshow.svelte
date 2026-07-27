@@ -13,6 +13,7 @@
 	} = $props();
 
 	let active = $state(0);
+	let hovered = $state(false);
 	/** Slides that are fading out; they keep their animation running until the fade ends. */
 	let leaving = $state<number[]>([]);
 	let tabHidden = $state(false);
@@ -62,17 +63,31 @@
 		return () => document.removeEventListener('visibilitychange', onVisibility);
 	});
 
+	/** True only for keyboard focus — a mouse click on a dot/arrow leaves focus
+	  on the button, which would otherwise pause autoplay forever. */
+	function keyboardFocusInside() {
+		const ae = document.activeElement;
+		return !!el && !!ae && el.contains(ae) && ae.matches(':focus-visible');
+	}
+
 	$effect(() => {
-		if (images.length < 2 || tabHidden || reducedMotion) return;
+		if (images.length < 2 || tabHidden || reducedMotion || hovered) return;
 		// Depend on `active` so manual navigation restarts the autoplay timer.
 		void active;
 		const id = setInterval(() => {
-			// Pause while the user hovers the frame or has focus inside it.
-			if (el && (el.matches(':hover') || el.contains(document.activeElement))) return;
+			if (keyboardFocusInside()) return;
 			goTo(active + 1);
 		}, interval);
 		return () => clearInterval(id);
 	});
+
+	function onMouseLeave() {
+		hovered = false;
+		// Resume immediately instead of waiting for the next interval tick.
+		if (!tabHidden && !reducedMotion && !keyboardFocusInside()) {
+			goTo(active + 1);
+		}
+	}
 </script>
 
 {#if images.length > 0}
@@ -83,6 +98,8 @@
 		aria-roledescription="carousel"
 		aria-label="Noctalia screenshots"
 		style:--slide-duration="{interval + 1000}ms"
+		onmouseenter={() => (hovered = true)}
+		onmouseleave={onMouseLeave}
 	>
 		{#each displayImages as image, i (image.src)}
 			<div
