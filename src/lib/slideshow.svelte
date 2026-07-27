@@ -70,23 +70,65 @@
 		return !!el && !!ae && el.contains(ae) && ae.matches(':focus-visible');
 	}
 
+	// --- Autoplay -------------------------------------------------------------
+	// setTimeout chain (not setInterval) so the countdown can freeze on hover /
+	// tab-hidden and later resume with the time that was actually left, instead
+	// of restarting a full interval (which looked stuck: the drift animation had
+	// already finished while hovered, then nothing moved for a whole cycle).
+	let timeoutId: ReturnType<typeof setTimeout> | undefined;
+	let dueAt = 0;
+	/** ms left until the next advance; meaningful while the timer is stopped.
+	   Set to a full cycle whenever a new slide is scheduled (see the effect). */
+	let remaining = 0;
+	/** Slide the current timer/`remaining` belongs to; -1 = none scheduled yet. */
+	let scheduledFor = -1;
+
+	function stopTimer() {
+		if (timeoutId !== undefined) {
+			clearTimeout(timeoutId);
+			timeoutId = undefined;
+		}
+	}
+
+	function startTimer(ms: number) {
+		stopTimer();
+		dueAt = Date.now() + ms;
+		timeoutId = setTimeout(onAutoplayTick, ms);
+	}
+
+	function onAutoplayTick() {
+		timeoutId = undefined;
+		// Keyboard focus on a dot/arrow pauses autoplay; retry a full cycle later
+		// instead of advancing under the user's fingers.
+		if (keyboardFocusInside()) {
+			startTimer(interval);
+			return;
+		}
+		goTo(active + 1); // changes `active`, which re-arms the timer via the effect
+	}
+
 	$effect(() => {
+		const slide = active; // depend on `active`: navigation restarts the cycle
+		if (scheduledFor !== slide) {
+			scheduledFor = slide;
+			remaining = interval;
+		}
 		if (images.length < 2 || tabHidden || reducedMotion || hovered) return;
-		// Depend on `active` so manual navigation restarts the autoplay timer.
-		void active;
-		const id = setInterval(() => {
-			if (keyboardFocusInside()) return;
-			goTo(active + 1);
-		}, interval);
-		return () => clearInterval(id);
+		startTimer(remaining);
+		return () => {
+			// Freezing (hover, hidden tab, …): keep whatever time was left so a
+			// later resume continues the cycle from where it stopped.
+			remaining = Math.max(dueAt - Date.now(), 0);
+			stopTimer();
+		};
 	});
 
 	function onMouseLeave() {
+		// Just unpause — the autoplay effect resumes the countdown with the time
+		// that was left when the hover started. Never advance here: page zoom
+		// moves the element out from under the cursor and would force a new image
+		// on every zoom step.
 		hovered = false;
-		// Resume immediately instead of waiting for the next interval tick.
-		if (!tabHidden && !reducedMotion && !keyboardFocusInside()) {
-			goTo(active + 1);
-		}
 	}
 </script>
 
@@ -250,6 +292,13 @@
 		.slideshow__slide--active:nth-child(even) .slideshow__img,
 		.slideshow__slide--leaving:nth-child(even) .slideshow__img {
 			animation-name: slideshow-drift-out;
+		}
+
+		/* Freeze the drift while hovered, in lockstep with the JS countdown, so
+		   the slide visibly continues from where it stopped on mouse leave. */
+		.slideshow:hover .slideshow__backdrop-img,
+		.slideshow:hover .slideshow__img {
+			animation-play-state: paused;
 		}
 	}
 
