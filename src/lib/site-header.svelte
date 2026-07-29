@@ -9,7 +9,6 @@
 	const docsInstallUrl = DOCS_INSTALLATION_URL;
 
 	const siteNav = [
-		{ href: '/', label: 'Home' },
 		{ href: '/blog', label: 'Blog' },
 		{ href: '/changelogs', label: 'Changelog' },
 		{ href: '/plugins', label: 'Plugins' },
@@ -17,7 +16,6 @@
 	] as const;
 
 	function navActive(href: string, pathname: string): boolean {
-		if (href === '/') return pathname === '/';
 		return pathname === href || pathname.startsWith(`${href}/`);
 	}
 
@@ -41,8 +39,11 @@
 		themeMode = toggleTheme();
 	}
 
-	const themeToggleClass =
-		'inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
+	const iconButtonBase =
+		'h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
+	const themeToggleClass = `inline-flex ${iconButtonBase}`;
+	/** RSS lives in the footer too, so drop it from the crowded mobile bar. */
+	const rssLinkClass = `hidden sm:inline-flex ${iconButtonBase}`;
 
 	let mobileMenuTriggerRef = $state<HTMLButtonElement | null>(null);
 
@@ -56,11 +57,11 @@
 	class="site-header-chrome sticky top-0 border-b border-border/40 bg-void-deep/[0.92] backdrop-blur-xl backdrop-saturate-125"
 >
 	<div
-		class="relative mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-5"
+		class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:gap-4 sm:px-5 lg:grid lg:grid-cols-[1fr_auto_1fr]"
 	>
 		<a
 			href="/"
-			class="relative z-10 group flex min-w-0 shrink-0 items-center gap-2.5 text-fg outline-none transition hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep sm:gap-3"
+			class="group flex min-w-0 shrink-0 items-center gap-2.5 justify-self-start text-fg outline-none transition hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep sm:gap-3"
 		>
 			<img
 				src={logoUrl}
@@ -78,7 +79,7 @@
 		</a>
 
 		<nav
-			class="absolute left-1/2 top-1/2 z-[5] hidden -translate-x-1/2 -translate-y-1/2 items-center gap-1 md:flex lg:gap-2"
+			class="hidden items-center gap-1 justify-self-center min-[880px]:flex lg:gap-2"
 			aria-label="Site pages"
 		>
 			{#each siteNav as link (link.href)}
@@ -92,12 +93,12 @@
 			{/each}
 		</nav>
 
-		<div class="relative z-10 flex shrink-0 items-center justify-end gap-2 md:gap-2.5">
+		<div class="flex shrink-0 items-center justify-end gap-2 justify-self-end md:gap-2.5">
 			<a
 				href="/rss.xml"
 				target="_blank"
 				rel="noopener noreferrer"
-				class={themeToggleClass}
+				class={rssLinkClass}
 				aria-label="Open RSS feed"
 				title="RSS feed"
 			>
@@ -136,11 +137,11 @@
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger
 					bind:ref={mobileMenuTriggerRef}
-						class="inline-flex h-10 w-10 items-center justify-center rounded-md border border-border/55 bg-surface-2/50 text-fg outline-none transition hover:border-border hover:bg-surface-2 focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep md:hidden"
-						aria-label="Open menu"
-					>
-						<i class="ti ti-menu-2 text-base leading-none" aria-hidden="true"></i>
-					</DropdownMenu.Trigger>
+					class="{themeToggleClass} min-[880px]:hidden"
+					aria-label="Open menu"
+				>
+					<i class="ti ti-menu-2 text-base leading-none" aria-hidden="true"></i>
+				</DropdownMenu.Trigger>
 				<DropdownMenu.Portal>
 					<DropdownMenu.Content
 						align="end"

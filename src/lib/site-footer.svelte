@@ -3,24 +3,47 @@
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
 	const supportUrl = 'https://buymeacoffee.com/noctalia';
+	const githubUrl = 'https://github.com/noctalia-dev/noctalia';
+	const discordUrl = 'https://discord.noctalia.dev';
 
-	const links = [
-		{ href: '/blog', label: 'Blog', external: false },
-		{ href: '/changelogs', label: 'Changelog', external: false },
-		{ href: '/plugins', label: 'Plugins', external: false },
-		{ href: '/palettes', label: 'Palettes', external: false },
-		{ href: '/contributors', label: 'Contributors', external: false },
-		{ href: '/ethos', label: 'Our Ethos', external: false },
-		{ href: DOCS_BASE_URL, label: 'Docs', external: true },
-		{ href: 'https://discord.noctalia.dev', label: 'Discord', external: true },
+	type FooterLink = { href: string; label: string; external?: boolean };
+
+	/** Grouped so the footer reads as columns instead of one long strip of links. */
+	const linkGroups: { title: string; links: FooterLink[] }[] = [
 		{
-			href: 'https://github.com/noctalia-dev/noctalia',
-			label: 'GitHub',
-			external: true
+			title: 'Explore',
+			links: [
+				{ href: '/', label: 'Home' },
+				{ href: '/blog', label: 'Blog' },
+				{ href: '/changelogs', label: 'Changelog' },
+				{ href: '/plugins', label: 'Plugins' },
+				{ href: '/palettes', label: 'Palettes' }
+			]
 		},
-		{ href: '/rss.xml', label: 'RSS Feed', external: false },
-		{ href: '/privacy', label: 'Privacy', external: false }
-	] as const;
+		{
+			title: 'Project',
+			links: [
+				{ href: DOCS_BASE_URL, label: 'Documentation', external: true },
+				{ href: githubUrl, label: 'GitHub', external: true },
+				{ href: '/contributors', label: 'Contributors' },
+				{ href: '/ethos', label: 'Our Ethos' }
+			]
+		},
+		{
+			title: 'Community',
+			links: [
+				{ href: discordUrl, label: 'Discord', external: true },
+				{ href: '/rss.xml', label: 'RSS Feed' }
+			]
+		}
+	];
+
+	/** Static build: baked at prerender time, refreshed on the next deploy. */
+	const year = new Date().getFullYear();
+
+	const groupTitleClass = 'text-[11px] font-semibold uppercase tracking-[0.14em] text-fg';
+	const footerLinkClass =
+		'inline-flex rounded-sm text-sm text-fg-dim outline-none transition hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
 </script>
 
 <footer
@@ -29,56 +52,71 @@
 	<div class="site-footer-accent-line pointer-events-none absolute inset-x-0 top-0 h-px" aria-hidden="true"
 	></div>
 
-	<div class="mx-auto max-w-6xl px-4 py-7 sm:px-5 sm:py-8">
-		<div
-			class="flex flex-col items-stretch gap-6 sm:items-center lg:flex-row lg:justify-between lg:gap-8"
-		>
-			<div class="flex items-center gap-3 sm:justify-center lg:justify-start">
-				<img
-					src={logoUrl}
-					alt=""
-					class="h-9 w-9 shrink-0 drop-shadow-[0_4px_16px_rgb(255_245_155/0.2)]"
-					width="36"
-					height="36"
-				/>
-				<div class="min-w-0">
-					<p class="font-sans text-sm font-semibold tracking-tight text-fg">Noctalia</p>
-					<p class="text-[10px] font-medium uppercase tracking-[0.12em] text-fg-dim">
-						quiet by design
-					</p>
+	<div class="mx-auto max-w-6xl px-4 py-10 sm:px-5 sm:py-12">
+		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
+			<div class="lg:max-w-sm lg:shrink-0">
+				<div class="flex items-center gap-3">
+					<img
+						src={logoUrl}
+						alt=""
+						class="h-10 w-10 shrink-0 drop-shadow-[0_4px_16px_rgb(255_245_155/0.2)]"
+						width="40"
+						height="40"
+					/>
+					<div class="min-w-0">
+						<p class="font-sans text-base font-semibold tracking-tight text-fg">Noctalia</p>
+						<p class="text-[10px] font-medium uppercase tracking-[0.12em] text-fg-dim">
+							quiet by design
+						</p>
+					</div>
 				</div>
-			</div>
-
-			<nav
-				class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[13px] text-fg-dim lg:gap-x-5"
-				aria-label="Footer"
-			>
-				{#each links as link, i (link.href)}
-					{#if i > 0}
-						<span class="hidden text-border/80 sm:inline" aria-hidden="true">·</span>
-					{/if}
-					<a
-						href={link.href}
-						target={link.external ? '_blank' : undefined}
-						rel={link.external ? 'noopener noreferrer' : undefined}
-						class="whitespace-nowrap transition hover:text-accent"
-					>
-						{link.label}
-					</a>
-				{/each}
-			</nav>
-
-			<div class="flex justify-center lg:justify-end">
+				<p class="mt-4 max-w-sm text-sm leading-relaxed text-fg-dim">
+					A sleek, customizable desktop shell crafted for Wayland.
+				</p>
 				<a
 					href={supportUrl}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="btn-primary-glow inline-flex w-full max-w-[16rem] items-center justify-center gap-2 rounded-md bg-accent px-4 py-2 text-center text-sm font-semibold text-on-accent transition duration-200 hover:-translate-y-0.5 hover:brightness-105 active:translate-y-0 active:brightness-95 sm:w-auto sm:max-w-none"
+					class="btn-primary-glow mt-5 inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md bg-accent px-4 py-2 text-sm font-semibold text-on-accent outline-none transition duration-200 hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep active:translate-y-0 active:brightness-95"
 				>
 					<span class="text-base leading-none" aria-hidden="true">❤️</span>
 					Support the project
 				</a>
 			</div>
+
+			<div class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 sm:gap-x-12 lg:flex-1 lg:gap-x-8">
+				{#each linkGroups as group (group.title)}
+					<nav aria-label={group.title}>
+						<p class={groupTitleClass}>{group.title}</p>
+						<ul class="mt-4 space-y-1.5">
+							{#each group.links as link (link.href)}
+								<li>
+									<a
+										href={link.href}
+										target={link.external ? '_blank' : undefined}
+										rel={link.external ? 'noopener noreferrer' : undefined}
+										class={footerLinkClass}
+									>
+										{link.label}
+									</a>
+								</li>
+							{/each}
+						</ul>
+					</nav>
+				{/each}
+			</div>
+		</div>
+
+		<div
+			class="mt-10 flex flex-col gap-3 border-t border-border/40 pt-6 text-xs text-fg-dim sm:flex-row sm:items-center sm:justify-between"
+		>
+			<p>&copy; {year} Noctalia</p>
+			<a
+				href="/privacy"
+				class="rounded-sm outline-none transition hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
+			>
+				Privacy
+			</a>
 		</div>
 	</div>
 </footer>
