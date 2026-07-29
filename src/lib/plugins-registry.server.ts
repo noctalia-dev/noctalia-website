@@ -45,6 +45,30 @@ function slugFromId(catalogId: unknown): string {
 	return catalogId.split('/').pop() ?? '';
 }
 
+/** One older, still-installable revision of a plugin, from a catalog `[[plugin.release]]` row. */
+export type PluginRelease = {
+	version: string;
+	apiVersion: number | null;
+	updatedAt: number | null;
+};
+
+/** Catalog `[[plugin.release]]` rows, newest first; rows without a version are dropped. */
+function normalizeReleases(value: unknown): PluginRelease[] {
+	if (!Array.isArray(value)) return [];
+	const releases: PluginRelease[] = [];
+	for (const entry of value) {
+		if (!entry || typeof entry !== 'object') continue;
+		const row = entry as Record<string, unknown>;
+		if (typeof row.version !== 'string') continue;
+		releases.push({
+			version: row.version,
+			apiVersion: typeof row.plugin_api === 'number' ? row.plugin_api : null,
+			updatedAt: typeof row.updated_at === 'number' ? row.updated_at : null
+		});
+	}
+	return releases.sort((a, b) => (b.updatedAt ?? 0) - (a.updatedAt ?? 0));
+}
+
 /** Fetch a plugin's plugin.toml and merge the fields the catalog omits (description, icon). */
 async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promise<any> {
 	const slug = slugFromId(row.id);
@@ -55,6 +79,9 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 		author: typeof row.author === 'string' ? row.author : '',
 		description: '',
 		apiVersion: typeof row.plugin_api === 'number' ? row.plugin_api : null,
+		updatedAt: typeof row.updated_at === 'number' ? row.updated_at : null,
+		/** Older revisions, newest first; the tip version is not in this list. */
+		releases: normalizeReleases(row.release),
 		tags: Array.isArray(row.tags) ? row.tags : [],
 		source: source.slug,
 		repo: source.repo

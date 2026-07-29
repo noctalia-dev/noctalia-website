@@ -4,6 +4,12 @@
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
 
+	interface PluginRelease {
+		version: string;
+		apiVersion: number | null;
+		updatedAt: number | null;
+	}
+
 	interface Plugin {
 		id: string;
 		name: string;
@@ -11,12 +17,33 @@
 		author: string;
 		description: string;
 		apiVersion: number | null;
+		updatedAt: number | null;
+		releases: PluginRelease[];
 		tags?: string[];
 		source: string;
 		repo: string;
 	}
 
 	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
+
+	/** Tip first, then the older revisions the catalog keeps installable for earlier plugin APIs. */
+	const versionHistory = $derived<PluginRelease[]>([
+		{
+			version: data.plugin.version,
+			apiVersion: data.plugin.apiVersion,
+			updatedAt: data.plugin.updatedAt
+		},
+		...data.plugin.releases
+	]);
+
+	function formatUpdatedAt(seconds: number | null): string {
+		if (seconds === null) return '—';
+		return new Date(seconds * 1000).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric'
+		});
+	}
 
 
 	function getPreviewUrl(): string {
@@ -70,12 +97,6 @@
 					<i class="ti ti-user text-sm leading-none" aria-hidden="true"></i>
 					{data.plugin.author}
 				</span>
-				{#if data.plugin.apiVersion !== null}
-					<span class="badge">
-						<i class="ti ti-versions text-sm leading-none" aria-hidden="true"></i>
-						Plugin API {data.plugin.apiVersion}
-					</span>
-				{/if}
 			</div>
 
 		{#if data.plugin.tags && data.plugin.tags.length > 0}
@@ -94,6 +115,39 @@
 				</div>
 			</div>
 		{/if}
+
+		<div class="versions-section">
+			<h2 class="section-title">Versions</h2>
+			<table class="versions-table">
+				<thead>
+					<tr>
+						<th scope="col">Version</th>
+						<th scope="col">Plugin API</th>
+						<th scope="col">Updated</th>
+					</tr>
+				</thead>
+				<tbody>
+					{#each versionHistory as release, i}
+						<tr>
+							<td>
+								<span class="version-cell">
+									v{release.version}
+									{#if i === 0}
+										<span class="version-latest">latest</span>
+									{/if}
+								</span>
+							</td>
+							<td data-label="Plugin API">{release.apiVersion ?? '—'}</td>
+							<td data-label="Updated">{formatUpdatedAt(release.updatedAt)}</td>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+			<p class="versions-note">
+				Older versions stay installable on a Noctalia release whose plugin API is below the latest
+				version's.
+			</p>
+		</div>
 
 		<div class="actions">
 			<a
@@ -262,6 +316,121 @@
 		border-radius: 1rem;
 		padding: 1.5rem;
 		margin-bottom: 2rem;
+	}
+
+	/* Versions Section */
+	.versions-section {
+		background: var(--mSurfaceVariant);
+		border: 1px solid var(--mOutline);
+		border-radius: 1rem;
+		padding: 1.5rem;
+		margin-bottom: 2rem;
+	}
+
+	.versions-table {
+		width: 100%;
+		border-collapse: collapse;
+		font-size: 0.9375rem;
+	}
+
+	.versions-table th {
+		text-align: left;
+		padding: 0 0.75rem 0.625rem;
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--mOnSurfaceVariant);
+		border-bottom: 1px solid var(--mOutline);
+		white-space: nowrap;
+	}
+
+	.versions-table th:first-child,
+	.versions-table td:first-child {
+		padding-left: 0;
+	}
+
+	.versions-table th:last-child,
+	.versions-table td:last-child {
+		padding-right: 0;
+		text-align: right;
+	}
+
+	.versions-table td {
+		padding: 0.75rem;
+		color: var(--mOnSurface);
+		border-bottom: 1px solid color-mix(in srgb, var(--mOutline) 55%, transparent);
+	}
+
+	.versions-table tbody tr:last-child td {
+		border-bottom: none;
+		padding-bottom: 0;
+	}
+
+	.version-cell {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-weight: 500;
+		white-space: nowrap;
+	}
+
+	.version-latest {
+		padding: 0.125rem 0.5rem;
+		border-radius: 2rem;
+		border: 1px solid var(--mPrimary);
+		color: var(--mPrimary);
+		font-size: 0.6875rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.versions-note {
+		margin-top: 1rem;
+		font-size: 0.8125rem;
+		line-height: 1.6;
+		color: var(--mOnSurfaceVariant);
+	}
+
+	/* Too little width for three columns: stack each version into a labelled block. */
+	@media (max-width: 30rem) {
+		.versions-table thead {
+			display: none;
+		}
+
+		.versions-table tr {
+			display: block;
+			padding-bottom: 0.875rem;
+			border-bottom: 1px solid color-mix(in srgb, var(--mOutline) 55%, transparent);
+		}
+
+		.versions-table tr + tr {
+			padding-top: 0.875rem;
+		}
+
+		.versions-table tbody tr:last-child {
+			padding-bottom: 0;
+			border-bottom: none;
+		}
+
+		.versions-table td,
+		.versions-table td:last-child {
+			display: block;
+			padding: 0;
+			border-bottom: none;
+			text-align: left;
+		}
+
+		.versions-table td[data-label] {
+			margin-top: 0.25rem;
+			font-size: 0.875rem;
+			color: var(--mOnSurfaceVariant);
+		}
+
+		.versions-table td[data-label]::before {
+			content: attr(data-label) ': ';
+		}
 	}
 
 	.readme-content {
