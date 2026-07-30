@@ -12,6 +12,10 @@ node_modules
 /static/og/
 /static/og.webp
 
+# Generated GitHub profile showcase (`node scripts/build-github-showcase.mjs`)
+/static/github-showcase.webp
+/static/.github-showcase-hash
+
 # OS
 .DS_Store
 Thumbs.db
