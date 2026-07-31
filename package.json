@@ -21,7 +21,7 @@
 		"@fontsource/inter": "^5.2.8",
 		"@resvg/resvg-js": "^2.6.2",
 		"@sveltejs/adapter-static": "3.0.10",
-		"@sveltejs/kit": "2.63.1",
+		"@sveltejs/kit": "^2.70.2",
 		"@sveltejs/vite-plugin-svelte": "7.0.0",
 		"@tailwindcss/typography": "0.5.19",
 		"@tailwindcss/vite": "4.2.4",
