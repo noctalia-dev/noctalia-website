@@ -37,4 +37,4 @@ To everyone who gave Noctalia a try, filed a bug, shipped a PR, hung out in Disc
 
 Quiet by design. Loud on GitHub. See you in the next thousand.
 
-[GitHub](https://github.com/noctalia-dev/noctalia) · [Website](https://noctalia.dev) · [Docs](https://docs.noctalia.dev)
+[GitHub](https://github.com/noctalia-dev/noctalia) · [Website](https://noctalia.dev) · [Docs](https://docs.noctalia.dev/)

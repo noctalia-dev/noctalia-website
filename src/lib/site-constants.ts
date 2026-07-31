@@ -16,5 +16,5 @@ export const OG_IMAGE_HEIGHT = 630;
 export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og.webp`;
 
 /** Published documentation (v5) */
-export const DOCS_BASE_URL = 'https://docs.noctalia.dev/v5';
+export const DOCS_BASE_URL = 'https://docs.noctalia.dev/v5/';
 export const DOCS_INSTALLATION_URL = 'https://docs.noctalia.dev/v5/getting-started/installation/';
