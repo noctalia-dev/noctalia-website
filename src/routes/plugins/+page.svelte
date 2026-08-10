@@ -12,9 +12,11 @@
 		version: string;
 		author: string;
 		description: string;
+		icon?: string;
 		tags?: string[];
 		source: string;
 		repo: string;
+		updatedAt?: number | null;
 	}
 
 	let { data } = $props<{ data: { plugins: Plugin[] } }>();
@@ -26,18 +28,31 @@
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
 	let selectedTags = $state<string[]>([]);
+	let selectedCompositors = $state<string[]>([]);
 	let availableTags = $state<string[]>([]);
+	let availableCompositors = $state<string[]>([]);
+	let sortOption = $state<'name' | 'updated'>('name');
 
-	// Split the (filtered) list into the two sources rendered as separate sections, sorted alphabetically.
-	let officialPlugins = $derived(
-		plugins.filter(p => p.source === 'official').sort((a, b) => a.name.localeCompare(b.name))
-	);
-	let communityPlugins = $derived(
-		plugins.filter(p => p.source !== 'official').sort((a, b) => a.name.localeCompare(b.name))
-	);
+	const COMPOSITORS = ['niri', 'hyprland', 'sway', 'scroll', 'mangowc', 'labwc'];
+
+	function sortPlugins(items: Plugin[]): Plugin[] {
+		return items.sort((a, b) => {
+			if (sortOption === 'updated') {
+				const byUpdated = (b.updatedAt ?? 0) - (a.updatedAt ?? 0);
+				if (byUpdated !== 0) return byUpdated;
+			}
+			return a.name.localeCompare(b.name);
+		});
+	}
+
+	// Split the filtered list into the two sources rendered as separate sections.
+	let officialPlugins = $derived(sortPlugins(plugins.filter((plugin) => plugin.source === 'official')));
+	let communityPlugins = $derived(sortPlugins(plugins.filter((plugin) => plugin.source !== 'official')));
 	// Does the catalog contain any community plugins at all (ignoring filters)?
-	let hasCommunitySource = $derived(allPlugins.some(p => p.source !== 'official'));
-	let isFiltering = $derived(Boolean(searchQuery || selectedTags.length > 0));
+	let hasCommunitySource = $derived(allPlugins.some((plugin) => plugin.source !== 'official'));
+	let isFiltering = $derived(
+		Boolean(searchQuery || selectedTags.length > 0 || selectedCompositors.length > 0)
+	);
 
 	let totalOfficialCount = $derived(allPlugins.filter(p => p.source === 'official').length);
 	let totalCommunityCount = $derived(allPlugins.filter(p => p.source !== 'official').length);
@@ -47,12 +62,19 @@
 		// Preserve catalog order
 		allPlugins = data.plugins;
 
-		// Extract all unique tags
+		// Keep compositor compatibility separate from descriptive tags.
 		const tagSet = new Set<string>();
-		allPlugins.forEach(plugin => {
-			plugin.tags?.forEach(tag => tagSet.add(tag));
+		const compositorSet = new Set<string>();
+		allPlugins.forEach((plugin) => {
+			plugin.tags?.forEach((tag) => {
+				if (isCompositorTag(tag)) compositorSet.add(tag);
+				else tagSet.add(tag);
+			});
 		});
 		availableTags = Array.from(tagSet).sort();
+		availableCompositors = Array.from(compositorSet).sort(
+			(a, b) => COMPOSITORS.indexOf(a) - COMPOSITORS.indexOf(b)
+		);
 
 		// Initialize Fuse.js for fuzzy search
 		fuse = new Fuse(allPlugins, {
@@ -70,9 +92,11 @@
 
 		plugins = allPlugins;
 
-		// Check for tag query parameter
+		// Preserve direct links to either a regular tag or a compositor.
 		const urlTag = $page.url.searchParams.get('tag');
-		if (urlTag && availableTags.includes(urlTag)) {
+		if (urlTag && availableCompositors.includes(urlTag)) {
+			selectedCompositors = [urlTag];
+		} else if (urlTag && availableTags.includes(urlTag)) {
 			selectedTags = [urlTag];
 		}
 	});
@@ -84,6 +108,13 @@
 		if (selectedTags.length > 0) {
 			filtered = filtered.filter(plugin =>
 				selectedTags.some(tag => plugin.tags?.includes(tag))
+			);
+		}
+
+		// Filter groups combine with AND, while each group permits one active choice.
+		if (selectedCompositors.length > 0) {
+			filtered = filtered.filter((plugin) =>
+				selectedCompositors.some((compositor) => plugin.tags?.includes(compositor))
 			);
 		}
 
@@ -105,9 +136,54 @@
 		}
 	}
 
+	function toggleCompositor(compositor: string) {
+		if (selectedCompositors.includes(compositor)) {
+			selectedCompositors = [];
+		} else {
+			selectedCompositors = [compositor];
+		}
+	}
+
 	function clearFilters() {
 		selectedTags = [];
+		selectedCompositors = [];
 		searchQuery = '';
+	}
+
+	function isCompositorTag(tag: string): boolean {
+		return COMPOSITORS.includes(tag.toLowerCase());
+	}
+
+	function formatCompositor(compositor: string): string {
+		if (compositor === 'mangowc') return 'MangoWC';
+		return compositor.charAt(0).toUpperCase() + compositor.slice(1);
+	}
+
+	function getIconClass(plugin: Plugin): string {
+		const icon = plugin.icon?.trim();
+		return `ti ti-${icon && /^[a-z0-9-]+$/.test(icon) ? icon : 'puzzle'}`;
+	}
+
+	function ensureTablerIcon(node: HTMLElement, iconClass: string) {
+		let frame = 0;
+
+		function check(nextIconClass: string) {
+			iconClass = nextIconClass;
+			cancelAnimationFrame(frame);
+			node.classList.remove('ti-puzzle');
+			frame = requestAnimationFrame(() => {
+				const content = getComputedStyle(node, '::before').content;
+				if (!content || content === 'none' || content === 'normal' || content === '""') {
+					node.classList.add('ti-puzzle');
+				}
+			});
+		}
+
+		check(iconClass);
+		return {
+			update: check,
+			destroy: () => cancelAnimationFrame(frame)
+		};
 	}
 
 	function getPreviewUrl(plugin: Plugin): string {
@@ -146,44 +222,105 @@
 				<p>Error: {error}</p>
 			</div>
 		{:else}
+			<div class="catalog-controls">
 				<div class="search-section">
 					<div class="search-container">
 						<i class="ti ti-search search-icon" aria-hidden="true"></i>
 						<input
-							type="text"
+							type="search"
 							class="search-input"
-						placeholder="Search plugins by name, description or author..."
-						bind:value={searchQuery}
-						autocomplete="off"
-					/>
-					{#if searchQuery}
-						<button 
+							placeholder="Search plugins by name, description or author..."
+							aria-label="Search plugins"
+							bind:value={searchQuery}
+							autocomplete="off"
+						/>
+						{#if searchQuery}
+							<button
 								class="search-clear"
-								onclick={() => searchQuery = ''}
+								onclick={() => (searchQuery = '')}
 								aria-label="Clear search"
 							>
 								<i class="ti ti-x text-lg leading-none" aria-hidden="true"></i>
 							</button>
 						{/if}
 					</div>
-				{#if searchQuery || selectedTags.length > 0}
+				</div>
+
+				<div class="filters-heading">
+					<div class="filters-title">
+						<i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>
+						<span>Filter plugins</span>
+					</div>
+					<label class="sort-control">
+						<span>Sort by</span>
+						<select bind:value={sortOption}>
+							<option value="name">Name</option>
+							<option value="updated">Recently updated</option>
+						</select>
+					</label>
+				</div>
+
+				<div class="filter-groups">
+					{#if availableCompositors.length > 0}
+						<div class="filter-group compositor-group">
+							<span class="filter-label">
+								<i class="ti ti-device-desktop" aria-hidden="true"></i>
+								Compositor
+							</span>
+							<div class="tag-filters">
+								<button
+									class="tag-chip compositor-chip"
+									class:selected={selectedCompositors.length === 0}
+									aria-pressed={selectedCompositors.length === 0}
+									onclick={() => (selectedCompositors = [])}
+								>
+									Any
+								</button>
+								{#each availableCompositors as compositor}
+									<button
+										class="tag-chip compositor-chip"
+										class:selected={selectedCompositors.includes(compositor)}
+										aria-pressed={selectedCompositors.includes(compositor)}
+										onclick={() => toggleCompositor(compositor)}
+									>
+										{formatCompositor(compositor)}
+									</button>
+								{/each}
+							</div>
+						</div>
+					{/if}
+					<div class="filter-group">
+						<span class="filter-label">Tags</span>
+						<div class="tag-filters">
+							<button
+								class="tag-chip"
+								class:selected={selectedTags.length === 0}
+								aria-pressed={selectedTags.length === 0}
+								onclick={() => (selectedTags = [])}
+							>
+								All
+							</button>
+							{#each availableTags as tag}
+								<button
+									class="tag-chip"
+									class:selected={selectedTags.includes(tag)}
+									aria-pressed={selectedTags.includes(tag)}
+									onclick={() => toggleTag(tag)}
+								>
+									{tag}
+								</button>
+							{/each}
+						</div>
+					</div>
+
+				</div>
+
+				{#if isFiltering}
 					<div class="search-results-info">
 						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
 						<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
 					</div>
 				{/if}
-			</div>
-
-			<div class="tag-filters">
-				{#each availableTags as tag}
-					<button
-						class="tag-chip"
-						class:selected={selectedTags.includes(tag)}
-						onclick={() => toggleTag(tag)}
-					>
-						{tag}
-					</button>
-				{/each}
 			</div>
 			
 				{#snippet pluginCard(plugin: Plugin)}
@@ -195,7 +332,11 @@
 								onerror={handleImageError}
 							/>
 							<div class="preview-placeholder" style="display: none;">
-								<div class="placeholder-icon">📦</div>
+								<i
+									class={`${getIconClass(plugin)} placeholder-icon`}
+									use:ensureTablerIcon={getIconClass(plugin)}
+									aria-hidden="true"
+								></i>
 							</div>
 							<div class="preview-overlay">
 								<span class="preview-text">View Details</span>
@@ -203,6 +344,12 @@
 						</div>
 						<div class="plugin-info">
 							<div class="plugin-name-row">
+								<span class="plugin-icon" aria-hidden="true">
+									<i
+										class={getIconClass(plugin)}
+										use:ensureTablerIcon={getIconClass(plugin)}
+									></i>
+								</span>
 								<h3 class="plugin-name">{plugin.name}</h3>
 								{#if plugin.source === 'official'}
 									<span class="official-badge" title="Official Plugin">
@@ -214,7 +361,12 @@
 							{#if plugin.tags && plugin.tags.length > 0}
 								<div class="plugin-tags">
 									{#each plugin.tags as tag}
-										<span class="plugin-tag">{tag}</span>
+										<span class="plugin-tag" class:compositor={isCompositorTag(tag)}>
+											{#if isCompositorTag(tag)}
+												<i class="ti ti-device-desktop" aria-hidden="true"></i>
+											{/if}
+											{isCompositorTag(tag) ? formatCompositor(tag) : tag}
+										</span>
 									{/each}
 								</div>
 							{/if}
@@ -228,7 +380,7 @@
 
 				{#if isFiltering && plugins.length === 0}
 					<div class="no-results">
-						<div class="no-results-icon">🔍</div>
+						<i class="ti ti-search-off no-results-icon" aria-hidden="true"></i>
 						<h3>No plugins found</h3>
 						<p>Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}>clear all filters</button></p>
 					</div>
@@ -298,8 +450,16 @@
 		margin-bottom: 3rem;
 	}
 	
+	.catalog-controls {
+		padding: 1.25rem;
+		border: 1px solid var(--mOutline);
+		border-radius: 1.25rem;
+		background: var(--mSurfaceVariant);
+		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
+	}
+
 	.search-section {
-		margin-bottom: 3rem;
+		margin-bottom: 1.5rem;
 	}
 	
 	.search-container {
@@ -368,6 +528,81 @@
 		background: var(--mSurface);
 		color: var(--mOnSurface);
 	}
+
+	.filters-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--mOutline);
+	}
+
+	.filters-title {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--mOnSurface);
+		font-weight: 650;
+	}
+
+	.filters-title .ti {
+		color: var(--mPrimary);
+		font-size: 1.125rem;
+	}
+
+	.sort-control {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.875rem;
+	}
+
+	.sort-control select {
+		border: 1px solid var(--mOutline);
+		border-radius: 0.625rem;
+		background: var(--mSurface);
+		color: var(--mOnSurface);
+		font: inherit;
+		padding: 0.5rem 2rem 0.5rem 0.75rem;
+		cursor: pointer;
+	}
+
+	.sort-control select:focus-visible {
+		outline: 2px solid var(--mPrimary);
+		outline-offset: 2px;
+	}
+
+	.filter-groups {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1.25rem;
+	}
+
+	.filter-group {
+		display: grid;
+		grid-template-columns: 7rem 1fr;
+		align-items: start;
+		gap: 1rem;
+	}
+
+	.filter-label {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding-top: 0.5rem;
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+	}
+
+	.filter-group + .filter-group {
+		padding-top: 1rem;
+		border-top: 1px solid var(--mOutline);
+	}
 	
 	.search-results-info {
 		text-align: center;
@@ -401,8 +636,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.5rem;
-		justify-content: center;
-		margin-bottom: 2rem;
+		justify-content: flex-start;
 	}
 
 	.tag-chip {
@@ -420,7 +654,7 @@
 			border-color 0.2s ease,
 			color 0.2s ease,
 			box-shadow 0.2s ease;
-		flex: 1 1 auto;
+		flex: 0 0 auto;
 		text-align: center;
 		min-width: fit-content;
 		max-width: 12rem;
@@ -443,6 +677,14 @@
 		box-shadow:
 			0 8px 24px -10px rgb(255 245 155 / 0.35),
 			inset 0 1px 0 0 rgb(255 255 255 / 0.25);
+	}
+
+	.compositor-chip {
+		border-color: color-mix(in srgb, var(--mPrimary) 28%, var(--mOutline));
+	}
+
+	.compositor-chip:not(.selected) {
+		color: var(--mPrimary);
 	}
 
 	.no-results {
@@ -675,6 +917,20 @@
 		gap: 0.5rem;
 	}
 
+	.plugin-icon {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		border: 1px solid color-mix(in srgb, var(--mPrimary) 30%, var(--mOutline));
+		border-radius: 0.625rem;
+		background: color-mix(in srgb, var(--mPrimary) 10%, transparent);
+		color: var(--mPrimary);
+		font-size: 1.125rem;
+		flex-shrink: 0;
+	}
+
 	.plugin-name {
 		font-size: 1.25rem;
 		font-weight: 700;
@@ -720,6 +976,14 @@
 		font-size: 0.75rem;
 		border: 1px solid var(--mOutline);
 	}
+
+	.plugin-tag.compositor {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.25rem;
+		border-color: color-mix(in srgb, var(--mPrimary) 30%, var(--mOutline));
+		color: var(--mPrimary);
+	}
 	
 	.plugin-footer {
 		display: flex;
@@ -761,6 +1025,24 @@
 	}
 
 	@media (max-width: 768px) {
+		.catalog-controls {
+			padding: 1rem;
+		}
+
+		.filters-heading {
+			align-items: flex-start;
+			flex-direction: column;
+		}
+
+		.filter-group {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
+		}
+
+		.filter-label {
+			padding-top: 0;
+		}
+
 		.plugins-grid {
 			grid-template-columns: 1fr;
 		}
