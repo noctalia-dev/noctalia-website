@@ -39,6 +39,10 @@
 	let hasCommunitySource = $derived(allPlugins.some(p => p.source !== 'official'));
 	let isFiltering = $derived(Boolean(searchQuery || selectedTags.length > 0));
 
+	let totalOfficialCount = $derived(allPlugins.filter(p => p.source === 'official').length);
+	let totalCommunityCount = $derived(allPlugins.filter(p => p.source !== 'official').length);
+	let totalPluginCount = $derived(allPlugins.length);
+
 	onMount(() => {
 		// Preserve catalog order
 		allPlugins = data.plugins;
@@ -124,7 +128,12 @@
 	<div class="site-shell w-full">
 		<div class="page-header">
 			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Plugins</h1>
-			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Extend Noctalia with official and community plugins</p>
+			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">
+				Extend Noctalia with official and community plugins
+				{#if totalPluginCount > 0}
+					<span class="page-subtitle-count">· {totalPluginCount} available</span>
+				{/if}
+			</p>
 		</div>
 		
 		{#if loading}
@@ -225,7 +234,14 @@
 					</div>
 				{:else}
 					<div class="plugins-section">
-						<h2 class="section-title">Official Plugins</h2>
+						<h2 class="section-title">
+							Official Plugins
+							{#if totalOfficialCount > 0}
+								<span class="section-count">
+									{#if isFiltering}({officialPlugins.length} of {totalOfficialCount}){:else}({totalOfficialCount}){/if}
+								</span>
+							{/if}
+						</h2>
 						{#if officialPlugins.length > 0}
 							<div class="plugins-grid">
 								{#each officialPlugins as plugin}
@@ -240,7 +256,14 @@
 					<hr class="source-separator" />
 
 					<div class="plugins-section">
-						<h2 class="section-title">Community Plugins</h2>
+						<h2 class="section-title">
+							Community Plugins
+							{#if totalCommunityCount > 0}
+								<span class="section-count">
+									{#if isFiltering}({communityPlugins.length} of {totalCommunityCount}){:else}({totalCommunityCount}){/if}
+								</span>
+							{/if}
+						</h2>
 						{#if communityPlugins.length > 0}
 							<div class="plugins-grid">
 								{#each communityPlugins as plugin}
@@ -495,6 +518,20 @@
 		color: var(--mOnSurface);
 		margin-bottom: 2rem;
 		letter-spacing: -0.02em;
+	}
+
+	.section-count {
+		font-size: 1.25rem;
+		font-weight: 500;
+		color: var(--mOnSurfaceVariant);
+		margin-left: 0.5rem;
+		letter-spacing: 0;
+	}
+
+	.page-subtitle-count {
+		font-size: 0.9em;
+		opacity: 0.75;
+		margin-left: 0.35rem;
 	}
 
 	.source-separator {
