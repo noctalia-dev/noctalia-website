@@ -32,7 +32,16 @@ export async function getShellContributors(): Promise<Contributor[]> {
 	const maxPages = 10;
 
 	while (hasMore && page <= maxPages) {
-		const response = await githubFetch(`${CONTRIBUTORS_URL}?per_page=100&page=${page}`);
+		let response: Response;
+		try {
+			response = await githubFetch(`${CONTRIBUTORS_URL}?per_page=100&page=${page}`);
+		} catch (err) {
+			// githubFetch retries transient failures itself; if it still threw, GitHub is
+			// unreachable. Return whatever contributors we already gathered instead of
+			// failing the whole page build.
+			console.error('Failed to fetch contributors:', err);
+			break;
+		}
 		if (!response.ok) {
 			console.error('Failed to fetch contributors, status:', response.status);
 			break;
