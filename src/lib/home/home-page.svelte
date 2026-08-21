@@ -6,8 +6,9 @@
 	import SpotlightSurface from '$lib/spotlight-surface.svelte';
 	import Slideshow from '$lib/slideshow.svelte';
 	import { slideshowImages } from '$lib/slideshow-images';
+	import Family from '$lib/home/Family.svelte';
 	import type { FeatureIconId } from '$lib/feature-icons';
-	import { DOCS_BASE_URL, DOCS_INSTALLATION_URL } from '$lib/site-constants';
+	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
 
 	let {
 		data,
@@ -22,7 +23,6 @@
 	const showcaseVideoUrl = 'https://assets.noctalia.dev/video/noctalia-showcase-short.mp4';
 	const showcasePosterUrl = 'https://assets.noctalia.dev/video/video-poster.png';
 	const showcaseCaptionsUrl = '/video/showcase-en.vtt';
-	const docsInstallUrl = DOCS_INSTALLATION_URL;
 
 	type FeatureCard = {
 		icon: FeatureIconId;
@@ -93,21 +93,25 @@
 			></div>
 		</div>
 
-	<!-- Hero (copy aligned with noctalia-website Hero.svelte) -->
+	<!-- Hero: the family is the headline; Noctalia the shell is detailed further down. -->
 	<section class="relative section-hero">
 		<div class="relative mx-auto max-w-5xl text-center">
 			<Reveal>
-				<div class="mb-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-5">
+				<div class="mb-9 flex flex-col items-center gap-4 sm:flex-row sm:justify-center sm:gap-6">
 					<img
 						src={logoUrl}
 						alt=""
-						class="h-16 w-16 shrink-0 drop-shadow-[0_6px_28px_rgb(255_245_155/0.25)] md:h-[4.5rem] md:w-[4.5rem]"
-						width="72"
-						height="72"
+						class="h-24 w-24 shrink-0 drop-shadow-[0_8px_36px_rgb(255_245_155/0.28)] md:h-32 md:w-32"
+						width="128"
+						height="128"
 					/>
 					<div class="text-center sm:text-left">
-						<p class="font-sans text-2xl font-semibold tracking-tight text-fg md:text-3xl">Noctalia</p>
-						<p class="mt-0.5 text-xs font-medium uppercase tracking-[0.12em] text-fg-dim md:text-sm">
+						<p class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">
+							Noctalia
+						</p>
+						<p
+							class="mt-1 text-sm font-medium uppercase tracking-[0.16em] text-fg-dim md:mt-1.5 md:text-base"
+						>
 							quiet by design
 						</p>
 					</div>
@@ -117,28 +121,22 @@
 				<h1
 					class="text-balance font-sans text-3xl font-semibold leading-snug tracking-tight text-fg md:text-5xl md:leading-tight"
 				>
-					A sleek, customizable desktop shell <br />
-					crafted for <span class="text-accent-2 drop-shadow-[0_0_24px_rgb(155_254_206/0.35)]">Wayland</span>
+					A family of native <span
+						class="text-accent-2 drop-shadow-[0_0_24px_rgb(155_254_206/0.35)]">Wayland</span
+					> projects <br />
+					that feel like one desktop
 				</h1>
 			</Reveal>
 			<Reveal delay={200}>
 				<p class="mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-fg-dim md:text-xl">
-					Built on a lean, modern stack with a calm, distinctive look you can tune to match your setup.
+					A desktop shell, a compositor, and a login screen sharing one look, one palette, and one
+					philosophy - each tunable to match your setup.
 				</p>
 			</Reveal>
 			<Reveal delay={290}>
 				<div class="mt-8 flex flex-wrap items-center justify-center gap-3">
-						<a
-							href={DOCS_BASE_URL}
-							target="_blank"
-							rel="noopener noreferrer"
-							class="inline-flex items-center gap-2 rounded-md border border-border/65 bg-surface-2/85 px-5 py-2.5 text-sm font-medium text-fg shadow-md outline-none transition duration-300 hover:-translate-y-0.5 hover:border-accent/45 hover:text-accent hover:shadow-lg focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
-						>
-							<i class="ti ti-book text-lg leading-none" aria-hidden="true"></i>
-							Documentation
-						</a>
 					<a
-						href={docsInstallUrl}
+						href={DOCS_BASE_URL}
 						target="_blank"
 						rel="noopener noreferrer"
 						class="btn-primary-glow inline-flex items-center gap-2 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-on-accent outline-none transition duration-300 hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep active:translate-y-0 active:brightness-95"
@@ -147,33 +145,31 @@
 						<span aria-hidden="true">→</span>
 					</a>
 					<a
-						href="https://github.com/noctalia-dev/noctalia"
-						target="_blank"
-						rel="noopener noreferrer"
+						href="#spotlight"
 						class="inline-flex items-center gap-2 rounded-md border border-border/65 bg-surface-2/85 px-5 py-2.5 text-sm font-medium text-fg shadow-md outline-none transition duration-300 hover:-translate-y-0.5 hover:border-accent-2/55 hover:text-accent-2 hover:shadow-lg focus-visible:ring-2 focus-visible:ring-accent-2/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
 					>
+						<i class="ti ti-player-play text-lg leading-none" aria-hidden="true"></i>
+						See it in action
+					</a>
+					<a
+						href={GITHUB_ORG_URL}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-2 rounded-md px-5 py-2.5 text-sm font-medium text-fg-dim outline-none transition duration-300 hover:text-accent focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep"
+					>
+						<i class="ti ti-brand-github text-lg leading-none" aria-hidden="true"></i>
 						GitHub
 					</a>
 				</div>
 			</Reveal>
-			<Reveal delay={240}>
-				<p class="mx-auto mt-6 max-w-xl text-sm text-fg-dim md:text-base">
-					To install Noctalia, read the
-					<a
-						href={docsInstallUrl}
-						target="_blank"
-						rel="noopener noreferrer"
-						class="font-medium text-accent underline-offset-4 hover:underline"
-						>installation guide</a
-					>.
-				</p>
-			</Reveal>
 		</div>
 	</section>
 
-	<section id="spotlight" class="section-content scroll-mt-24">
+	<section class="section-content">
 		<div class="site-shell space-y-20 md:space-y-24">
-			<div>
+			<Family />
+
+			<div id="spotlight" class="scroll-mt-24">
 				<Reveal>
 					<h2 class="fancy-section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
 						See It In Action
@@ -227,10 +223,10 @@
 			<div>
 				<Reveal>
 					<h2 class="fancy-section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
-						Key Features
+						Why Noctalia
 					</h2>
 					<p class="mt-3 max-w-2xl text-fg-dim">
-						Everything you need for a beautiful, distraction-free desktop experience
+						What the shell gives you: a beautiful, distraction-free desktop experience.
 					</p>
 				</Reveal>
 				<div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

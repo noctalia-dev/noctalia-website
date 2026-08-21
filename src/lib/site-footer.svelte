@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { DOCS_BASE_URL } from '$lib/site-constants';
+	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
+	import { PRODUCTS } from '$lib/products';
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
 	const supportUrl = 'https://buymeacoffee.com/noctalia';
-	const githubUrl = 'https://github.com/noctalia-dev/noctalia';
 	const discordUrl = 'https://discord.noctalia.dev';
 
 	type FooterLink = { href: string; label: string; external?: boolean };
@@ -21,10 +21,18 @@
 			]
 		},
 		{
-			title: 'Project',
+			title: 'Projects',
+			links: PRODUCTS.map((product) => ({
+				href: product.docsUrl,
+				label: product.name,
+				external: true
+			}))
+		},
+		{
+			title: 'Resources',
 			links: [
 				{ href: DOCS_BASE_URL, label: 'Documentation', external: true },
-				{ href: githubUrl, label: 'GitHub', external: true },
+				{ href: GITHUB_ORG_URL, label: 'GitHub', external: true },
 				{ href: '/contributors', label: 'Contributors' },
 				{ href: '/ethos', label: 'Our Ethos' }
 			]
@@ -71,7 +79,8 @@
 					</div>
 				</div>
 				<p class="mt-4 max-w-sm text-sm leading-relaxed text-fg-dim">
-					A sleek, customizable desktop shell crafted for Wayland.
+					A sleek, customizable desktop shell crafted for Wayland - with the Umbriel compositor and
+					the Greeter alongside it.
 				</p>
 				<a
 					href={supportUrl}
@@ -84,7 +93,7 @@
 				</a>
 			</div>
 
-			<div class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3 sm:gap-x-12 lg:flex-1 lg:gap-x-8">
+			<div class="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-4 sm:gap-x-8 lg:flex-1">
 				{#each linkGroups as group (group.title)}
 					<nav aria-label={group.title}>
 						<p class={groupTitleClass}>{group.title}</p>

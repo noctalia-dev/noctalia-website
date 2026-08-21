@@ -3,12 +3,12 @@
 	import { page } from '$app/state';
 	import { onMount } from 'svelte';
 	import { getTheme, toggleTheme, type Theme } from '$lib/theme';
-	import { DOCS_BASE_URL, DOCS_INSTALLATION_URL } from '$lib/site-constants';
+	import { DOCS_BASE_URL } from '$lib/site-constants';
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
-	const docsInstallUrl = DOCS_INSTALLATION_URL;
 
 	const siteNav = [
+		{ href: '/#family', label: 'Projects' },
 		{ href: '/blog', label: 'Blog' },
 		{ href: '/changelogs', label: 'Changelog' },
 		{ href: '/plugins', label: 'Plugins' },
@@ -119,14 +119,6 @@
 				</button>
 			<a
 				href={DOCS_BASE_URL}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="hidden h-10 min-w-20 items-center justify-center rounded-md border border-border/60 bg-surface-2/30 px-4 text-sm font-medium text-fg-dim shadow-sm outline-none transition duration-200 hover:border-accent-2/50 hover:text-accent-2 focus-visible:ring-2 focus-visible:ring-accent-2/50 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep sm:inline-flex"
-			>
-				Docs
-			</a>
-			<a
-				href={docsInstallUrl}
 				target="_blank"
 				rel="noopener noreferrer"
 				class="btn-primary-glow inline-flex h-10 min-w-28 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent outline-none transition duration-200 hover:brightness-105 focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep active:brightness-95"

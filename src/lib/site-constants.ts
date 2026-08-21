@@ -3,7 +3,8 @@ export const SITE_ORIGIN = 'https://noctalia.dev';
 
 export const SITE_NAME = 'Noctalia';
 
-export const DEFAULT_DESCRIPTION = 'Noctalia - a lightweight Wayland shell.';
+export const DEFAULT_DESCRIPTION =
+	'Noctalia - a family of native Wayland projects: a desktop shell, a compositor, and a login screen.';
 
 /** Open Graph / Twitter `og:title` (same as the document title) */
 export const DEFAULT_OG_TITLE = `${SITE_NAME}  -  Wayland Shell`;
@@ -17,4 +18,6 @@ export const DEFAULT_OG_IMAGE = `${SITE_ORIGIN}/og.webp`;
 
 /** Published documentation (v5) */
 export const DOCS_BASE_URL = 'https://docs.noctalia.dev';
-export const DOCS_INSTALLATION_URL = 'https://docs.noctalia.dev/noctalia/getting-started/installation/';
+
+/** GitHub organisation - the whole family lives here, not just the shell repo. */
+export const GITHUB_ORG_URL = 'https://github.com/noctalia-dev';

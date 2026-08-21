@@ -382,7 +382,11 @@ async function main() {
 
 	const w = (rel, pathLabel, body) => writeOg(rel, pathLabel, body, logo, fonts, globalDigest, prevCache, nextCache);
 
-	await w('og.webp', 'Home', 'Noctalia - a lightweight Wayland shell.');
+	await w(
+		'og.webp',
+		'Home',
+		'Noctalia - a family of native Wayland projects: a desktop shell, a compositor, and a login screen.'
+	);
 	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
 	await w('og/changelog.webp', 'Changelog', 'Release notes for Noctalia v5 and later.');
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');

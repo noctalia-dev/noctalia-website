@@ -133,6 +133,16 @@ html[data-theme='light'] {
 		box-shadow: var(--shadow-card-hover), inset 0 1px 0 0 rgb(255 255 255 / 0.08);
 	}
 
+	/* Family grid: accent emphasis for the flagship project. Must sit after
+	   `.card-surface`, which sets the `border` shorthand in this same layer. */
+	.card-surface--flagship {
+		border-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+		box-shadow:
+			var(--shadow-card),
+			inset 0 1px 0 0 rgb(255 255 255 / 0.08),
+			0 0 32px -16px var(--color-accent);
+	}
+
 	.reveal {
 		opacity: 0;
 		filter: blur(4px);
@@ -610,6 +620,14 @@ html[data-theme='light'] .card-surface {
 	box-shadow:
 		var(--shadow-card),
 		inset 0 1px 0 0 rgb(255 255 255 / 0.65);
+}
+
+html[data-theme='light'] .card-surface--flagship {
+	border-color: color-mix(in srgb, var(--color-accent) 62%, #8288fc);
+	box-shadow:
+		var(--shadow-card),
+		inset 0 1px 0 0 rgb(255 255 255 / 0.65),
+		0 0 28px -14px color-mix(in srgb, var(--color-accent) 70%, transparent);
 }
 
 html[data-theme='light'] .card-surface-hover:hover {
