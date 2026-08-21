@@ -7,7 +7,7 @@ export const DEFAULT_DESCRIPTION =
 	'Noctalia - a family of native Wayland projects: a desktop shell, a compositor, and a login screen.';
 
 /** Open Graph / Twitter `og:title` (same as the document title) */
-export const DEFAULT_OG_TITLE = `${SITE_NAME}  -  Wayland Shell`;
+export const DEFAULT_OG_TITLE = `${SITE_NAME}  -  A Family of Native Wayland Projects`;
 
 /** Open Graph artboard (static/og.webp, from `node scripts/build-og.mjs`) */
 export const OG_IMAGE_WIDTH = 1200;
