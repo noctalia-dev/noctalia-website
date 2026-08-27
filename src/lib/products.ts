@@ -40,7 +40,7 @@ export const PRODUCTS: readonly Product[] = [
 		name: 'Umbriel',
 		role: 'Wayland compositor',
 		blurb:
-			'An independent compositor in C++23 on wlroots and SceneFX, with scrolling and dwindle layouts, blur, shadows, and fluid animations.',
+			'An independent compositor with scrolling, dwindle and master layouts, blur, shadows, and fluid animations.',
 		status: { label: 'Young · moving fast', tone: 'young' },
 		logoUrl: 'https://assets.noctalia.dev/umbriel.svg',
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
