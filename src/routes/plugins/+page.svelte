@@ -501,6 +501,18 @@
 		font-size: 1rem;
 		font-family: inherit;
 		padding: 0;
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.search-input::-webkit-search-cancel-button,
+	.search-input::-webkit-search-decoration {
+		-webkit-appearance: none;
+		appearance: none;
+	}
+
+	.search-input::-ms-clear {
+		display: none;
 	}
 	
 	.search-input::placeholder {
