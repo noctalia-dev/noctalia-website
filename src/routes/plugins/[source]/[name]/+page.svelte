@@ -62,7 +62,11 @@
 	}
 
 	function renderMarkdown(content: string): string {
-		return marked.parse(content, { async: false }) as string;
+		const html = marked.parse(content, { async: false }) as string;
+		return html.replace(
+			/<table\b[^>]*>[\s\S]*?<\/table>/gi,
+			(match) => `<div class="table-scroll">${match}</div>`
+		);
 	}
 </script>
 
@@ -436,6 +440,8 @@
 	.readme-content {
 		color: var(--mOnSurface);
 		line-height: 1.7;
+		max-width: 100%;
+		min-width: 0;
 	}
 
 	.readme-content :global(h1),
@@ -535,10 +541,18 @@
 		margin: 2rem 0;
 	}
 
-	.readme-content :global(table) {
+	.readme-content :global(.table-scroll) {
+		overflow-x: auto;
+		-webkit-overflow-scrolling: touch;
+		max-width: 100%;
+		margin-bottom: 1rem;
+		scrollbar-width: thin;
+	}
+
+	.readme-content :global(.table-scroll table) {
 		width: 100%;
 		border-collapse: collapse;
-		margin-bottom: 1rem;
+		margin-bottom: 0;
 	}
 
 	.readme-content :global(th),
