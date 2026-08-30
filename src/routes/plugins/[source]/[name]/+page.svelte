@@ -61,12 +61,80 @@
 		return `https://github.com/noctalia-dev/${data.plugin.repo}/tree/main/${data.plugin.id}`;
 	}
 
+	function stripHtmlTags(html: string): string {
+		return html
+			.replace(/<br\s*\/?>/gi, ' ')
+			.replace(/<[^>]+>/g, '')
+			.replace(/\s+/g, ' ')
+			.trim();
+	}
+
+	function escapeAttr(value: string): string {
+		return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+	}
+
+	function getTableHeaders(tableHtml: string): string[] {
+		const theadMatch = tableHtml.match(/<thead\b[^>]*>([\s\S]*?)<\/thead>/i);
+		if (theadMatch) {
+			return [...theadMatch[1].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)].map((match) =>
+				stripHtmlTags(match[1])
+			);
+		}
+
+		const firstRowMatch = tableHtml.match(/<tr\b[^>]*>([\s\S]*?)<\/tr>/i);
+		if (firstRowMatch && /<th\b/i.test(firstRowMatch[1])) {
+			return [...firstRowMatch[1].matchAll(/<th\b[^>]*>([\s\S]*?)<\/th>/gi)].map((match) =>
+				stripHtmlTags(match[1])
+			);
+		}
+
+		return [];
+	}
+
+	function enhanceReadmeTable(tableHtml: string): string {
+		const headers = getTableHeaders(tableHtml);
+
+		let enhanced = tableHtml.replace(
+			/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi,
+			(trMatch, trContent) => {
+				if (!/<td\b/i.test(trContent)) return trMatch;
+
+				let cellIndex = 0;
+				const newContent = trContent.replace(
+					/<td\b([^>]*)>([\s\S]*?)<\/td>/gi,
+					(_tdMatch, attrs, content) => {
+						if (cellIndex === 0) {
+							cellIndex++;
+							return `<td${attrs}>${content}</td>`;
+						}
+
+						const label = headers[cellIndex] ?? '';
+						cellIndex++;
+						if (/\bdata-label=/i.test(attrs)) {
+							return `<td${attrs}>${content}</td>`;
+						}
+
+						const labelAttr = label ? ` data-label="${escapeAttr(label)}"` : '';
+						return `<td${attrs}${labelAttr}>${content}</td>`;
+					}
+				);
+
+				return trMatch.replace(trContent, newContent);
+			}
+		);
+
+		if (/\bclass="/i.test(enhanced)) {
+			enhanced = enhanced.replace(/<table\b([^>]*)class="/i, '<table$1class="readme-table ');
+		} else {
+			enhanced = enhanced.replace(/<table\b/i, '<table class="readme-table"');
+		}
+
+		return `<div class="table-scroll">${enhanced}</div>`;
+	}
+
 	function renderMarkdown(content: string): string {
 		const html = marked.parse(content, { async: false }) as string;
-		return html.replace(
-			/<table\b[^>]*>[\s\S]*?<\/table>/gi,
-			(match) => `<div class="table-scroll">${match}</div>`
-		);
+		return html.replace(/<table\b[^>]*>[\s\S]*?<\/table>/gi, enhanceReadmeTable);
 	}
 </script>
 
@@ -565,6 +633,56 @@
 	.readme-content :global(th) {
 		background: var(--mSurface);
 		font-weight: 600;
+	}
+
+	@media (max-width: 30rem) {
+		.readme-content :global(.table-scroll) {
+			overflow-x: visible;
+		}
+
+		.readme-content :global(.readme-table) {
+			border: 1px solid var(--mOutline);
+			border-radius: 0.75rem;
+			overflow: hidden;
+		}
+
+		.readme-content :global(.readme-table thead) {
+			display: none;
+		}
+
+		.readme-content :global(.readme-table tr) {
+			display: block;
+			padding: 0.875rem;
+			border-bottom: 1px solid color-mix(in srgb, var(--mOutline) 55%, transparent);
+		}
+
+		.readme-content :global(.readme-table tr:last-child) {
+			border-bottom: none;
+		}
+
+		.readme-content :global(.readme-table td) {
+			display: block;
+			border: none;
+			padding: 0;
+			text-align: left;
+		}
+
+		.readme-content :global(.readme-table td:first-child) {
+			font-weight: 600;
+			color: var(--mOnSurface);
+		}
+
+		.readme-content :global(.readme-table td[data-label]) {
+			margin-top: 0.375rem;
+			font-size: 0.875rem;
+			color: var(--mOnSurfaceVariant);
+		}
+
+		.readme-content :global(.readme-table td[data-label]::before) {
+			content: attr(data-label) ': ';
+			font-weight: 600;
+			color: var(--mOnSurface);
+		}
 	}
 
 	/* Actions */
