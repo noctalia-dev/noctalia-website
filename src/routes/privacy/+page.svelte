@@ -87,7 +87,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">System info:</strong> Compositor (e.g., Niri, Hyprland), OS name and
+						<strong class="text-fg">System info:</strong> Compositor (e.g., Niri, Hyprland, Umbriel), OS name and
 						version, total RAM.
 					</li>
 					<li

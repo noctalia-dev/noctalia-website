@@ -33,7 +33,7 @@
 	let availableCompositors = $state<string[]>([]);
 	let sortOption = $state<'name' | 'updated'>('name');
 
-	const COMPOSITORS = ['niri', 'hyprland', 'sway', 'scroll', 'mangowc', 'labwc'];
+	const COMPOSITORS = ['niri', 'hyprland', 'umbriel', 'mangowc', 'sway', 'labwc', 'scroll'];
 
 	function sortPlugins(items: Plugin[]): Plugin[] {
 		return items.sort((a, b) => {
