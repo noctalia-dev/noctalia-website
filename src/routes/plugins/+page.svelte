@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { afterNavigate, goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SiteHeader from '$lib/site-header.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
@@ -27,13 +28,61 @@
 	let error = $state<string | null>(null);
 	let searchQuery = $state('');
 	let fuse: Fuse<Plugin> | null = $state(null);
-	let selectedTags = $state<string[]>([]);
-	let selectedCompositors = $state<string[]>([]);
+	let selectedTag = $state('');
+	let selectedCompositor = $state('');
 	let availableTags = $state<string[]>([]);
 	let availableCompositors = $state<string[]>([]);
 	let sortOption = $state<'name' | 'updated'>('name');
 
 	const COMPOSITORS = ['niri', 'hyprland', 'umbriel', 'mangowc', 'sway', 'labwc', 'scroll'];
+
+	function parseFiltersFromUrl(url: URL) {
+		const parsedQuery = url.searchParams.get('q') ?? '';
+		const compositorParam = url.searchParams.get('compositor')?.trim() ?? '';
+		const tagParam = url.searchParams.get('tag')?.trim() ?? '';
+
+		let parsedCompositor =
+			compositorParam && availableCompositors.includes(compositorParam) ? compositorParam : '';
+		let parsedTag = '';
+
+		if (tagParam) {
+			if (availableCompositors.includes(tagParam) && !parsedCompositor) {
+				parsedCompositor = tagParam;
+			} else if (availableTags.includes(tagParam)) {
+				parsedTag = tagParam;
+			}
+		}
+
+		return {
+			searchQuery: parsedQuery,
+			selectedTag: parsedTag,
+			selectedCompositor: parsedCompositor
+		};
+	}
+
+	function buildPluginsUrl(query: string, tag: string, compositor: string): string {
+		const params = new URLSearchParams();
+		const trimmedQuery = query.trim();
+
+		if (trimmedQuery) params.set('q', trimmedQuery);
+		if (compositor) params.set('compositor', compositor);
+		if (tag) params.set('tag', tag);
+
+		const qs = params.toString();
+		return qs ? `/plugins?${qs}` : '/plugins';
+	}
+
+	function pluginsPathFromUrl(url: URL): string {
+		const parsed = parseFiltersFromUrl(url);
+		return buildPluginsUrl(parsed.searchQuery, parsed.selectedTag, parsed.selectedCompositor);
+	}
+
+	function applyFiltersFromUrl(url: URL) {
+		const parsed = parseFiltersFromUrl(url);
+		searchQuery = parsed.searchQuery;
+		selectedTag = parsed.selectedTag;
+		selectedCompositor = parsed.selectedCompositor;
+	}
 
 	function sortPlugins(items: Plugin[]): Plugin[] {
 		return items.sort((a, b) => {
@@ -51,7 +100,7 @@
 	// Does the catalog contain any community plugins at all (ignoring filters)?
 	let hasCommunitySource = $derived(allPlugins.some((plugin) => plugin.source !== 'official'));
 	let isFiltering = $derived(
-		Boolean(searchQuery || selectedTags.length > 0 || selectedCompositors.length > 0)
+		Boolean(searchQuery || selectedTag || selectedCompositor)
 	);
 
 	let totalOfficialCount = $derived(allPlugins.filter(p => p.source === 'official').length);
@@ -91,31 +140,39 @@
 		});
 
 		plugins = allPlugins;
+		applyFiltersFromUrl($page.url);
+	});
 
-		// Preserve direct links to either a regular tag or a compositor.
-		const urlTag = $page.url.searchParams.get('tag');
-		if (urlTag && availableCompositors.includes(urlTag)) {
-			selectedCompositors = [urlTag];
-		} else if (urlTag && availableTags.includes(urlTag)) {
-			selectedTags = [urlTag];
-		}
+	afterNavigate((navigation) => {
+		if (navigation.type !== 'popstate' || navigation.to?.url.pathname !== '/plugins') return;
+		applyFiltersFromUrl(navigation.to.url);
+	});
+
+	$effect(() => {
+		if (!fuse) return;
+
+		const target = buildPluginsUrl(searchQuery, selectedTag, selectedCompositor);
+		if (target === pluginsPathFromUrl($page.url)) return;
+
+		const timer = setTimeout(() => {
+			const latest = buildPluginsUrl(searchQuery, selectedTag, selectedCompositor);
+			if (latest !== pluginsPathFromUrl($page.url)) {
+				goto(latest, { replaceState: true, keepFocus: true, noScroll: true });
+			}
+		}, 250);
+
+		return () => clearTimeout(timer);
 	});
 
 	$effect(() => {
 		let filtered = allPlugins;
 
-		// Apply tag filter (OR logic - show plugins matching any selected tag)
-		if (selectedTags.length > 0) {
-			filtered = filtered.filter(plugin =>
-				selectedTags.some(tag => plugin.tags?.includes(tag))
-			);
+		if (selectedTag) {
+			filtered = filtered.filter((plugin) => plugin.tags?.includes(selectedTag));
 		}
 
-		// Filter groups combine with AND, while each group permits one active choice.
-		if (selectedCompositors.length > 0) {
-			filtered = filtered.filter((plugin) =>
-				selectedCompositors.some((compositor) => plugin.tags?.includes(compositor))
-			);
+		if (selectedCompositor) {
+			filtered = filtered.filter((plugin) => plugin.tags?.includes(selectedCompositor));
 		}
 
 		// Apply search filter
@@ -129,24 +186,16 @@
 	});
 
 	function toggleTag(tag: string) {
-		if (selectedTags.includes(tag)) {
-			selectedTags = [];
-		} else {
-			selectedTags = [tag];
-		}
+		selectedTag = selectedTag === tag ? '' : tag;
 	}
 
 	function toggleCompositor(compositor: string) {
-		if (selectedCompositors.includes(compositor)) {
-			selectedCompositors = [];
-		} else {
-			selectedCompositors = [compositor];
-		}
+		selectedCompositor = selectedCompositor === compositor ? '' : compositor;
 	}
 
 	function clearFilters() {
-		selectedTags = [];
-		selectedCompositors = [];
+		selectedTag = '';
+		selectedCompositor = '';
 		searchQuery = '';
 	}
 
@@ -270,17 +319,17 @@
 							<div class="tag-filters">
 								<button
 									class="tag-chip compositor-chip"
-									class:selected={selectedCompositors.length === 0}
-									aria-pressed={selectedCompositors.length === 0}
-									onclick={() => (selectedCompositors = [])}
+									class:selected={!selectedCompositor}
+									aria-pressed={!selectedCompositor}
+									onclick={() => (selectedCompositor = '')}
 								>
 									Any
 								</button>
 								{#each availableCompositors as compositor}
 									<button
 										class="tag-chip compositor-chip"
-										class:selected={selectedCompositors.includes(compositor)}
-										aria-pressed={selectedCompositors.includes(compositor)}
+										class:selected={selectedCompositor === compositor}
+										aria-pressed={selectedCompositor === compositor}
 										onclick={() => toggleCompositor(compositor)}
 									>
 										{formatCompositor(compositor)}
@@ -294,17 +343,17 @@
 						<div class="tag-filters">
 							<button
 								class="tag-chip"
-								class:selected={selectedTags.length === 0}
-								aria-pressed={selectedTags.length === 0}
-								onclick={() => (selectedTags = [])}
+								class:selected={!selectedTag}
+								aria-pressed={!selectedTag}
+								onclick={() => (selectedTag = '')}
 							>
 								All
 							</button>
 							{#each availableTags as tag}
 								<button
 									class="tag-chip"
-									class:selected={selectedTags.includes(tag)}
-									aria-pressed={selectedTags.includes(tag)}
+									class:selected={selectedTag === tag}
+									aria-pressed={selectedTag === tag}
 									onclick={() => toggleTag(tag)}
 								>
 									{tag}
