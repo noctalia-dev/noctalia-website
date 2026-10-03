@@ -98,7 +98,7 @@ export const GET: RequestHandler = async () => {
 	const releaseEntries: FeedEntry[] = releases.map((release) => {
 		const publishedAt = new Date(release.publishedAt);
 		const title = `Noctalia ${release.tagName}${release.prerelease ? ' (Pre-release)' : ''}`;
-		const link = `${SITE_URL}/changelogs#${release.tagName}`;
+		const link = `${SITE_URL}/changelogs/${encodeURIComponent(release.tagName)}`;
 		const guid = release.htmlUrl || link;
 		const html = marked.parse(release.body, { async: false }) as string;
 

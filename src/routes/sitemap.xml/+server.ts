@@ -1,6 +1,7 @@
 import type { RequestHandler } from './$types';
 import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
 import { getAllBlogPosts } from '$lib/blog';
+import { getChangelogReleases } from '$lib/releases.server';
 import { SITE_ORIGIN } from '$lib/site-constants';
 
 export const prerender = true;
@@ -28,7 +29,11 @@ function url(loc: string, opts: { lastmod?: string; changefreq: string; priority
 }
 
 export const GET: RequestHandler = async () => {
-	const [plugins, posts] = await Promise.all([getRegistryPlugins(), getAllBlogPosts()]);
+	const [plugins, posts, releases] = await Promise.all([
+		getRegistryPlugins(),
+		getAllBlogPosts(),
+		getChangelogReleases()
+	]);
 
 	const entries = [
 		...STATIC_PAGES.map((p) => url(`${SITE_ORIGIN}${p.path}`, p)),
@@ -46,6 +51,13 @@ export const GET: RequestHandler = async () => {
 				priority: '0.6',
 			})
 		),
+		...releases.map((release) =>
+			url(`${SITE_ORIGIN}/changelogs/${encodeURIComponent(release.tagName)}`, {
+				lastmod: release.publishedAt.slice(0, 10),
+				changefreq: 'yearly',
+				priority: '0.6'
+			})
+		)
 	];
 
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${entries.join('\n')}\n</urlset>`;

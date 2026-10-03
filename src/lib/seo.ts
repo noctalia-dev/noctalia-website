@@ -103,6 +103,18 @@ export function seoBlogPost(post: { slug: string; title: string; description: st
 	};
 }
 
+export function seoChangelogRelease(release: {
+	tagName: string;
+}): PageSeo {
+	return {
+		title: `${release.tagName} release notes  -  ${SITE_NAME}`,
+		description: `What changed in Noctalia ${release.tagName}.`,
+		pathLabel: `Release ${release.tagName}`,
+		ogType: 'article',
+		ogImagePath: SEO_CHANGELOG_INDEX.ogImagePath
+	};
+}
+
 export function seoPlugin(plugin: {
 	id: string;
 	source: string;

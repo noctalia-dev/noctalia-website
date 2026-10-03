@@ -137,9 +137,11 @@ function majorVersion(tagName: string): number | null {
 	return match ? Number(match[1]) : null;
 }
 
-/** GitHub release bodies open with a "# Release vX.Y.Z" header; callers render the tag as their own heading. */
+/** Release bodies usually open with a version heading; callers render the tag as their own heading. */
 function stripLeadingReleaseHeader(body: string): string {
-	return body.replace(/^#\s*Release\s+v[\d.]+[^\n]*\n?/, '').trim();
+	return body
+		.replace(/^#{1,2}\s*(?:Release\s+)?(?:Noctalia\s+)?v?\d[^\n]*\r?\n?\s*/i, '')
+		.trim();
 }
 
 /** GitHub's own `prerelease` flag isn't reliably set when publishing betas, so also check the tag itself. */
@@ -147,16 +149,25 @@ function isPrerelease(release: GithubRelease): boolean {
 	return release.prerelease || /-(?:beta|alpha|rc)/i.test(release.tagName);
 }
 
+function prepareRelease(release: GithubRelease): GithubRelease {
+	const body = stripLeadingReleaseHeader(release.body);
+	return {
+		...release,
+		body,
+		prerelease: isPrerelease(release)
+	};
+}
+
 /** Releases for the public changelog: v5+ only, newest first, prerelease normalized, leading heading stripped. Shared by the changelog page and the RSS feed. */
 export async function getChangelogReleases(): Promise<GithubRelease[]> {
 	return (await getAllReleases())
 		.filter((release) => (majorVersion(release.tagName) ?? -1) >= MIN_MAJOR_VERSION)
-		.map((release) => ({
-			...release,
-			body: stripLeadingReleaseHeader(release.body),
-			prerelease: isPrerelease(release)
-		}))
+		.map(prepareRelease)
 		.sort(
 			(a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
 		);
+}
+
+export async function getChangelogRelease(tagName: string): Promise<GithubRelease | undefined> {
+	return (await getChangelogReleases()).find((release) => release.tagName === tagName);
 }
