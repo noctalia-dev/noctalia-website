@@ -28,7 +28,7 @@
 		"@types/react": "^19.2.14",
 		"react": "^19.2.5",
 		"satori": "^0.26.0",
-		"sharp": "^0.35.3",
+		"sharp": "^0.35.5",
 		"svelte": "5.56.3",
 		"svelte-check": "4.4.6",
 		"tailwindcss": "4.2.4",
@@ -42,11 +42,15 @@
 		"bits-ui": "2.18.0",
 		"fuse.js": "7.3.0",
 		"marked": "18.0.2",
-		"smol-toml": "^1.6.1"
+		"smol-toml": "^1.9.0"
 	},
 	"overrides": {
+		"@tailwindcss/typography": {
+			"postcss-selector-parser": "^7.1.6"
+		},
 		"@sveltejs/vite-plugin-svelte": "7.0.0",
 		"@tailwindcss/vite": "4.2.4",
+		"source-map-js": "^1.2.2",
 		"vite": "8.1.5",
 		"cookie": "^0.7.2"
 	}
