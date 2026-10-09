@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
+	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
+	import { refreshPluginMetrics } from '$lib/plugin-metrics';
 	import SiteHeader from '$lib/site-header.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
@@ -12,6 +15,7 @@
 
 	interface Plugin {
 		id: string;
+		catalogId: string;
 		name: string;
 		version: string;
 		author: string;
@@ -25,6 +29,10 @@
 	}
 
 	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
+
+	onMount(() => {
+		void refreshPluginMetrics();
+	});
 
 	/** Tip first, then the older revisions the catalog keeps installable for earlier plugin APIs. */
 	const versionHistory = $derived<PluginRelease[]>([
@@ -97,6 +105,7 @@
 					<i class="ti ti-user text-sm leading-none" aria-hidden="true"></i>
 					{data.plugin.author}
 				</span>
+				<PluginRecommendations source={data.plugin.source} catalogId={data.plugin.catalogId} badge />
 			</div>
 
 		{#if data.plugin.tags && data.plugin.tags.length > 0}

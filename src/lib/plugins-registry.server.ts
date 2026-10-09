@@ -1,5 +1,6 @@
 import { parse as parseToml } from 'smol-toml';
 import { githubFetch } from '$lib/github.server';
+import { isValidPluginCatalogId } from '$lib/plugin-identity';
 
 const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'] as const;
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
@@ -30,7 +31,7 @@ export function isValidPlugin(plugin: any): boolean {
 		}
 	}
 	const id = plugin.id;
-	if (!/^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) {
+	if (!isValidPluginCatalogId(plugin.catalogId) || id !== slugFromId(plugin.catalogId)) {
 		return false;
 	}
 	if (RESERVED_IDS.includes(id.toLowerCase())) {
@@ -74,6 +75,7 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 	const slug = slugFromId(row.id);
 	const base = {
 		id: slug,
+		catalogId: typeof row.id === 'string' ? row.id : '',
 		name: typeof row.name === 'string' ? row.name : '',
 		version: typeof row.version === 'string' ? row.version : '',
 		author: typeof row.author === 'string' ? row.author : '',

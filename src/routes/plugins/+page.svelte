@@ -5,9 +5,12 @@
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
+	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
+	import { refreshPluginMetrics } from '$lib/plugin-metrics';
 	
 	interface Plugin {
 		id: string;
+		catalogId: string;
 		name: string;
 		version: string;
 		author: string;
@@ -59,6 +62,7 @@
 	let totalPluginCount = $derived(allPlugins.length);
 
 	onMount(() => {
+		void refreshPluginMetrics();
 		// Preserve catalog order
 		allPlugins = data.plugins;
 
@@ -372,7 +376,10 @@
 							{/if}
 							<div class="plugin-footer">
 								<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
-								<span class="plugin-version">v{plugin.version}</span>
+								<span class="plugin-stats">
+									<PluginRecommendations source={plugin.source} catalogId={plugin.catalogId} />
+									<span class="plugin-version">v{plugin.version}</span>
+								</span>
 							</div>
 						</div>
 					</a>
@@ -987,14 +994,25 @@
 	
 	.plugin-footer {
 		display: flex;
+		gap: 0.75rem;
 		justify-content: space-between;
 		align-items: center;
 		padding-top: 0.75rem;
 		border-top: 1px solid var(--mOutline);
 	}
 	
+	.plugin-stats {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
 	.plugin-author {
-		color: var(--mOnSurfaceVariant);
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;		color: var(--mOnSurfaceVariant);
 		font-size: 0.875rem;
 	}
 	
