@@ -9,7 +9,7 @@
 	}>();
 
 	const key = $derived(pluginMetricKey(source, catalogId));
-	const count = $derived(key === null ? undefined : $pluginMetrics?.get(key));
+	const count = $derived(key === null ? undefined : $pluginMetrics?.get(key)?.recommendations);
 </script>
 
 {#if count !== undefined}

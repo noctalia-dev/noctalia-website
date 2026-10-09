@@ -4,7 +4,12 @@ import { pluginMetricKey } from './plugin-identity';
 const METRICS_URL = 'https://api.noctalia.dev/v1/plugin-metrics';
 const MAX_CACHE_MS = 60_000;
 
-type Metrics = ReadonlyMap<string, number>;
+export interface PluginMetric {
+	readonly recommendations: number;
+	readonly trendingScore: number;
+}
+
+type Metrics = ReadonlyMap<string, PluginMetric>;
 const metricsStore = writable<Metrics | null>(null);
 export const pluginMetrics = { subscribe: metricsStore.subscribe };
 
@@ -45,7 +50,10 @@ export function parsePluginMetrics(value: unknown): Metrics {
 		if (pluginMetricKey(row.key.slice(0, colon), row.key.slice(colon + 1)) !== row.key) {
 			throw new Error('Invalid plugin metric key');
 		}
-		metrics.set(row.key, row.recommendations);
+		metrics.set(row.key, {
+			recommendations: row.recommendations,
+			trendingScore: row.trending_score
+		});
 	}
 	return metrics;
 }

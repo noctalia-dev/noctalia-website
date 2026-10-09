@@ -6,7 +6,8 @@
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
 	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
-	import { refreshPluginMetrics } from '$lib/plugin-metrics';
+	import { pluginMetricKey } from '$lib/plugin-identity';
+	import { pluginMetrics, refreshPluginMetrics } from '$lib/plugin-metrics';
 	
 	interface Plugin {
 		id: string;
@@ -34,7 +35,7 @@
 	let selectedCompositors = $state<string[]>([]);
 	let availableTags = $state<string[]>([]);
 	let availableCompositors = $state<string[]>([]);
-	let sortOption = $state<'name' | 'updated'>('name');
+	let sortOption = $state<'name' | 'updated' | 'recommendations' | 'trending'>('name');
 
 	const COMPOSITORS = ['niri', 'hyprland', 'umbriel', 'mangowc', 'sway', 'labwc', 'scroll'];
 
@@ -43,6 +44,18 @@
 			if (sortOption === 'updated') {
 				const byUpdated = (b.updatedAt ?? 0) - (a.updatedAt ?? 0);
 				if (byUpdated !== 0) return byUpdated;
+			}
+			if (sortOption === 'recommendations' || sortOption === 'trending') {
+				const field = sortOption === 'recommendations' ? 'recommendations' : 'trendingScore';
+				const aKey = pluginMetricKey(a.source, a.catalogId);
+				const bKey = pluginMetricKey(b.source, b.catalogId);
+				const aValue = aKey === null ? undefined : $pluginMetrics?.get(aKey)?.[field];
+				const bValue = bKey === null ? undefined : $pluginMetrics?.get(bKey)?.[field];
+				if (aValue === undefined && bValue !== undefined) return 1;
+				if (aValue !== undefined && bValue === undefined) return -1;
+				if (aValue !== undefined && bValue !== undefined && aValue !== bValue) {
+					return bValue - aValue;
+				}
 			}
 			return a.name.localeCompare(b.name);
 		});
@@ -260,6 +273,10 @@
 						<select bind:value={sortOption}>
 							<option value="name">Name</option>
 							<option value="updated">Recently updated</option>
+							{#if $pluginMetrics !== null}
+								<option value="recommendations">Most upvoted</option>
+								<option value="trending">Trending</option>
+							{/if}
 						</select>
 					</label>
 				</div>
