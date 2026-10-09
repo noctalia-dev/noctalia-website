@@ -14,8 +14,8 @@
 
 {#if count !== undefined}
 	<span class="plugin-recommendations" class:badge>
-		<span>{count}</span>
 		<i class="ti ti-thumb-up" aria-hidden="true"></i>
+		<span>{count}</span>
 		<span class="sr-only">{count === 1 ? 'recommendation' : 'recommendations'}</span>
 	</span>
 {/if}
@@ -24,15 +24,21 @@
 	.plugin-recommendations {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.375rem;
-		color: var(--mPrimary);
-		font-size: 0.875rem;
+		gap: 0.5rem;
+		color: var(--mOnSurface);
+		font-size: var(--plugin-meta-font-size, 0.875rem);
 		font-weight: 500;
 		white-space: nowrap;
 	}
 
+	.plugin-recommendations .ti {
+		color: var(--mPrimary);
+		line-height: 1;
+		opacity: 0.8;
+	}
+
 	.plugin-recommendations.badge {
-		padding: 0.5rem 1rem;
+		padding: var(--plugin-meta-vertical-padding, 0.5rem) var(--plugin-meta-horizontal-padding, 1rem);
 		background: var(--mSurfaceVariant);
 		border: 1px solid var(--mOutline);
 		border-radius: 2rem;

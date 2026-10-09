@@ -375,9 +375,12 @@
 								</div>
 							{/if}
 							<div class="plugin-footer">
-								<span class="plugin-author">{plugin.author.split('<')[0].trim()}</span>
+								<span class="plugin-author" title={plugin.author.split('<')[0].trim()}>
+									<i class="ti ti-user" aria-hidden="true"></i>
+									<span class="plugin-author-name">{plugin.author.split('<')[0].trim()}</span>
+								</span>
 								<span class="plugin-stats">
-									<PluginRecommendations source={plugin.source} catalogId={plugin.catalogId} />
+									<PluginRecommendations source={plugin.source} catalogId={plugin.catalogId} badge />
 									<span class="plugin-version">v{plugin.version}</span>
 								</span>
 							</div>
@@ -994,6 +997,9 @@
 	
 	.plugin-footer {
 		display: flex;
+		--plugin-meta-font-size: 0.8125rem;
+		--plugin-meta-horizontal-padding: 0.875rem;
+		--plugin-meta-vertical-padding: 0.25rem;
 		gap: 0.75rem;
 		justify-content: space-between;
 		align-items: center;
@@ -1009,20 +1015,43 @@
 	}
 
 	.plugin-author {
+		display: inline-flex;
+		flex: 1 1 0;
+		align-items: center;
+		gap: 0.5rem;
+		min-width: 0;
+		max-width: 100%;
+		padding: var(--plugin-meta-vertical-padding) var(--plugin-meta-horizontal-padding);
+		background: var(--mSurfaceVariant);
+		border: 1px solid var(--mOutline);
+		border-radius: 2rem;
+		color: var(--mOnSurface);
+		font-size: var(--plugin-meta-font-size);
+		font-weight: 500;
+	}
+
+	.plugin-author .ti {
+		flex-shrink: 0;
+		color: var(--mPrimary);
+		line-height: 1;
+		opacity: 0.8;
+	}
+
+	.plugin-author-name {
 		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		white-space: nowrap;		color: var(--mOnSurfaceVariant);
-		font-size: 0.875rem;
+		white-space: nowrap;
 	}
-	
+
 	.plugin-version {
 		color: var(--mPrimary);
-		font-size: 0.875rem;
+		font-size: var(--plugin-meta-font-size);
 		font-weight: 600;
 		background: rgba(255, 245, 155, 0.15);
-		padding: 0.25rem 0.75rem;
-		border-radius: 0.375rem;
+		padding: 0.25rem 0.625rem;
+		border: 1px solid transparent;
+		border-radius: 2rem;
 	}
 	
 	:global([data-theme='light']) .plugin-version {
