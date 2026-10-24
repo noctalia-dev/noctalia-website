@@ -145,7 +145,7 @@
 										<div class="min-w-0">
 											<p class="font-semibold text-fg">{compositor.name}</p>
 											<p
-												class="mt-1.5 inline-flex w-fit items-center whitespace-nowrap rounded-full border border-border/60 bg-surface-2/60 px-2 py-0.5 text-[11px] font-medium text-fg-dim sm:px-2.5"
+												class="mt-1.5 inline-flex w-fit items-center whitespace-nowrap rounded-full border border-fg-dim/25 bg-fg/[0.04] px-2 py-0.5 text-[11px] font-medium text-fg-dim sm:px-2.5"
 											>
 												{compositor.style}
 											</p>

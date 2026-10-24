@@ -56,7 +56,7 @@
 							class="mt-4 inline-flex w-fit items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium {product
 								.status.tone === 'young'
 								? 'border-accent-3/40 bg-accent-3/10 text-accent-3'
-								: 'border-border/60 bg-surface-2/60 text-fg-dim'}"
+								: 'border-accent-2/40 bg-accent-2/10 text-accent-2'}"
 						>
 							{product.status.label}
 						</p>
