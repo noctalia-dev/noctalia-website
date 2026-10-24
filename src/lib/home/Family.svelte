@@ -64,11 +64,15 @@
 						<p class="mt-3 text-sm leading-relaxed text-fg-dim">{product.blurb}</p>
 
 						<div class="mt-auto flex flex-wrap items-center gap-x-5 gap-y-2 pt-5">
+							<!-- Stretched link: its ::after covers the whole card (overshoot is
+							     clipped by the card's overflow-hidden), so clicking anywhere
+							     opens the docs. GitHub sits above it via z-10. -->
 							<a
 								href={product.docsUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="{linkClass} text-accent hover:underline hover:underline-offset-4"
+								aria-label="{product.name} documentation"
+								class="{linkClass} text-accent after:absolute after:-inset-12 group-hover:underline group-hover:underline-offset-4"
 							>
 								Documentation
 								<span aria-hidden="true">↗</span>
@@ -77,7 +81,7 @@
 								href={product.repoUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="{linkClass} text-fg-dim hover:text-accent-2"
+								class="{linkClass} relative z-10 text-fg-dim hover:text-accent-2"
 							>
 								<i class="ti ti-brand-github text-base leading-none" aria-hidden="true"></i>
 								GitHub

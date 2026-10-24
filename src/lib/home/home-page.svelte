@@ -7,6 +7,7 @@
 	import Slideshow from '$lib/slideshow.svelte';
 	import { slideshowImages } from '$lib/slideshow-images';
 	import Family from '$lib/home/Family.svelte';
+	import Compositors from '$lib/home/Compositors.svelte';
 	import type { FeatureIconId } from '$lib/feature-icons';
 	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
 
@@ -29,6 +30,8 @@
 		title: string;
 		body: string;
 		stat: null | { value: string; sub?: string };
+		/** Linked cards get the hover lift; static ones stay still so hover implies "clickable". */
+		href?: string;
 	};
 
 	const featureCards = $derived(
@@ -49,25 +52,29 @@
 				icon: 'custom',
 				title: 'Easily Customizable',
 				body: 'Tailor every aspect to match your personal style.',
-				stat: null
+				stat: null,
+				href: '/palettes'
 			},
 			{
 				icon: 'compositors',
 				title: 'Compositors Supported',
 				body: 'Works across leading Wayland compositors, with broader support through standard protocols.',
-				stat: { value: '7+' }
+				stat: { value: '7+' },
+				href: '#compositors'
 			},
 			{
 				icon: 'plugins',
 				title: 'Plugins Available',
 				body: 'Extend your setup with a growing ecosystem of official and community plugins.',
-				stat: { value: `${data.pluginCount}+` }
+				stat: { value: `${data.pluginCount}+` },
+				href: '/plugins'
 			},
 			{
 				icon: 'releases',
 				title: 'Releases',
 				body: 'Regular releases and steady improvements since July 2025.',
-				stat: { value: `${data.releaseCount}+` }
+				stat: { value: `${data.releaseCount}+` },
+				href: '/changelogs'
 			}
 		] satisfies FeatureCard[]
 	);
@@ -169,13 +176,16 @@
 		<div class="site-shell space-y-20 md:space-y-24">
 			<Family />
 
+			<Compositors />
+
 			<div id="spotlight" class="scroll-mt-24">
 				<Reveal>
 					<h2 class="fancy-section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
-						See It In Action
+						The Shell In Action
 					</h2>
 					<p class="mt-3 max-w-2xl text-fg-dim">
-						Take a closer look at Noctalia's clean, cohesive design.
+						A closer look at Noctalia, the desktop shell: bar, launcher, control center, and
+						<span class="whitespace-nowrap">wallpaper-driven</span> theming.
 					</p>
 				</Reveal>
 				<Reveal delay={90}>
@@ -233,15 +243,23 @@
 					{#each featureCards as card, i (card.title)}
 						<Reveal delay={55 + i * 78}>
 							<SpotlightSurface
-								class="card-surface card-surface-hover group relative isolate h-full overflow-hidden p-6"
+								href={card.href}
+								class="card-surface group relative isolate block h-full overflow-hidden p-6 {card.href
+									? 'card-surface-hover'
+									: ''}"
 							>
 								{#snippet children()}
 									<div
 										class="pointer-events-none absolute -right-8 -top-8 z-0 h-24 w-24 rounded-full bg-accent/[0.06] blur-2xl transition-opacity duration-500 group-hover:opacity-100 md:opacity-70"
 										aria-hidden="true"
 									></div>
-									<div class="text-accent-2/95" aria-hidden="true">
+									<div class="flex items-start justify-between gap-3 text-accent-2/95" aria-hidden="true">
 										<FeatureIcon id={card.icon} class="h-7 w-7 shrink-0 text-accent-2/90" />
+										{#if card.href}
+											<i
+												class="ti ti-arrow-right text-lg leading-none text-fg-dim transition duration-300 group-hover:translate-x-0.5 group-hover:text-accent"
+											></i>
+										{/if}
 									</div>
 									{#if card.stat}
 										<p class="mt-3 font-mono text-2xl font-semibold tabular-nums text-accent">

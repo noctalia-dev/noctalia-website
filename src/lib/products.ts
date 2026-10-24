@@ -40,7 +40,7 @@ export const PRODUCTS: readonly Product[] = [
 		name: 'Umbriel',
 		role: 'Wayland compositor',
 		blurb:
-			'An independent compositor with scrolling, dwindle and master layouts, blur, shadows, and fluid animations.',
+			'A Wayland compositor designed for daily use, with scrolling, dwindle, master, and floating layouts, per-output workspaces, window rules, blur, shadows, and fluid animations.',
 		status: { label: 'Young · moving fast', tone: 'young' },
 		logoUrl: 'https://assets.noctalia.dev/umbriel.svg',
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
