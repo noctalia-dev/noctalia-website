@@ -69,7 +69,7 @@
 		<div class="project-release-grid" aria-label="Latest project releases">
 			{#if latest}
 				<a
-					class="project-release-card project-release-card--noctalia"
+					class="project-release-card project-release-card--noctalia card-surface card-surface-hover"
 					href={releaseHref(latest.tagName)}
 					aria-label="Read the latest Noctalia release, {latest.tagName}"
 				>
@@ -92,7 +92,7 @@
 
 			<button
 				type="button"
-				class="project-release-card project-release-card--umbriel"
+				class="project-release-card project-release-card--umbriel card-surface card-surface-hover"
 				onclick={() => openProject('umbriel')}
 				aria-label="View the Umbriel release placeholder"
 			>
@@ -271,35 +271,13 @@
 	}
 
 	.project-release-card {
-		position: relative;
 		display: block;
 		width: 100%;
 		overflow: hidden;
 		padding: clamp(1.15rem, 2vw, 1.4rem);
-		border: 1px solid color-mix(in srgb, var(--project-accent) 22%, var(--color-border));
-		border-radius: var(--radius-md);
-		background: linear-gradient(
-			145deg,
-			color-mix(in srgb, var(--color-surface) 96%, transparent),
-			color-mix(in srgb, var(--project-accent) 5%, var(--color-surface))
-		);
-		box-shadow: var(--shadow-card);
 		text-align: left;
 		color: var(--color-fg);
 		cursor: pointer;
-		transition:
-			transform 250ms ease,
-			border-color 250ms ease,
-			box-shadow 250ms ease;
-	}
-
-	.project-release-card::before {
-		content: '';
-		position: absolute;
-		inset: 0 auto auto 0;
-		width: 48%;
-		height: 1px;
-		background: linear-gradient(90deg, var(--project-accent), transparent);
 	}
 
 	.project-release-card--noctalia {
@@ -308,13 +286,6 @@
 
 	.project-release-card--umbriel {
 		--project-accent: var(--color-accent-3);
-	}
-
-	.project-release-card:hover,
-	.project-release-card:focus-visible {
-		transform: translateY(-3px);
-		border-color: color-mix(in srgb, var(--project-accent) 45%, var(--color-border));
-		box-shadow: var(--shadow-card-hover);
 	}
 
 	.project-release-card__topline,

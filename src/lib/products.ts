@@ -18,7 +18,6 @@ export interface Product {
 	fullName: string;
 	/** Marketing blurb; this is the half the docs site does not carry. */
 	blurb: string;
-	status: { label: string; tone: 'stable' | 'young' };
 	logoUrl: string;
 	repoUrl: string;
 	docsUrl: string;
@@ -37,7 +36,6 @@ export const PRODUCTS: readonly Product[] = [
 		fullName: 'Noctalia Shell',
 		blurb:
 			'Bar, launcher, control center, lock screen, and wallpaper-driven theming - configured in one place, on every major Wayland compositor.',
-		status: { label: 'Stable · v5', tone: 'stable' },
 		logoUrl: 'https://assets.noctalia.dev/noctalia-logo.svg',
 		repoUrl: 'https://github.com/noctalia-dev/noctalia',
 		docsUrl: `${DOCS_BASE_URL}/noctalia/`,
@@ -52,7 +50,6 @@ export const PRODUCTS: readonly Product[] = [
 		fullName: 'Umbriel',
 		blurb:
 			'A Wayland compositor designed for daily use, with scrolling, dwindle, master, and floating layouts, per-output workspaces, window rules, blur, shadows, and fluid animations.',
-		status: { label: 'Young · moving fast', tone: 'young' },
 		logoUrl: 'https://assets.noctalia.dev/umbriel.svg',
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
 		docsUrl: `${DOCS_BASE_URL}/umbriel/`,
@@ -63,10 +60,9 @@ export const PRODUCTS: readonly Product[] = [
 		name: 'Greeter',
 		role: 'greetd login screen',
 		navLabel: 'Greeter',
-		fullName: 'Noctalia Greeter',
+		fullName: 'Login screen',
 		blurb:
 			"A greetd login screen that mirrors Noctalia's wallpaper, palette, and font, so your session looks consistent from boot.",
-		status: { label: 'Stable', tone: 'stable' },
 		logoUrl: 'https://assets.noctalia.dev/greeter.svg',
 		repoUrl: 'https://github.com/noctalia-dev/noctalia-greeter',
 		docsUrl: `${DOCS_BASE_URL}/greeter/`,

@@ -242,9 +242,8 @@
 		overflow: hidden;
 		outline: none;
 		/* Corner rounding for the screenshots and the outer frame (via overflow:
-		   hidden). Inherited from the card wrapper in home-page.svelte when used
-		   there; the fallback keeps standalone usage rounded too. Override on the
-		   component or an ancestor to test different values. */
+		   hidden). Framed callers (home Shell row, /shell) set it to 0; the
+		   fallback keeps standalone usage rounded. */
 		border-radius: var(--slideshow-corner-radius, 0.75rem);
 	}
 

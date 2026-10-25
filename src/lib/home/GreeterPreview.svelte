@@ -15,10 +15,9 @@
 	const captions = [
 		'A familiar face, before you sign in.',
 		'Type your password.',
-		'Pick any Wayland session.',
-		'Switch between light and dark from the corner.'
+		'Pick any Wayland session.'
 	];
-	const durations = [2600, 2200, 2200, 3000];
+	const durations = [2600, 2200, 2600];
 
 	onMount(() => {
 		const timeFormatter = new Intl.DateTimeFormat(undefined, {
@@ -89,7 +88,7 @@
 	<a
 		href="/greeter"
 		class="welcome"
-		aria-label="Illustration based on Noctalia Greeter’s actual interface: a clock above the centered user and password panel, a session selector below, a color scheme control at the top right, and power controls at the bottom right."
+		aria-label="Illustration based on Greeter’s actual interface: a clock above the centered user and password panel, a session selector below, a color scheme control at the top right, and power controls at the bottom right."
 	>
 		<div class="scene" aria-hidden="true">
 			<!-- Login layout mirrors GreeterSurface::layoutScene. -->
@@ -136,7 +135,7 @@
 	</a>
 	<div class="preview-caption">
 		<a href="/greeter"
-			>Noctalia Greeter <span class="illustration-label">· illustration</span>
+			>Greeter <span class="illustration-label">· illustration</span>
 			<span aria-hidden="true">↗</span></a
 		>
 		{#if reducedMotion}
@@ -411,13 +410,12 @@
 			transform: translateY(40%);
 		}
 	}
-	[data-greeter-phase='2'] .session-selector,
-	[data-greeter-phase='3'] .scheme-selector {
+	[data-greeter-phase='2'] .session-selector {
 		border-color: var(--greeter-primary);
 		box-shadow: 0 0 0 0.3cqw color-mix(in srgb, var(--greeter-primary) 20%, transparent);
 	}
-	/* Phase 3 swaps to Noctalia's light scheme, the way the corner selector does live. */
-	[data-greeter-phase='3'] .login-scene {
+	/* The mock follows the site theme, using Noctalia's light scheme in light mode. */
+	:global(html[data-theme='light']) .login-scene {
 		--greeter-surface: #e6e8fa;
 		--greeter-surface-variant: #eff0ff;
 		--greeter-outline: #a8affc;

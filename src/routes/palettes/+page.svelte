@@ -118,7 +118,7 @@
 					<p class="section-subtitle">Built-in palettes included with Noctalia.</p>
 					<div class="palettes-grid">
 						{#each corePalettes as palette}
-							<div class="palette-card">
+							<div class="palette-card card-surface">
 								<div class="palette-card-header">
 									<h3 class="palette-name">{palette.name}</h3>
 								</div>
@@ -147,7 +147,7 @@
 					</p>
 					<div class="palettes-grid">
 						{#each communityPalettes as palette}
-							<div class="palette-card">
+							<div class="palette-card card-surface">
 								<div class="palette-card-header">
 									<h3 class="palette-name">{palette.name}</h3>
 								</div>
@@ -271,19 +271,12 @@
 		grid-template-columns: repeat(6, 1fr);
 		gap: 1.25rem;
 	}
+	/* Not clickable, so no hover state (see .card-surface-hover for links). */
 	.palette-card {
-		background: var(--mSurface);
-		border: 1.5px solid var(--mOutline);
 		padding: 1.25rem;
-		border-radius: 1rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1rem;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		text-decoration: none;
-		color: inherit;
-		position: relative;
-		overflow: hidden;
 	}
 
 	.section-link {
@@ -298,29 +291,6 @@
 		text-decoration: underline;
 	}
 
-	.palette-card::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(135deg, var(--mPrimary), transparent);
-		opacity: 0;
-		transition: opacity 0.3s ease;
-		pointer-events: none;
-	}
-
-	.palette-card:hover {
-		transform: translateY(-8px);
-		border-color: var(--mPrimary);
-		box-shadow:
-			0 16px 40px rgba(255, 245, 155, 0.15),
-			0 0 0 1px rgba(255, 245, 155, 0.2);
-	}
-
-	:global([data-theme='light']) .palette-card:hover {
-		box-shadow:
-			0 16px 40px rgba(93, 101, 245, 0.15),
-			0 0 0 1px rgba(93, 101, 245, 0.2);
-	}
 
 	.palette-card-header {
 		display: flex;

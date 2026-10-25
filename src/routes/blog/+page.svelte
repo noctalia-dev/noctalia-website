@@ -32,7 +32,7 @@
 			{#each data.posts as post}
 				<a
 					href="/blog/{post.slug}"
-					class="card-surface group flex flex-col gap-3 p-6 transition hover:border-accent/40 hover:shadow-[0_12px_40px_-12px_rgb(255_245_155/0.12)]"
+					class="card-surface card-surface-hover group flex flex-col gap-3 p-6"
 				>
 					<div class="flex flex-wrap gap-x-3 gap-y-1 text-xs text-fg-dim">
 						<span>{formatDate(post.publishedAt)}</span>

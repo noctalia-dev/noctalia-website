@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import SiteHeader from '$lib/site-header.svelte';
 	import ProjectIntro from '$lib/project-intro.svelte';
+	import SectionHeading from '$lib/section-heading.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
@@ -222,39 +223,35 @@
 
 <SiteHeader />
 
-<main class="plugins-page pb-20 md:pb-28">
+<main class="plugins-page page-sections">
 	<ProjectIntro
 		title="Plugins"
 		eyebrow="Noctalia Shell ecosystem"
-		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		icon="ti-puzzle"
 		summary="Add the tools that make your desktop yours."
 		detail="Browse official and community plugins for Noctalia Shell. Find widgets, integrations, and small utilities, then narrow the catalog to your compositor and the way you work."
-		anchorHref="#catalog"
-		anchorLabel="Explore the catalog"
 	>
 		{#snippet actions()}
-			<a
-				href="#catalog"
-				class="btn-primary-glow inline-flex items-center gap-3 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-on-accent transition hover:brightness-105"
-			>
-				Browse plugins <span aria-hidden="true">↓</span>
-			</a>
+			<a href="#catalog" class="action-primary">Browse plugins <span aria-hidden="true">↓</span></a>
 			<a
 				href="https://github.com/noctalia-dev/community-plugins"
 				target="_blank"
 				rel="noopener noreferrer"
-				class="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-dim transition-colors hover:text-accent-2"
+				class="action-secondary"><i class="ti ti-brand-github" aria-hidden="true"></i> Share a plugin</a
 			>
-				Share a plugin <span aria-hidden="true">↗</span>
-			</a>
 		{/snippet}
 	</ProjectIntro>
 
-	<section id="catalog" class="site-shell catalog-shell" aria-label="Plugin catalog">
-		<div class="catalog-heading">
-			<p>Official &amp; community</p>
-			{#if totalPluginCount > 0}<p>{totalPluginCount} plugins to explore</p>{/if}
-		</div>
+	<section id="catalog" class="site-shell catalog-shell" aria-labelledby="catalog-title">
+		<SectionHeading
+			number={1}
+			id="catalog-title"
+			label="Catalog"
+			title="Find a plugin"
+			lead={totalPluginCount > 0
+				? `${totalPluginCount} plugins from the team and the community. Search, or narrow them down by compositor and tag.`
+				: 'Search, or narrow the catalog down by compositor and tag.'}
+		/>
 		{#if loading}
 			<div class="loading-state">
 				<div class="spinner"></div>
@@ -371,7 +368,7 @@
 			</div>
 
 			{#snippet pluginCard(plugin: Plugin)}
-				<a href="/plugins/{plugin.source}/{plugin.id}" class="plugin-card">
+				<a href="/plugins/{plugin.source}/{plugin.id}" class="plugin-card card-surface card-surface-hover">
 					<div class="plugin-preview">
 						<img
 							src={getPreviewUrl(plugin)}
@@ -440,14 +437,14 @@
 				</div>
 			{:else}
 				<div class="plugins-section">
-					<h2 class="section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
-						Official plugins
-						{#if totalOfficialCount > 0}
-							<span class="section-count">
-								{#if isFiltering}({officialPlugins.length} of {totalOfficialCount}){:else}({totalOfficialCount}){/if}
-							</span>
-						{/if}
-					</h2>
+					<SectionHeading
+						number={2}
+						label="Official"
+						title="Made by the team"
+						lead={isFiltering
+							? `${officialPlugins.length} of ${totalOfficialCount} official plugins match your filters.`
+							: `${totalOfficialCount} plugins maintained alongside Noctalia Shell.`}
+					/>
 					{#if officialPlugins.length > 0}
 						<div class="plugins-grid">
 							{#each officialPlugins as plugin}
@@ -462,14 +459,14 @@
 				<hr class="source-separator" />
 
 				<div class="plugins-section">
-					<h2 class="section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
-						Community plugins
-						{#if totalCommunityCount > 0}
-							<span class="section-count">
-								{#if isFiltering}({communityPlugins.length} of {totalCommunityCount}){:else}({totalCommunityCount}){/if}
-							</span>
-						{/if}
-					</h2>
+					<SectionHeading
+						number={3}
+						label="Community"
+						title="Shared by the community"
+						lead={isFiltering
+							? `${communityPlugins.length} of ${totalCommunityCount} community plugins match your filters.`
+							: `${totalCommunityCount} plugins built and maintained by people who use Noctalia.`}
+					/>
 					{#if communityPlugins.length > 0}
 						<div class="plugins-grid">
 							{#each communityPlugins as plugin}
@@ -499,23 +496,7 @@
 		min-height: 60vh;
 	}
 	.catalog-shell {
-		padding-top: 3rem;
 		scroll-margin-top: 6rem;
-	}
-	.catalog-heading {
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		gap: 0.5rem 2rem;
-		margin-bottom: 1.5rem;
-		font-size: 0.75rem;
-		color: var(--color-fg-dim);
-	}
-	.catalog-heading p:first-child {
-		font-weight: 500;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--color-accent-2);
 	}
 	.catalog-controls {
 		padding-bottom: 1.75rem;
@@ -556,7 +537,7 @@
 		outline: none;
 		background: transparent;
 		font: inherit;
-		font-size: 0.95rem;
+		font-size: 1rem;
 		color: var(--color-fg);
 	}
 	.search-input::placeholder {
@@ -587,7 +568,7 @@
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		font-size: 0.85rem;
+		font-size: 0.875rem;
 		font-weight: 500;
 		color: var(--color-fg);
 	}
@@ -631,7 +612,7 @@
 		align-items: center;
 		gap: 0.4rem;
 		padding-top: 0.4rem;
-		font-size: 0.72rem;
+		font-size: 0.75rem;
 		font-weight: 500;
 		color: var(--color-fg-dim);
 	}
@@ -671,7 +652,7 @@
 		justify-content: space-between;
 		gap: 1rem;
 		margin-top: 1.5rem;
-		font-size: 0.8rem;
+		font-size: 0.875rem;
 		color: var(--color-fg-dim);
 	}
 	.clear-filters-btn,
@@ -689,21 +670,7 @@
 		color: var(--color-accent);
 	}
 	.plugins-section {
-		margin-top: 3.5rem;
-	}
-	.section-title {
-		display: flex;
-		flex-wrap: wrap;
-		align-items: baseline;
-		gap: 0.5rem 1rem;
-		margin-bottom: 2rem;
-		color: var(--color-fg);
-	}
-	.section-count {
-		font-size: 0.85rem;
-		font-weight: 400;
-		color: var(--color-fg-dim);
-		letter-spacing: 0;
+		margin-top: clamp(3.5rem, 7vw, 5rem);
 	}
 	.source-separator {
 		margin-top: 3.5rem;
@@ -712,7 +679,7 @@
 	}
 	.source-empty {
 		color: var(--color-fg-dim);
-		font-size: 0.95rem;
+		font-size: 1rem;
 	}
 	.plugins-grid {
 		display: grid;
@@ -725,24 +692,9 @@
 		width: 100%;
 		min-width: 0;
 		overflow: hidden;
-		border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
-		border-radius: 0.375rem;
-		background: color-mix(in srgb, var(--color-void) 60%, transparent);
 		text-align: left;
 		text-decoration: none;
 		color: inherit;
-		transition:
-			border-color 180ms,
-			background-color 180ms;
-	}
-	.plugin-card:hover,
-	.plugin-card:focus-visible {
-		border-color: color-mix(in srgb, var(--color-accent-2) 55%, var(--color-border));
-		background: color-mix(in srgb, var(--color-void) 90%, transparent);
-	}
-	.plugin-card:focus-visible {
-		outline: 2px solid var(--color-accent-2);
-		outline-offset: 4px;
 	}
 	.plugin-preview {
 		position: relative;
@@ -840,7 +792,7 @@
 	.plugin-description {
 		flex: 1;
 		font-size: 0.875rem;
-		line-height: 1.7;
+		line-height: 1.6;
 		color: var(--color-fg-dim);
 	}
 	.plugin-tags {
@@ -852,7 +804,7 @@
 		padding: 0.1rem 0.35rem;
 		border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
 		border-radius: 0.2rem;
-		font-size: 0.65rem;
+		font-size: 0.75rem;
 		color: var(--color-fg-dim);
 	}
 	.plugin-tag.compositor {
@@ -863,7 +815,7 @@
 		border-color: color-mix(in srgb, var(--color-accent-2) 22%, var(--color-border));
 	}
 	.plugin-footer {
-		--plugin-meta-font-size: 0.72rem;
+		--plugin-meta-font-size: 0.75rem;
 		--plugin-meta-horizontal-padding: 0.4rem;
 		--plugin-meta-vertical-padding: 0.2rem;
 		display: flex;
@@ -927,8 +879,8 @@
 	}
 	.no-results p,
 	.source-coming-soon p {
-		font-size: 0.9rem;
-		line-height: 1.7;
+		font-size: 1rem;
+		line-height: 1.6;
 	}
 	.source-coming-soon {
 		display: flex;
@@ -966,9 +918,6 @@
 		}
 	}
 	@media (max-width: 640px) {
-		.catalog-shell {
-			padding-top: 2.5rem;
-		}
 		.filters-heading {
 			align-items: flex-start;
 			flex-direction: column;

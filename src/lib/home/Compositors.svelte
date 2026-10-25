@@ -37,18 +37,8 @@
 		'inline-flex items-center gap-1.5 rounded-sm text-sm font-semibold outline-none transition focus-visible:ring-2 focus-visible:ring-accent/45 focus-visible:ring-offset-2 focus-visible:ring-offset-void-deep';
 </script>
 
-<div id="compositors" class="scroll-mt-24">
-	<Reveal>
-		<h2 class="fancy-section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
-			Pick Your Compositor
-		</h2>
-		<p class="mt-3 max-w-2xl text-fg-dim">
-			Noctalia works great on every compositor below, each with its own setup guide. Umbriel is
-			our own, developed alongside the shell - a natural pairing if you're looking for a new home.
-		</p>
-	</Reveal>
-
-	<div class="mt-12 grid gap-5 lg:grid-cols-2">
+<div>
+	<div class="grid gap-5 lg:grid-cols-2">
 		<Reveal delay={55}>
 			<SpotlightSurface
 				class="card-surface card-surface--flagship relative isolate h-full overflow-hidden p-6 md:p-8"
@@ -70,22 +60,14 @@
 							decoding="async"
 						/>
 						<div class="min-w-0">
-							<h3 class="text-2xl font-semibold leading-tight text-fg">{umbriel.name}</h3>
-							<p
-								class="mt-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-2/90"
-							>
-								Built alongside Noctalia
-							</p>
+							<h3 class="text-2xl font-semibold leading-tight tracking-tight text-fg">
+								{umbriel.name}
+							</h3>
+							<p class="eyebrow mt-1" style="color: var(--color-accent-2)">Built alongside Noctalia</p>
 						</div>
 					</div>
 
-					<p
-						class="mt-5 inline-flex w-fit items-center rounded-full border border-accent-3/40 bg-accent-3/10 px-2.5 py-0.5 text-[11px] font-medium text-accent-3"
-					>
-						{umbriel.status.label}
-					</p>
-
-					<p class="mt-3 text-sm leading-relaxed text-fg-dim">{umbriel.blurb}</p>
+					<p class="type-small mt-5">{umbriel.blurb}</p>
 
 					<ul class="mt-5 flex flex-wrap gap-2">
 						{#each umbrielHighlights as highlight (highlight)}
@@ -143,9 +125,9 @@
 								{#snippet children()}
 									<div class="my-auto flex items-center justify-between gap-2">
 										<div class="min-w-0">
-											<p class="font-semibold text-fg">{compositor.name}</p>
+											<p class="text-base font-semibold leading-snug text-fg">{compositor.name}</p>
 											<p
-												class="mt-1.5 inline-flex w-fit items-center whitespace-nowrap rounded-full border border-fg-dim/25 bg-fg/[0.04] px-2 py-0.5 text-[11px] font-medium text-fg-dim sm:px-2.5"
+												class="mt-1.5 inline-flex w-fit items-center whitespace-nowrap rounded-full border border-fg-dim/25 bg-fg/[0.04] px-2 py-0.5 text-xs font-medium text-fg-dim sm:px-2.5"
 											>
 												{compositor.style}
 											</p>

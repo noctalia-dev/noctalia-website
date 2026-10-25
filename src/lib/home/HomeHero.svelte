@@ -28,10 +28,10 @@
 	</Reveal>
 	<Reveal delay={130}>
 		<div class="hero-actions">
-			<a href={DOCS_BASE_URL} target="_blank" rel="noopener noreferrer" class="hero-primary"
+			<a href={DOCS_BASE_URL} target="_blank" rel="noopener noreferrer" class="action-primary"
 				>Get started <span aria-hidden="true">↗</span></a
 			>
-			<a href="#family" class="hero-secondary">Meet the projects <span aria-hidden="true">↓</span></a>
+			<a href="#family" class="action-secondary">Meet the projects <span aria-hidden="true">↓</span></a>
 		</div>
 	</Reveal>
 	<Reveal delay={190}>
@@ -60,7 +60,7 @@
 		align-items: center;
 		max-width: 64rem;
 		margin-inline: auto;
-		padding: clamp(3.5rem, 9vw, 7rem) 1rem clamp(3rem, 7vw, 5.5rem);
+		padding: clamp(3.5rem, 9vw, 7rem) 1rem clamp(1.5rem, 3vw, 2.5rem);
 		text-align: center;
 	}
 	.hero::before {
@@ -124,43 +124,6 @@
 		gap: 0.75rem;
 		margin-top: 2rem;
 	}
-	.hero-primary,
-	.hero-secondary {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.6rem;
-		height: 3rem;
-		padding-inline: 1.375rem;
-		border: 1px solid var(--color-border);
-		border-radius: 6px;
-		font-size: 0.9375rem;
-		font-weight: 600;
-		transition:
-			border-color 180ms,
-			transform 180ms,
-			filter 180ms;
-	}
-	.hero-primary {
-		border-color: var(--color-accent);
-		background: var(--color-accent);
-		color: var(--color-on-accent);
-		box-shadow: 0 10px 32px -10px color-mix(in srgb, var(--color-accent) 55%, transparent);
-	}
-	.hero-primary:hover {
-		filter: brightness(1.05);
-		transform: translateY(-1px);
-	}
-	.hero-secondary {
-		background: var(--color-surface-2);
-		color: var(--color-fg);
-	}
-	.hero-secondary span {
-		color: var(--color-accent);
-	}
-	.hero-secondary:hover {
-		border-color: var(--color-accent);
-		transform: translateY(-1px);
-	}
 	.family-strip {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -184,7 +147,7 @@
 			background 180ms;
 	}
 	.family-chip:hover {
-		border-color: var(--color-accent-2);
+		border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
 		background: var(--color-surface-2);
 	}
 	.family-chip img {

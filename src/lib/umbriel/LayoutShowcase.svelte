@@ -3,10 +3,12 @@
 
 	let {
 		compact = false,
-		presentation = false,
-		playing = true,
 		href
-	}: { compact?: boolean; presentation?: boolean; playing?: boolean; href?: string } = $props();
+	}: {
+		/** Home-page card: tabs in the top bar instead of the side list. */
+		compact?: boolean;
+		href?: string;
+	} = $props();
 
 	type LayoutId = 'scrolling' | 'dwindle' | 'master' | 'floating';
 	type Rectangle = { x: number; y: number; w: number; h: number };
@@ -53,32 +55,34 @@
 	let selected = $state<LayoutId>('scrolling');
 	let phase = $state(0);
 	let paused = $state(false);
-	/** Compact mode tours every layout until the visitor picks one. */
+	/** The demo tours every layout until the visitor picks one. */
 	let pinned = $state(false);
-	/** Home-page card: compact, interactive, and the desktop doubles as the card. */
-	const card = $derived(compact && !presentation);
-	const stepMs = $derived(card ? 1100 : 1700);
-	const touring = $derived(card && !pinned);
+	const stepMs = 1100;
+	const touring = $derived(!pinned);
 	let reducedMotion = $state(true);
 	let visible = $state(false);
 	let frame = $state<HTMLDivElement>();
 	let workspace = $state<HTMLDivElement>();
 	let selectionAnimation: Animation | undefined;
-	const layoutId = $derived(presentation ? 'scrolling' : selected);
+	const layoutId = $derived(selected);
 	const active = $derived(layouts.find((layout) => layout.id === layoutId)!);
-	const cycleLength = $derived(layoutId === 'dwindle' ? 5 : layoutId === 'master' ? 4 : 3);
+	const cycleLength = $derived(
+		layoutId === 'dwindle' ? 5 : layoutId === 'master' || layoutId === 'scrolling' ? 4 : 3
+	);
 	const displayPhase = $derived(reducedMotion ? cycleLength - 1 : phase);
 	const demoApps = $derived(layoutId === 'dwindle' ? apps : apps.slice(0, 4));
 	const visibleWindowCount = $derived(
 		layoutId === 'master' || layoutId === 'dwindle' ? displayPhase + 1 : 4
 	);
-	const focused = $derived(displayPhase);
+	// Scrolling focuses Browser, then the stacked Terminal, then Files (twice: normal, then widened).
+	const focused = $derived(layoutId === 'scrolling' ? [0, 3, 2, 2][displayPhase] : displayPhase);
 	const progress = $derived(
 		layoutId === 'scrolling'
 			? [
-					'Start with a little space.',
-					'Your next window comes into view.',
-					'Keep going. There’s room ahead.'
+					'Each window gets a column, as wide as you like.',
+					'Stack two windows in one column.',
+					'Move on. The strip scrolls to the next column.',
+					'Widen the focused column when it needs room.'
 				][displayPhase]
 			: layoutId === 'dwindle'
 				? [
@@ -104,12 +108,16 @@
 
 	function rectangles(): Rectangle[] {
 		if (layoutId === 'scrolling') {
-			return demoApps.map((_, index) => ({
-				x: 4 + index * 59 - displayPhase * 59,
-				y: 8,
-				w: 56,
-				h: 84
-			}));
+			// Columns live on an endless horizontal strip; the view scrolls to keep focus visible.
+			const offset = [0, 6, 58, 100][displayPhase];
+			const stacked = displayPhase >= 1;
+			const strip: Rectangle[] = [
+				{ x: 4, y: 7, w: 58, h: 86 },
+				{ x: 64, y: 7, w: 38, h: stacked ? 42 : 86 },
+				{ x: 104, y: 7, w: displayPhase === 3 ? 92 : 50, h: 86 },
+				stacked ? { x: 64, y: 51, w: 38, h: 42 } : { x: 156, y: 7, w: 38, h: 86 }
+			];
+			return strip.map((rect) => ({ ...rect, x: rect.x - offset }));
 		}
 		if (layoutId === 'dwindle') {
 			// Every new window splits the most recently created area, alternating axes.
@@ -149,12 +157,12 @@
 	const windows = $derived(rectangles());
 
 	function select(id: LayoutId) {
-		if (card) pinned = true;
+		pinned = true;
 		if (id === selected) return;
 		selected = id;
 		phase = 0;
 		selectionAnimation?.cancel();
-		if (reducedMotion || presentation || !workspace) return;
+		if (reducedMotion || !workspace) return;
 		selectionAnimation = workspace.animate(
 			[
 				{ opacity: 0.45, transform: 'translateY(8px)', filter: 'blur(2px)' },
@@ -190,7 +198,7 @@
 		// Restart the sequence when the visitor selects another layout.
 		layoutId;
 		cycleLength;
-		if (paused || reducedMotion || !visible || !playing) return;
+		if (paused || reducedMotion || !visible) return;
 		const timer = window.setInterval(() => {
 			if (phase + 1 < cycleLength) {
 				phase += 1;
@@ -206,17 +214,43 @@
 	});
 </script>
 
+{#snippet motionControl()}
+	{#if reducedMotion}
+		<span class="motion-note">Reduced motion</span>
+	{:else}
+		<button
+			class="motion-toggle"
+			type="button"
+			onclick={() => (paused = !paused)}
+			aria-label={paused ? 'Play layout animation' : 'Pause layout animation'}
+			title={paused ? 'Play' : 'Pause'}
+		>
+			<i class="ti {paused ? 'ti-player-play' : 'ti-player-pause'}" aria-hidden="true"></i>
+		</button>
+	{/if}
+{/snippet}
+
+{#snippet progressIndicator()}
+	{#key layoutId}
+		<span
+			class="tab-indicator"
+			class:progress={touring && !reducedMotion}
+			class:halted={paused || !visible}
+			style:animation-duration="{cycleLength * stepMs}ms"
+			aria-hidden="true"
+		></span>
+	{/key}
+{/snippet}
+
 <div
 	class="layout-lab"
 	class:compact
-	class:card
-	class:presentation
 	bind:this={frame}
 	data-layout={layoutId}
 	data-phase={displayPhase}
 	data-window-count={visibleWindowCount}
 >
-	{#if card}
+	{#if compact}
 		<div class="compact-bar">
 			<span class="bar-label"><span class="status-dot"></span> Four ways to arrange windows</span>
 			<div class="compact-tabs" role="group" aria-label="Choose a window layout">
@@ -229,37 +263,15 @@
 						onclick={() => select(layout.id)}
 					>
 						{layout.name}
-						{#if layoutId === layout.id}
-							{#key layoutId}
-								<span
-									class="tab-indicator"
-									class:progress={touring && !reducedMotion}
-									class:halted={paused || !visible}
-									style:animation-duration="{cycleLength * stepMs}ms"
-									aria-hidden="true"
-								></span>
-							{/key}
-						{/if}
+						{#if layoutId === layout.id}{@render progressIndicator()}{/if}
 					</button>
 				{/each}
 			</div>
-			{#if reducedMotion}
-				<span class="motion-note">Reduced motion</span>
-			{:else}
-				<button
-					class="motion-toggle"
-					type="button"
-					onclick={() => (paused = !paused)}
-					aria-label={paused ? 'Play layout animation' : 'Pause layout animation'}
-					title={paused ? 'Play' : 'Pause'}
-				>
-					<i class="ti {paused ? 'ti-player-play' : 'ti-player-pause'}" aria-hidden="true"></i>
-				</button>
-			{/if}
+			{@render motionControl()}
 		</div>
-	{:else if !presentation}
+	{:else}
 		<div class="layout-choices" role="group" aria-label="Choose a window layout">
-			{#each layouts as layout, index (layout.id)}
+			{#each layouts as layout (layout.id)}
 				<button
 					type="button"
 					class="layout-choice"
@@ -267,18 +279,24 @@
 					aria-pressed={layoutId === layout.id}
 					onclick={() => select(layout.id)}
 				>
-					<span class="choice-number" aria-hidden="true">0{index + 1}</span>
-					<span class="choice-copy">
-						<span class="choice-name">{layout.name}</span>
-						<span class="choice-hint">{layout.hint}</span>
-					</span>
-					<span class="choice-arrow" aria-hidden="true">↗</span>
+					<span class="choice-name">{layout.name}</span>
+					<span class="choice-hint">{layout.hint}</span>
+					{#if layoutId === layout.id}
+						<span class="choice-description">{layout.description}</span>
+						{@render progressIndicator()}
+					{/if}
 				</button>
 			{/each}
 		</div>
 	{/if}
 
 	<div class="layout-preview">
+		{#if !compact}
+			<div class="frame-bar">
+				<span class="bar-label"><span class="status-dot"></span> {progress}</span>
+				{@render motionControl()}
+			</div>
+		{/if}
 		<svelte:element
 			this={href ? 'a' : 'div'}
 			{href}
@@ -288,19 +306,7 @@
 				? 'Explore Umbriel: '
 				: ''}{active.name} window layout: {active.description}"
 		>
-			{#if !card}
-				<div class="desktop-bar" aria-hidden="true">
-					<span class="desktop-brand"><span class="desktop-moon"></span> umbriel</span>
-					<span class="workspace-indicator"><span class="workspace-dot"></span> workspace 01</span>
-					<span class="desktop-indicators"
-						><i class="ti ti-volume-2"></i><i class="ti ti-wifi"></i></span
-					>
-				</div>
-			{/if}
 			<div class="desktop-workspace" bind:this={workspace} aria-hidden="true">
-				{#if !presentation && !compact}
-					<div class="workspace-watermark"><span>make room</span><span>for your day.</span></div>
-				{/if}
 				{#each demoApps as app, index (app.name)}
 					{@const rectangle = windows[index]}
 					<div
@@ -369,187 +375,97 @@
 			</div>
 		</svelte:element>
 
-		{#if card}
+		{#if compact}
 			<div class="compact-caption">
 				<span aria-hidden="true">{progress}</span>
 				{#if href}<a href="{href}#layouts">See all four <span aria-hidden="true">↗</span></a>{/if}
 			</div>
-		{:else if !presentation}
-			<div class="preview-caption">
-				<div class="sequence-caption" aria-hidden="true">
-					<span class="sequence-dots"
-						>{#each Array.from({ length: cycleLength }, (_, index) => index) as step}<span
-								class:current={step === displayPhase}
-							></span>{/each}</span
-					>
-					<span>{progress}</span>
-				</div>
-				{#if reducedMotion}
-					<span class="motion-note">Reduced motion</span>
-				{:else}
-					<button
-						class="motion-toggle"
-						type="button"
-						onclick={() => (paused = !paused)}
-						aria-label={paused ? 'Play layout animation' : 'Pause layout animation'}
-					>
-						<i class="ti {paused ? 'ti-player-play' : 'ti-player-pause'}" aria-hidden="true"></i>
-						{paused ? 'Play' : 'Pause'}
-					</button>
-				{/if}
-			</div>
 		{/if}
 	</div>
-
-	{#if !compact && !presentation}
-		<div class="layout-description" aria-live="polite" aria-atomic="true">
-			<p class="description-name">{active.name}<span aria-hidden="true"> /</span></p>
-			<p>{active.description}</p>
-		</div>
-		<p class="demo-note">
-			An illustration of window behavior. Pick a different layout for each workspace.
-		</p>
-	{/if}
 </div>
 
 <style>
 	.layout-lab {
 		display: grid;
-		grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 2.2fr);
-		column-gap: 2.5rem;
-		row-gap: 1.75rem;
+		grid-template-columns: minmax(14rem, 0.8fr) minmax(0, 2.2fr);
+		gap: clamp(1.5rem, 3vw, 2.5rem);
+		align-items: center;
 	}
+	.layout-lab.compact {
+		display: block;
+	}
+
+	/* Full mode: a list of layouts beside a framed demo. */
 	.layout-choices {
 		display: flex;
 		flex-direction: column;
-		justify-content: center;
+		border-top: 1px solid var(--color-border);
 	}
 	.layout-choice {
+		position: relative;
 		display: flex;
-		align-items: baseline;
-		gap: 0.9rem;
+		flex-direction: column;
+		align-items: flex-start;
 		width: 100%;
-		padding: 1.4rem 0.25rem;
-		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+		padding: 1.125rem 0.25rem;
+		border-bottom: 1px solid var(--color-border);
 		text-align: left;
 		color: var(--color-fg-dim);
 		cursor: pointer;
-		transition: color 200ms;
-	}
-	.layout-choice:first-child {
-		border-top: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+		transition: color 180ms;
 	}
 	.layout-choice:hover,
 	.layout-choice.selected {
 		color: var(--color-fg);
 	}
-	.choice-number {
-		font-family: var(--font-mono);
-		font-size: 0.7rem;
-		opacity: 0.7;
-	}
-	.selected .choice-number {
-		color: var(--color-accent-2);
-		opacity: 1;
-	}
-	.choice-copy {
-		flex: 1;
-	}
 	.choice-name {
-		position: relative;
-		display: block;
-		width: fit-content;
-		font-size: 1.15rem;
+		font-size: 1.125rem;
 		font-weight: 600;
-		letter-spacing: -0.03em;
+		line-height: 1.35;
+		letter-spacing: -0.02em;
 	}
-	.choice-name::after {
-		content: '';
-		position: absolute;
-		left: 0;
-		right: 0;
-		bottom: -0.18rem;
-		height: 1px;
-		background: var(--color-accent-2);
-		transform: scaleX(0);
-		transform-origin: left;
-		transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-	}
-	.selected .choice-name::after {
-		transform: scaleX(1);
+	.layout-choice.selected .choice-name {
+		color: var(--color-accent);
 	}
 	.choice-hint {
-		display: block;
-		margin-top: 0.25rem;
-		font-size: 0.75rem;
+		margin-top: 0.125rem;
+		font-size: 0.875rem;
+		line-height: 1.5;
 		color: var(--color-fg-dim);
 	}
-	.choice-arrow {
-		color: var(--color-accent-2);
-		opacity: 0;
-		transform: translate(-4px, 4px);
-		transition:
-			opacity 200ms,
-			transform 200ms;
+	.choice-description {
+		margin-top: 0.625rem;
+		font-size: 0.9375rem;
+		line-height: 1.6;
+		color: var(--color-fg-dim);
 	}
-	.selected .choice-arrow {
-		opacity: 1;
-		transform: none;
+	.layout-choice .tab-indicator {
+		left: 0;
+		right: 0;
 	}
+
+	/* The demo frame: one bar, then the desktop edge to edge. */
 	.layout-preview {
 		min-width: 0;
+	}
+	.layout-lab:not(.compact) .layout-preview {
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		border-radius: 0.5rem;
+		background: color-mix(in srgb, var(--color-void-deep) 85%, transparent);
+	}
+	.frame-bar {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		height: 3rem;
+		padding-inline: 1rem 0.5rem;
+		border-bottom: 1px solid var(--color-border);
 	}
 	.desktop {
 		display: block;
 		container-type: inline-size;
 		overflow: hidden;
-		border: 1px solid color-mix(in srgb, var(--color-accent-3) 30%, var(--color-border));
-		border-radius: 0.8rem;
-		background: var(--color-void-deep);
-		box-shadow:
-			0 22px 65px -30px rgb(0 0 0 / 0.65),
-			0 0 50px -35px var(--color-accent-3);
-	}
-	.desktop-bar {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.5rem;
-		height: 2.6rem;
-		padding: 0 1rem;
-		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
-		font-family: var(--font-mono);
-		font-size: 0.65rem;
-		color: var(--color-fg-dim);
-	}
-	.desktop-brand {
-		display: flex;
-		align-items: center;
-		gap: 0.5rem;
-		color: var(--color-fg);
-	}
-	.desktop-moon {
-		display: inline-block;
-		width: 0.7rem;
-		height: 0.7rem;
-		border-radius: 50%;
-		box-shadow: inset 0.22rem -0.1rem 0 0 var(--color-accent-3);
-		transform: rotate(-25deg);
-	}
-	.workspace-indicator {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.5rem;
-	}
-	.workspace-dot {
-		width: 0.3rem;
-		height: 0.3rem;
-		border-radius: 50%;
-		background: var(--color-accent-2);
-	}
-	.desktop-indicators {
-		display: flex;
-		gap: 0.7rem;
 	}
 	.desktop-workspace {
 		position: relative;
@@ -566,17 +482,6 @@
 				color-mix(in srgb, var(--color-accent-2) 5%, transparent),
 				transparent 70%
 			);
-	}
-	.workspace-watermark {
-		position: absolute;
-		right: 7%;
-		bottom: 11%;
-		display: grid;
-		color: color-mix(in srgb, var(--color-fg-dim) 24%, transparent);
-		font-size: 5cqw;
-		font-weight: 500;
-		line-height: 1.15;
-		letter-spacing: -0.05em;
 	}
 	.demo-window {
 		--window-tone: var(--color-accent-2);
@@ -809,91 +714,7 @@
 		background: color-mix(in srgb, var(--window-tone) 50%, transparent);
 	}
 
-	.preview-caption {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 0.7rem;
-		min-height: 2.75rem;
-		font-size: 0.7rem;
-		color: var(--color-fg-dim);
-	}
-	.sequence-caption {
-		display: flex;
-		align-items: center;
-		gap: 0.7rem;
-	}
-	.sequence-dots {
-		display: flex;
-		flex-shrink: 0;
-		gap: 0.25rem;
-	}
-	.sequence-dots span {
-		width: 0.3rem;
-		height: 0.3rem;
-		border-radius: 50%;
-		background: var(--color-fg-dim);
-		opacity: 0.35;
-	}
-	.sequence-dots span.current {
-		background: var(--color-accent-2);
-		opacity: 1;
-	}
-	.motion-toggle {
-		display: flex;
-		align-items: center;
-		flex-shrink: 0;
-		gap: 0.3rem;
-		padding: 0.35rem 0.25rem;
-		cursor: pointer;
-		color: var(--color-fg-dim);
-	}
-	.motion-toggle:hover {
-		color: var(--color-accent-2);
-	}
-	.motion-note {
-		flex-shrink: 0;
-		font-size: 0.65rem;
-	}
-	.layout-description {
-		grid-column: 1 / -1;
-		display: grid;
-		grid-template-columns: minmax(13rem, 0.8fr) minmax(0, 2.2fr);
-		column-gap: 2.5rem;
-		padding-top: 1.5rem;
-		border-top: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
-	}
-	.description-name {
-		font-family: var(--font-mono);
-		font-size: 0.8rem;
-		color: var(--color-accent-2);
-	}
-	.description-name span {
-		color: var(--color-fg-dim);
-		margin-left: 0.4rem;
-	}
-	.layout-description > p:last-child {
-		max-width: 42rem;
-		font-size: 0.9rem;
-		line-height: 1.8;
-		color: var(--color-fg-dim);
-	}
-	.demo-note {
-		grid-column: 2;
-		margin-top: -0.75rem;
-		font-size: 0.7rem;
-		color: var(--color-fg-dim);
-		opacity: 0.8;
-	}
-	.compact .desktop-bar {
-		height: 2.2rem;
-		font-size: 0.6rem;
-		padding: 0 0.8rem;
-	}
-	/* Compact (home page): the desktop is the card; one bar on top, one caption below. */
-	.layout-lab.card {
-		display: block;
-	}
+	/* Shared bar pieces (compact card bar and full-mode frame bar). */
 	.compact-bar {
 		display: flex;
 		align-items: stretch;
@@ -908,9 +729,11 @@
 		gap: 0.5rem;
 		margin-right: auto;
 		min-width: 0;
+		overflow: hidden;
 		font-size: 0.8125rem;
 		line-height: 1.4;
 		white-space: nowrap;
+		text-overflow: ellipsis;
 		color: var(--color-fg-dim);
 	}
 	.status-dot {
@@ -919,6 +742,29 @@
 		height: 5px;
 		border-radius: 50%;
 		background: var(--color-accent-2);
+	}
+	.motion-toggle {
+		display: inline-flex;
+		align-self: center;
+		align-items: center;
+		justify-content: center;
+		flex-shrink: 0;
+		width: 2rem;
+		height: 2rem;
+		border-radius: 4px;
+		font-size: 1rem;
+		color: var(--color-fg-dim);
+		cursor: pointer;
+		transition: color 180ms;
+	}
+	.motion-toggle:hover {
+		color: var(--color-accent-2);
+	}
+	.motion-note {
+		align-self: center;
+		flex-shrink: 0;
+		font-size: 0.75rem;
+		color: var(--color-fg-dim);
 	}
 	.compact-tabs {
 		display: flex;
@@ -942,7 +788,7 @@
 	.compact-tab.selected {
 		color: var(--color-accent);
 	}
-	/* Sits on the bar's bottom border; fills over the sequence while touring. */
+	/* Sits on the bottom border of its tab or list row; fills over the sequence while touring. */
 	.tab-indicator {
 		position: absolute;
 		left: 0.625rem;
@@ -966,33 +812,11 @@
 			transform: scaleX(1);
 		}
 	}
-	.compact-bar .motion-toggle {
-		align-self: center;
-		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		padding: 0;
-		border-radius: 4px;
-		font-size: 1rem;
-	}
-	.compact-bar .motion-note {
-		align-self: center;
-		font-size: 0.75rem;
-	}
-	.card .desktop {
-		border: 0;
-		border-radius: 0;
-		box-shadow: none;
-		background: transparent;
-	}
-	.card .window-title {
+	.window-title {
 		height: clamp(1rem, 3.6cqw, 1.6rem);
 	}
-	.card .window-content {
+	.window-content {
 		opacity: 0.55;
-	}
-	.card .demo-window {
-		box-shadow: none;
 	}
 	.compact-caption {
 		display: flex;
@@ -1016,6 +840,27 @@
 	.compact-caption a:hover {
 		color: var(--color-accent);
 	}
+	@media (max-width: 860px) {
+		.layout-lab {
+			grid-template-columns: 1fr;
+		}
+		.layout-choices {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+		}
+		.layout-choice {
+			align-items: center;
+			padding: 0.875rem 0.25rem;
+			text-align: center;
+		}
+		.choice-name {
+			font-size: 0.9375rem;
+		}
+		.choice-hint,
+		.choice-description {
+			display: none;
+		}
+	}
 	@media (max-width: 480px) {
 		.compact-bar .bar-label {
 			display: none;
@@ -1028,106 +873,13 @@
 			padding-inline: 0.5rem;
 			font-size: 0.75rem;
 		}
-		.tab-indicator {
+		.compact-tab .tab-indicator {
 			left: 0.5rem;
 			right: 0.5rem;
 		}
 	}
-	.layout-lab.presentation {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-	.presentation .layout-preview {
-		height: 100%;
-	}
-	.presentation .desktop {
-		display: flex;
-		flex-direction: column;
-		height: 100%;
-		border: 0;
-		border-radius: 0;
-		box-shadow: none;
-	}
-	.presentation .desktop-bar {
-		flex-shrink: 0;
-	}
-	.presentation .desktop-workspace {
-		flex: 1;
-		min-height: 0;
-		aspect-ratio: auto;
-	}
-	@media (max-width: 800px) {
-		.layout-lab {
-			grid-template-columns: 1fr;
-			gap: 1rem;
-		}
-		.layout-choices {
-			display: grid;
-			grid-template-columns: repeat(4, minmax(0, 1fr));
-			border-top: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
-		}
-		.layout-choice {
-			gap: 0.35rem;
-			padding: 1rem 0.25rem;
-		}
-		.layout-choice:first-child {
-			border-top: 0;
-		}
-		.choice-number {
-			font-size: 0.6rem;
-		}
-		.choice-name {
-			font-size: 0.85rem;
-		}
-		.choice-hint,
-		.choice-arrow {
-			display: none;
-		}
-		.layout-description {
-			grid-column: 1;
-			grid-template-columns: 1fr;
-			gap: 0.55rem;
-			padding-top: 1rem;
-		}
-		.demo-note {
-			grid-column: 1;
-			margin-top: 0;
-		}
-	}
-	@media (max-width: 420px) {
-		.choice-number {
-			display: none;
-		}
-		.layout-choice {
-			justify-content: center;
-			text-align: center;
-		}
-		.choice-name {
-			font-size: 0.78rem;
-		}
-		.desktop-bar {
-			padding: 0 0.65rem;
-			height: 2.2rem;
-			font-size: 0.55rem;
-		}
-		.desktop-indicators {
-			gap: 0.4rem;
-		}
-		.preview-caption {
-			font-size: 0.62rem;
-		}
-		.sequence-caption {
-			gap: 0.4rem;
-		}
-		.sequence-dots {
-			display: none;
-		}
-	}
 	@media (prefers-reduced-motion: reduce) {
 		.layout-choice,
-		.choice-name::after,
-		.choice-arrow,
 		.demo-window {
 			transition: none;
 		}

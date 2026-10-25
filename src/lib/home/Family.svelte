@@ -14,7 +14,7 @@
 
 	const notes: Record<string, string> = {
 		noctalia: 'The things you reach for, all day.',
-		umbriel: 'A little order. Or a little freedom.',
+		umbriel: 'Tile, scroll, or float. Your call.',
 		greeter: 'A familiar face, before you sign in.'
 	};
 </script>
@@ -207,7 +207,7 @@
 		transition: border-color 200ms;
 	}
 	.project-visual:hover {
-		border-color: var(--color-accent-2);
+		border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
 	}
 	.visual-label {
 		display: flex;

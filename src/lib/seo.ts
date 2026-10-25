@@ -43,7 +43,7 @@ export const SEO_UMBRIEL: PageSeo = {
 };
 
 export const SEO_GREETER: PageSeo = {
-	title: `Noctalia Greeter  -  ${SITE_NAME}`,
+	title: `Greeter  -  ${SITE_NAME}`,
 	description:
 		'A greetd login screen that shares your Noctalia wallpaper, colors, and font. A familiar desktop from the moment you sign in.',
 	pathLabel: 'Greeter',

@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { page } from '$app/state';
 	import Reveal from '$lib/reveal.svelte';
 	let {
 		title,
 		eyebrow,
 		logoUrl,
+		icon,
 		summary,
 		detail,
 		actions,
@@ -16,7 +16,9 @@
 	}: {
 		title: string;
 		eyebrow: string;
-		logoUrl: string;
+		/** Project mark next to the title; pages without one can pass a Tabler `icon` instead. */
+		logoUrl?: string;
+		icon?: string;
 		summary: string;
 		detail: string;
 		actions?: Snippet;
@@ -25,123 +27,154 @@
 		footnote?: Snippet;
 		back?: boolean;
 	} = $props();
-
-	// Follow the navigation order, carrying the alternating homepage rhythm into page intros.
-	const rightSidePages = new Set(['/shell', '/greeter', '/blog', '/ethos', '/privacy']);
-	const mirrored = $derived(rightSidePages.has(page.url.pathname.replace(/\/+$/, '') || '/'));
 </script>
 
-<header class="site-shell pt-9 md:pt-14" data-logo-side={mirrored ? 'right' : 'left'}>
+<header class="intro site-shell">
 	{#if back}
 		<Reveal>
-			<a
-				href="/"
-				class="inline-flex items-center gap-2 rounded-sm text-sm text-fg-dim transition-colors hover:text-accent"
-				><span aria-hidden="true">←</span> The Noctalia projects</a
-			>
+			<a href="/" class="intro-back"><span aria-hidden="true">←</span> The Noctalia projects</a>
 		</Reveal>
 	{/if}
-	<div
-		class="intro-grid mt-10 grid items-end gap-8 border-b border-border/65 pb-10 md:mt-16 md:gap-12 md:pb-14"
-		class:intro-grid--reversed={mirrored}
-	>
-		<div class="intro-heading">
-			<Reveal delay={60}>
-				<p class="mb-5 text-xs font-medium uppercase tracking-[0.2em] text-accent-2">{eyebrow}</p>
-				<div
-					class="intro-heading-line flex items-center gap-4 sm:gap-5"
-					class:intro-heading-line--reversed={mirrored}
-				>
-					<img
-						src={logoUrl}
-						alt=""
-						width="80"
-						height="80"
-						class="h-12 w-12 shrink-0 sm:h-16 sm:w-16 lg:h-20 lg:w-20"
-					/>
-					<h1 class="page-title">{title}</h1>
-				</div>
-				{#if anchorHref && anchorLabel}
-					<a
-						href={anchorHref}
-						class="mt-7 inline-flex items-center gap-3 rounded-sm py-1 text-sm font-medium text-accent-2 transition-colors hover:text-accent"
-						>{anchorLabel}<span aria-hidden="true">↓</span></a
-					>
+	<div class="intro-body">
+		<Reveal delay={60}>
+			<p class="eyebrow intro-eyebrow">{eyebrow}</p>
+			<div class="intro-lockup">
+				{#if logoUrl}
+					<img src={logoUrl} alt="" width="80" height="80" class="intro-logo" />
+				{:else if icon}
+					<i class="ti {icon} intro-icon" aria-hidden="true"></i>
 				{/if}
-			</Reveal>
-		</div>
-		<div class="intro-copy">
-			<Reveal delay={130}>
-				<p class="text-xl leading-relaxed text-fg md:text-[1.35rem]">{summary}</p>
-				<p class="mt-4 leading-relaxed text-fg-dim">{detail}</p>
-				{#if actions}<div class="mt-7 flex flex-wrap items-center gap-x-6 gap-y-4">
-						{@render actions()}
-					</div>{/if}
-			</Reveal>
-		</div>
+				<h1 class="intro-title">{title}</h1>
+			</div>
+		</Reveal>
+		<Reveal delay={120}>
+			<p class="intro-summary">{summary}</p>
+			<p class="intro-detail">{detail}</p>
+			{#if actions}<div class="intro-actions">{@render actions()}</div>{/if}
+			{#if anchorHref && anchorLabel}
+				<a href={anchorHref} class="intro-anchor">{anchorLabel} <span aria-hidden="true">↓</span></a>
+			{/if}
+			{#if footnote}<div class="intro-footnote">{@render footnote()}</div>{/if}
+		</Reveal>
 	</div>
-	{#if footnote}<Reveal delay={180}
-			><div class="mt-5 text-sm leading-relaxed text-fg-dim">{@render footnote()}</div></Reveal
-		>{/if}
 </header>
 
 <style>
-	.intro-heading-line {
-		width: fit-content;
-		max-width: 100%;
+	.intro {
+		position: relative;
+		isolation: isolate;
+		padding-top: 1.5rem;
 	}
-	.intro-heading-line--reversed {
-		flex-direction: row-reverse;
-	}
-	.intro-heading,
-	.intro-copy {
-		min-width: 0;
-	}
-	.intro-heading {
-		container-type: inline-size;
-		--intro-logo-size: 3rem;
-		--intro-title-gap: 1rem;
-	}
-	@media (min-width: 640px) {
-		.intro-heading {
-			--intro-logo-size: 4rem;
-			--intro-title-gap: 1.25rem;
-		}
-	}
-	@media (min-width: 1024px) {
-		.intro-heading {
-			--intro-logo-size: 5rem;
-		}
-	}
-	@media (min-width: 768px) {
-		.intro-grid {
-			grid-template-columns: 2fr 3fr;
-		}
-		.intro-grid--reversed {
-			grid-template-columns: 3fr 2fr;
-		}
-		.intro-grid--reversed .intro-heading {
-			grid-column: 2;
-			grid-row: 1;
-			text-align: right;
-		}
-		.intro-grid--reversed .intro-heading-line {
-			margin-left: auto;
-		}
-		.intro-grid--reversed .intro-copy {
-			grid-column: 1;
-			grid-row: 1;
-		}
-	}
-	.page-title {
-		font-size: clamp(
-			2rem,
-			calc((100cqw - var(--intro-logo-size) - var(--intro-title-gap)) / 5.6),
-			6.5rem
+	.intro::before {
+		content: '';
+		position: absolute;
+		top: 3rem;
+		left: 50%;
+		z-index: -1;
+		width: min(32rem, 90vw);
+		aspect-ratio: 1;
+		translate: -50% 0;
+		background: radial-gradient(
+			circle,
+			color-mix(in srgb, var(--color-accent-3) 14%, transparent),
+			transparent 65%
 		);
+		pointer-events: none;
+	}
+	.intro-back {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 2.75rem;
+		font-size: 0.875rem;
+		color: var(--color-fg-dim);
+		transition: color 180ms;
+	}
+	.intro-back:hover {
+		color: var(--color-accent);
+	}
+	.intro-body {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		max-width: 46rem;
+		margin-inline: auto;
+		padding-block: clamp(1.5rem, 4vw, 3rem) clamp(2.5rem, 5vw, 3.5rem);
+		text-align: center;
+	}
+	/* On section pages the section gap supplies the space below; trim it a little under the hero. */
+	:global(.page-sections) > .intro .intro-body {
+		padding-bottom: 0;
+		margin-bottom: calc(-1 * clamp(0.5rem, 2.5vw, 2rem));
+	}
+	.intro-eyebrow {
+		color: var(--color-accent-2);
+	}
+	.intro-lockup {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: clamp(0.875rem, 2vw, 1.25rem);
+		margin-top: 1rem;
+	}
+	.intro-logo {
+		width: clamp(3.5rem, 7vw, 5rem);
+		height: auto;
+		aspect-ratio: 1;
+		filter: drop-shadow(0 8px 28px color-mix(in srgb, var(--color-accent) 22%, transparent));
+	}
+	.intro-icon {
+		font-size: clamp(3rem, 6vw, 4.25rem);
+		line-height: 1;
+		color: var(--color-accent-3);
+	}
+	.intro-title {
+		font-size: clamp(2.75rem, 7vw, 4.75rem);
 		font-weight: 600;
 		line-height: 1;
-		letter-spacing: -0.065em;
-		overflow-wrap: normal;
+		letter-spacing: -0.05em;
+	}
+	.intro-summary {
+		max-width: 40rem;
+		margin: 1.75rem auto 0;
+		font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+		line-height: 1.45;
+		color: var(--color-fg);
+		text-wrap: balance;
+	}
+	.intro-detail {
+		max-width: 38rem;
+		margin: 0.875rem auto 0;
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--color-fg-dim);
+		text-wrap: pretty;
+	}
+	.intro-actions {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+	.intro-anchor {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 2.75rem;
+		margin-top: 1rem;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: var(--color-accent-2);
+		transition: color 180ms;
+	}
+	.intro-anchor:hover {
+		color: var(--color-accent);
+	}
+	.intro-footnote {
+		margin-top: 1.25rem;
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--color-fg-dim);
 	}
 </style>

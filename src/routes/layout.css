@@ -100,11 +100,6 @@ html[data-theme='light'] {
 }
 
 @layer utilities {
-	/* Active nav pill: inset ring follows `--color-accent` (gold vs purple by theme). */
-	.nav-pill-active {
-		box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
-	}
-
 	.card-surface {
 		border-radius: var(--radius-md);
 		border: 1px solid rgb(33 33 95 / 0.65);
@@ -121,17 +116,44 @@ html[data-theme='light'] {
 		-webkit-backdrop-filter: blur(12px);
 	}
 
+	/* The one hover treatment for clickable cards: lift, accent edge, soft glow. */
 	.card-surface-hover {
+		position: relative;
+		isolation: isolate;
 		transition:
 			transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
 			border-color 0.35s ease,
 			box-shadow 0.35s ease;
 	}
-
-	.card-surface-hover:hover {
+	.card-surface-hover::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		border-radius: inherit;
+		background: radial-gradient(
+			120% 95% at 50% 42%,
+			color-mix(in srgb, var(--color-accent) 10%, transparent),
+			color-mix(in srgb, var(--color-accent-2) 6%, transparent) 40%,
+			transparent 62%
+		);
+		opacity: 0;
+		pointer-events: none;
+		transition: opacity 0.45s ease;
+	}
+	.card-surface-hover:hover,
+	.card-surface-hover:focus-visible {
 		transform: translateY(-3px);
 		border-color: rgb(255 245 155 / 0.22);
 		box-shadow: var(--shadow-card-hover), inset 0 1px 0 0 rgb(255 255 255 / 0.08);
+	}
+	.card-surface-hover:hover::before,
+	.card-surface-hover:focus-visible::before {
+		opacity: 1;
+	}
+	/* SpotlightSurface brings its own glow; keep one. */
+	.card-surface-hover > .spotlight-surface__glow {
+		display: none;
 	}
 
 	/* Family grid: accent emphasis for the flagship project. Must sit after
@@ -170,38 +192,101 @@ html[data-theme='light'] {
 		color: var(--color-fg-dim);
 	}
 
-	.fancy-section-title {
+	/* Vertical rhythm between the sections of a project page. */
+	.page-sections {
+		display: flex;
+		flex-direction: column;
+		gap: clamp(4.5rem, 9vw, 7rem);
+		padding-bottom: clamp(4rem, 7vw, 6rem);
+	}
+	.page-sections > * {
+		width: 100%;
+	}
+
+	/* Shared text roles for page sections. One size per role, no ad-hoc sizes. */
+	.type-section-title {
+		font-size: clamp(1.875rem, 3.2vw, 2.5rem);
+		font-weight: 600;
+		line-height: 1.1;
+		letter-spacing: -0.04em;
 		text-wrap: balance;
+		color: var(--color-fg);
+	}
+	.type-body {
+		font-size: 1rem;
+		line-height: 1.65;
+		color: var(--color-fg-dim);
+		text-wrap: pretty;
+	}
+	.type-card-title {
+		font-size: 1.125rem;
+		font-weight: 600;
+		line-height: 1.35;
+		letter-spacing: -0.02em;
+		color: var(--color-fg);
+	}
+	.type-small {
+		font-size: 0.875rem;
+		line-height: 1.6;
+		color: var(--color-fg-dim);
 	}
 
-	.fancy-section-title::after {
-		content: '';
-		display: block;
-		width: 3rem;
-		height: 2px;
-		margin-top: 0.65rem;
-		border-radius: 9999px;
-		background: linear-gradient(90deg, var(--color-accent), var(--color-accent-2));
-		opacity: 0.85;
-		box-shadow: 0 0 16px rgb(255 245 155 / 0.25);
-		animation: fancy-title-shimmer 7s ease-in-out infinite;
+	/* Shared buttons: one primary per view, secondary for everything else. */
+	.action-primary,
+	.action-secondary {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		height: 3rem;
+		padding-inline: 1.375rem;
+		border: 1px solid var(--color-border);
+		border-radius: 6px;
+		font-size: 0.9375rem;
+		font-weight: 600;
+		line-height: 1;
+		white-space: nowrap;
+		transition:
+			border-color 180ms,
+			transform 180ms,
+			filter 180ms,
+			color 180ms;
 	}
-
-	@keyframes fancy-title-shimmer {
-		0%,
-		100% {
-			opacity: 0.82;
-			filter: brightness(1);
-		}
-		50% {
-			opacity: 1;
-			filter: brightness(1.12);
-		}
+	.action-primary {
+		border-color: var(--color-accent);
+		background: var(--color-accent);
+		color: var(--color-on-accent);
+		box-shadow: 0 10px 32px -10px color-mix(in srgb, var(--color-accent) 55%, transparent);
 	}
-
-	.fancy-section-title--center::after {
-		margin-left: auto;
-		margin-right: auto;
+	.action-primary:hover {
+		filter: brightness(1.05);
+		transform: translateY(-1px);
+	}
+	.action-secondary {
+		background: var(--color-surface-2);
+		color: var(--color-fg);
+	}
+	.action-secondary > span,
+	.action-secondary > i {
+		color: var(--color-accent);
+	}
+	.action-secondary:hover {
+		border-color: var(--color-accent);
+		transform: translateY(-1px);
+	}
+	/* Inline text link with an arrow, used at the end of sections. */
+	.action-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		min-height: 2.75rem;
+		font-size: 1rem;
+		font-weight: 600;
+		color: var(--color-accent);
+		transition: color 180ms;
+	}
+	.action-link:hover {
+		color: var(--color-accent-2);
 	}
 
 	.btn-primary-glow {
@@ -340,33 +425,6 @@ html[data-theme='light'] {
 			padding-top: 3rem;
 		}
 	}
-
-	.section-hero {
-		position: relative;
-		padding-left: 1rem;
-		padding-right: 1rem;
-		padding-bottom: 3.5rem;
-		padding-top: 3.5rem;
-	}
-
-	@media (min-width: 768px) {
-		.section-hero {
-			padding-bottom: 4rem;
-			padding-top: 5rem;
-		}
-	}
-
-	.section-content {
-		padding-top: 4rem;
-		padding-bottom: 4rem;
-	}
-
-	@media (min-width: 768px) {
-		.section-content {
-			padding-top: 6rem;
-			padding-bottom: 6rem;
-		}
-	}
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -388,10 +446,6 @@ html[data-theme='light'] {
 
 	.card-surface-hover:hover {
 		transform: none !important;
-	}
-
-	.fancy-section-title::after {
-		animation: none;
 	}
 }
 
@@ -430,37 +484,6 @@ html[data-theme='light'] {
 			transparent 70%
 		);
 	background-repeat: no-repeat;
-}
-
-/*
- * Home hero: soft static atmosphere behind the first viewport.
- */
-.home-atmosphere__blob {
-	opacity: 0.82;
-}
-
-.home-atmosphere__blob--1 {
-	transform: translate3d(-0.75rem, -0.5rem, 0);
-}
-
-.home-atmosphere__blob--2 {
-	transform: translate3d(0.5rem, 1rem, 0);
-}
-
-.home-atmosphere__blob--3 {
-	left: 50%;
-	transform: translate3d(-50%, 0.5rem, 0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-	.home-atmosphere__blob--1,
-	.home-atmosphere__blob--2 {
-		transform: none;
-	}
-
-	.home-atmosphere__blob--3 {
-		transform: translate3d(-50%, 0, 0);
-	}
 }
 
 /* Organic plexus background is drawn in `dot-glow-canvas.svelte` (canvas, fixed). */
@@ -652,10 +675,6 @@ html[data-theme='light'] button:focus-visible {
 	outline-offset: 2px;
 }
 
-html[data-theme='light'] .fancy-section-title::after {
-	box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 28%, transparent);
-}
-
 html[data-theme='light'] .btn-primary-glow {
 	box-shadow:
 		0 8px 28px -6px color-mix(in srgb, var(--color-accent) 32%, transparent),
@@ -679,15 +698,3 @@ html[data-theme='light'] .spotlight-surface__glow {
 	mix-blend-mode: multiply;
 }
 
-/* Hero orbs: stronger tints from the same palette as dark */
-html[data-theme='light'] .home-atmosphere__blob--1 {
-	background-color: color-mix(in srgb, var(--color-accent) 24%, transparent) !important;
-}
-
-html[data-theme='light'] .home-atmosphere__blob--2 {
-	background-color: color-mix(in srgb, var(--color-accent-2) 20%, transparent) !important;
-}
-
-html[data-theme='light'] .home-atmosphere__blob--3 {
-	background-color: color-mix(in srgb, var(--color-accent-3) 18%, transparent) !important;
-}

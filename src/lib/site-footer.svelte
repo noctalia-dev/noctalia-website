@@ -80,8 +80,7 @@
 					</div>
 				</div>
 				<p class="mt-4 max-w-sm text-sm leading-relaxed text-fg-dim">
-					A family of native Wayland projects. A desktop shell, a compositor, and a login screen,
-					built with a shared attention to detail.
+					A family of native Wayland projects that feel like one desktop.
 				</p>
 				<a
 					href={supportUrl}
