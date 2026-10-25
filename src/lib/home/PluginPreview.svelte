@@ -1,142 +1,118 @@
 <script lang="ts">
 	import AnimatedCount from '$lib/animated-count.svelte';
 	let { count }: { count: number | null } = $props();
-	let imageFailed = $state(false);
-	const pluginHref = '/plugins/official/wallpaper_depth';
 </script>
 
-<div class="plugin-preview" aria-label="Wallpaper Depth plugin preview">
-	<div class="thumbnail-stage">
-		{#if !imageFailed}
-			<a href={pluginHref} class="thumbnail-link" aria-label="View Wallpaper Depth plugin">
-				<img
-					src="/previews/wallpaper-depth.webp"
-					alt="Wallpaper Depth plugin thumbnail"
-					width="960"
-					height="540"
-					loading="lazy"
-					onerror={() => (imageFailed = true)}
-				/>
-			</a>
-		{:else}
-			<a href={pluginHref} class="thumbnail-fallback"
-				><img
-					src="https://assets.noctalia.dev/noctalia-logo.svg"
-					alt=""
-					width="80"
-					height="80"
-				/><strong>Wallpaper Depth</strong><span>A plugin for Noctalia Shell</span></a
-			>
-		{/if}
+<a href="/plugins" class="plugin-preview" aria-label="Browse the plugin catalog">
+	<div class="visual-label">
+		<span class="status-dot"></span> Made by the team and the community
+	</div>
+	<div class="wall">
+		<img
+			src="/plugin-wall.webp"
+			alt=""
+			width="1600"
+			height="900"
+			loading="lazy"
+			decoding="async"
+		/>
 		{#if count != null}
-			<a
-				href="/plugins"
-				class="thumbnail-count"
-				aria-label="Browse {count} plugins for Noctalia Shell"
-				><strong><AnimatedCount value={count} /></strong><span>plugins<br />for your Shell</span></a
-			>
+			<div class="wall-count">
+				<strong><AnimatedCount value={count} /></strong><span>plugins<br />for your Shell</span>
+			</div>
 		{/if}
 	</div>
-	<div class="preview-controls">
-		<a href={pluginHref} class="preview-name">Wallpaper Depth <span aria-hidden="true">↗</span></a>
-	</div>
-</div>
+	<div class="visual-caption">Browse the catalog <span aria-hidden="true">→</span></div>
+</a>
 
 <style>
 	.plugin-preview {
-		width: 100%;
+		display: block;
 		min-width: 0;
+		overflow: hidden;
+		border: 1px solid var(--color-border);
+		border-radius: 0.5rem;
+		background: color-mix(in srgb, var(--color-void-deep) 85%, transparent);
+		transition: border-color 200ms;
 	}
-	.thumbnail-stage {
+	.plugin-preview:hover {
+		border-color: var(--color-accent-2);
+	}
+	.visual-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		padding: 0.9rem 1rem;
+		border-bottom: 1px solid var(--color-border);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: var(--color-fg-dim);
+	}
+	.status-dot {
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--color-accent-2);
+	}
+	.wall {
 		position: relative;
 		container-type: inline-size;
 		aspect-ratio: 16 / 9;
 		overflow: hidden;
-		border: 1px solid var(--color-border);
-		border-radius: 0.5rem;
-		background: #070722;
 	}
-	.thumbnail-link {
-		display: block;
-		width: 100%;
-		height: 100%;
-	}
-	.thumbnail-link img {
+	.wall img {
 		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
+		transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
 	}
-	.thumbnail-count {
+	.plugin-preview:hover .wall img {
+		transform: scale(1.04);
+	}
+	.wall-count {
 		position: absolute;
-		top: 5%;
-		right: 3%;
+		bottom: 5%;
+		left: 3.5%;
 		display: flex;
 		align-items: center;
-		gap: 1.5cqw;
-		padding: 1cqw 1.5cqw;
-		border: 1px solid rgb(169 174 254 / 0.18);
-		border-radius: 0.4rem;
-		background: rgb(7 7 34 / 0.82);
+		gap: 0.875rem;
+		padding: 0.75rem 1.125rem;
+		border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
+		border-radius: 0.5rem;
+		background: color-mix(in srgb, var(--color-void-deep) 82%, transparent);
 		backdrop-filter: blur(12px);
-		box-shadow: 0 3px 14px #0002;
-		color: #f3edf7;
+		box-shadow: 0 20px 60px -10px rgb(0 0 0 / 0.6);
+		white-space: nowrap;
 	}
-	.thumbnail-count strong {
-		font-size: 4.7cqw;
-		line-height: 1;
-		letter-spacing: -0.055em;
+	.wall-count strong {
+		font-size: clamp(1.75rem, 5.5cqw, 2.75rem);
 		font-weight: 600;
-		color: #fff59b;
+		line-height: 1;
+		letter-spacing: -0.04em;
+		color: var(--color-accent);
 	}
-	.thumbnail-count > span {
-		font-size: clamp(0.55rem, 1.55cqw, 0.75rem);
+	.wall-count > span {
+		font-size: 0.8125rem;
 		line-height: 1.4;
-		color: #c5c4e5;
-	}
-	.thumbnail-fallback {
-		height: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-		background: radial-gradient(ellipse at 75% 20%, #a9aefe20, transparent 60%), #070722;
-		color: #f3edf7;
-	}
-	.thumbnail-fallback img {
-		width: 10%;
-		height: auto;
-	}
-	.thumbnail-fallback strong {
-		font-size: clamp(1rem, 4cqw, 2rem);
-		font-weight: 500;
-		letter-spacing: -0.03em;
-	}
-	.thumbnail-fallback > span {
-		font-size: clamp(0.7rem, 1.7cqw, 0.85rem);
-		color: #a9a6c4;
-	}
-	.preview-controls {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 1rem;
-		padding-block: 0.6rem;
-		border-bottom: 1px solid var(--color-border);
-	}
-	.preview-name {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.7rem;
-		min-width: 0;
-		font-size: 0.75rem;
 		color: var(--color-fg-dim);
 	}
-	.preview-name:hover {
+	.visual-caption {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.85rem 1rem;
+		border-top: 1px solid var(--color-border);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: var(--color-fg-dim);
+	}
+	.visual-caption > span {
 		color: var(--color-accent);
 	}
-	.preview-name > span {
-		color: var(--color-accent);
+	@media (prefers-reduced-motion: reduce) {
+		.wall img {
+			transition: none;
+		}
 	}
 </style>

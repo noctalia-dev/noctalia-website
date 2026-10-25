@@ -53,6 +53,12 @@
 	let selected = $state<LayoutId>('scrolling');
 	let phase = $state(0);
 	let paused = $state(false);
+	/** Compact mode tours every layout until the visitor picks one. */
+	let pinned = $state(false);
+	/** Home-page card: compact, interactive, and the desktop doubles as the card. */
+	const card = $derived(compact && !presentation);
+	const stepMs = $derived(card ? 1100 : 1700);
+	const touring = $derived(card && !pinned);
 	let reducedMotion = $state(true);
 	let visible = $state(false);
 	let frame = $state<HTMLDivElement>();
@@ -143,6 +149,7 @@
 	const windows = $derived(rectangles());
 
 	function select(id: LayoutId) {
+		if (card) pinned = true;
 		if (id === selected) return;
 		selected = id;
 		phase = 0;
@@ -185,8 +192,16 @@
 		cycleLength;
 		if (paused || reducedMotion || !visible || !playing) return;
 		const timer = window.setInterval(() => {
-			phase = (phase + 1) % cycleLength;
-		}, 1700);
+			if (phase + 1 < cycleLength) {
+				phase += 1;
+			} else if (touring) {
+				const next = layouts[(layouts.findIndex((l) => l.id === selected) + 1) % layouts.length];
+				selected = next.id;
+				phase = 0;
+			} else {
+				phase = 0;
+			}
+		}, stepMs);
 		return () => window.clearInterval(timer);
 	});
 </script>
@@ -194,13 +209,55 @@
 <div
 	class="layout-lab"
 	class:compact
+	class:card
 	class:presentation
 	bind:this={frame}
 	data-layout={layoutId}
 	data-phase={displayPhase}
 	data-window-count={visibleWindowCount}
 >
-	{#if !presentation}
+	{#if card}
+		<div class="compact-bar">
+			<span class="bar-label"><span class="status-dot"></span> Four ways to arrange windows</span>
+			<div class="compact-tabs" role="group" aria-label="Choose a window layout">
+				{#each layouts as layout (layout.id)}
+					<button
+						type="button"
+						class="compact-tab"
+						class:selected={layoutId === layout.id}
+						aria-pressed={layoutId === layout.id}
+						onclick={() => select(layout.id)}
+					>
+						{layout.name}
+						{#if layoutId === layout.id}
+							{#key layoutId}
+								<span
+									class="tab-indicator"
+									class:progress={touring && !reducedMotion}
+									class:halted={paused || !visible}
+									style:animation-duration="{cycleLength * stepMs}ms"
+									aria-hidden="true"
+								></span>
+							{/key}
+						{/if}
+					</button>
+				{/each}
+			</div>
+			{#if reducedMotion}
+				<span class="motion-note">Reduced motion</span>
+			{:else}
+				<button
+					class="motion-toggle"
+					type="button"
+					onclick={() => (paused = !paused)}
+					aria-label={paused ? 'Play layout animation' : 'Pause layout animation'}
+					title={paused ? 'Play' : 'Pause'}
+				>
+					<i class="ti {paused ? 'ti-player-play' : 'ti-player-pause'}" aria-hidden="true"></i>
+				</button>
+			{/if}
+		</div>
+	{:else if !presentation}
 		<div class="layout-choices" role="group" aria-label="Choose a window layout">
 			{#each layouts as layout, index (layout.id)}
 				<button
@@ -231,15 +288,17 @@
 				? 'Explore Umbriel: '
 				: ''}{active.name} window layout: {active.description}"
 		>
-			<div class="desktop-bar" aria-hidden="true">
-				<span class="desktop-brand"><span class="desktop-moon"></span> umbriel</span>
-				<span class="workspace-indicator"><span class="workspace-dot"></span> workspace 01</span>
-				<span class="desktop-indicators"
-					><i class="ti ti-volume-2"></i><i class="ti ti-wifi"></i></span
-				>
-			</div>
+			{#if !card}
+				<div class="desktop-bar" aria-hidden="true">
+					<span class="desktop-brand"><span class="desktop-moon"></span> umbriel</span>
+					<span class="workspace-indicator"><span class="workspace-dot"></span> workspace 01</span>
+					<span class="desktop-indicators"
+						><i class="ti ti-volume-2"></i><i class="ti ti-wifi"></i></span
+					>
+				</div>
+			{/if}
 			<div class="desktop-workspace" bind:this={workspace} aria-hidden="true">
-				{#if !presentation}
+				{#if !presentation && !compact}
 					<div class="workspace-watermark"><span>make room</span><span>for your day.</span></div>
 				{/if}
 				{#each demoApps as app, index (app.name)}
@@ -310,7 +369,12 @@
 			</div>
 		</svelte:element>
 
-		{#if !presentation}
+		{#if card}
+			<div class="compact-caption">
+				<span aria-hidden="true">{progress}</span>
+				{#if href}<a href="{href}#layouts">See all four <span aria-hidden="true">↗</span></a>{/if}
+			</div>
+		{:else if !presentation}
 			<div class="preview-caption">
 				<div class="sequence-caption" aria-hidden="true">
 					<span class="sequence-dots"
@@ -821,44 +885,153 @@
 		color: var(--color-fg-dim);
 		opacity: 0.8;
 	}
-	.layout-lab.compact {
-		grid-template-columns: 1fr;
-		gap: 0.8rem;
-	}
-	.compact .layout-choices {
-		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
-		border-top: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
-	}
-	.compact .layout-choice {
-		justify-content: center;
-		gap: 0.4rem;
-		padding: 0.85rem 0.2rem;
-	}
-	.compact .layout-choice:first-child {
-		border-top: 0;
-	}
-	.compact .choice-number {
-		font-size: 0.6rem;
-	}
-	.compact .choice-name {
-		font-size: 0.85rem;
-	}
-	.compact .choice-copy {
-		flex: initial;
-	}
-	.compact .choice-hint,
-	.compact .choice-arrow {
-		display: none;
-	}
 	.compact .desktop-bar {
 		height: 2.2rem;
 		font-size: 0.6rem;
 		padding: 0 0.8rem;
 	}
-	.compact .preview-caption {
-		font-size: 0.65rem;
-		min-height: 2.4rem;
+	/* Compact (home page): the desktop is the card; one bar on top, one caption below. */
+	.layout-lab.card {
+		display: block;
+	}
+	.compact-bar {
+		display: flex;
+		align-items: stretch;
+		gap: 0.75rem;
+		height: 3rem;
+		padding-inline: 1rem 0.5rem;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.bar-label {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-right: auto;
+		min-width: 0;
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		white-space: nowrap;
+		color: var(--color-fg-dim);
+	}
+	.status-dot {
+		flex-shrink: 0;
+		width: 5px;
+		height: 5px;
+		border-radius: 50%;
+		background: var(--color-accent-2);
+	}
+	.compact-tabs {
+		display: flex;
+		align-items: stretch;
+	}
+	.compact-tab {
+		position: relative;
+		display: flex;
+		align-items: center;
+		padding-inline: 0.625rem;
+		font-size: 0.8125rem;
+		font-weight: 500;
+		line-height: 1;
+		color: var(--color-fg-dim);
+		cursor: pointer;
+		transition: color 180ms;
+	}
+	.compact-tab:hover {
+		color: var(--color-fg);
+	}
+	.compact-tab.selected {
+		color: var(--color-accent);
+	}
+	/* Sits on the bar's bottom border; fills over the sequence while touring. */
+	.tab-indicator {
+		position: absolute;
+		left: 0.625rem;
+		right: 0.625rem;
+		bottom: -1px;
+		height: 2px;
+		background: var(--color-accent);
+		transform-origin: left;
+	}
+	.tab-indicator.progress {
+		transform: scaleX(0);
+		animation-name: tab-progress;
+		animation-timing-function: linear;
+		animation-fill-mode: forwards;
+	}
+	.tab-indicator.halted {
+		animation-play-state: paused;
+	}
+	@keyframes tab-progress {
+		to {
+			transform: scaleX(1);
+		}
+	}
+	.compact-bar .motion-toggle {
+		align-self: center;
+		justify-content: center;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		border-radius: 4px;
+		font-size: 1rem;
+	}
+	.compact-bar .motion-note {
+		align-self: center;
+		font-size: 0.75rem;
+	}
+	.card .desktop {
+		border: 0;
+		border-radius: 0;
+		box-shadow: none;
+		background: transparent;
+	}
+	.card .window-title {
+		height: clamp(1rem, 3.6cqw, 1.6rem);
+	}
+	.card .window-content {
+		opacity: 0.55;
+	}
+	.card .demo-window {
+		box-shadow: none;
+	}
+	.compact-caption {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.85rem 1rem;
+		border-top: 1px solid var(--color-border);
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: var(--color-fg-dim);
+	}
+	.compact-caption a {
+		flex-shrink: 0;
+		color: var(--color-fg-dim);
+		transition: color 180ms;
+	}
+	.compact-caption a span {
+		color: var(--color-accent);
+	}
+	.compact-caption a:hover {
+		color: var(--color-accent);
+	}
+	@media (max-width: 480px) {
+		.compact-bar .bar-label {
+			display: none;
+		}
+		.compact-bar {
+			justify-content: space-between;
+			padding-left: 0.375rem;
+		}
+		.compact-tab {
+			padding-inline: 0.5rem;
+			font-size: 0.75rem;
+		}
+		.tab-indicator {
+			left: 0.5rem;
+			right: 0.5rem;
+		}
 	}
 	.layout-lab.presentation {
 		display: block;

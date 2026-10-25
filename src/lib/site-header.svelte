@@ -1,16 +1,23 @@
 <script lang="ts">
-	import { DropdownMenu } from 'bits-ui';
 	import { page } from '$app/state';
-	import { onMount } from 'svelte';
+	import { afterNavigate } from '$app/navigation';
+	import { onMount, tick } from 'svelte';
 	import { getTheme, toggleTheme, type Theme } from '$lib/theme';
 	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
+	import { PRODUCTS } from '$lib/products';
 
-	const siteNav = [
-		{ href: '/', label: 'Home' },
-		{ href: '/shell', label: 'Shell' },
-		{ href: '/umbriel', label: 'Compositor' },
-		{ href: '/greeter', label: 'Greeter' },
-		{ href: '/plugins', label: 'Plugins' }
+	const projectNav = PRODUCTS.map((p) => ({
+		href: p.pageUrl ?? p.docsUrl,
+		label: p.navLabel,
+		role: p.fullName,
+		logo: p.logoUrl
+	}));
+	const siteNav = [...projectNav, { href: '/plugins', label: 'Plugins' }, { href: '/blog', label: 'Blog' }];
+	const moreNav = [
+		{ href: '/plugins', label: 'Plugins' },
+		{ href: '/blog', label: 'Blog' },
+		{ href: '/changelogs', label: 'Releases' },
+		{ href: '/ethos', label: 'Our ethos' }
 	];
 	const docsUrl = $derived(
 		page.url.pathname.startsWith('/umbriel')
@@ -23,29 +30,58 @@
 	);
 	const navActive = (href: string) =>
 		page.url.pathname === href || (href !== '/' && page.url.pathname.startsWith(`${href}/`));
+
 	let themeMode = $state<Theme>('dark');
-	let menuTrigger = $state<HTMLButtonElement | null>(null);
+	let menuOpen = $state(false);
+	let menuButton = $state<HTMLButtonElement | null>(null);
+	let menuPanel = $state<HTMLElement | null>(null);
+
 	onMount(() => {
 		themeMode = getTheme();
 		const onStorage = (event: StorageEvent) => {
 			if (event.key === 'theme') themeMode = getTheme();
 		};
+		const onResize = () => {
+			if (window.innerWidth >= 900) menuOpen = false;
+		};
 		window.addEventListener('storage', onStorage);
-		return () => window.removeEventListener('storage', onStorage);
+		window.addEventListener('resize', onResize);
+		return () => {
+			window.removeEventListener('storage', onStorage);
+			window.removeEventListener('resize', onResize);
+		};
 	});
-	function closeMenu(event: Event) {
-		event.preventDefault();
-		queueMicrotask(() => menuTrigger?.focus({ preventScroll: true }));
+	afterNavigate(() => (menuOpen = false));
+
+	async function toggleMenu() {
+		menuOpen = !menuOpen;
+		if (menuOpen) {
+			await tick();
+			menuPanel?.querySelector<HTMLElement>('a')?.focus({ preventScroll: true });
+		}
+	}
+	function onKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape' && menuOpen) {
+			menuOpen = false;
+			menuButton?.focus({ preventScroll: true });
+		}
+	}
+	function onPointerdown(event: PointerEvent) {
+		if (!menuOpen) return;
+		const target = event.target as Node;
+		if (!menuPanel?.contains(target) && !menuButton?.contains(target)) menuOpen = false;
 	}
 </script>
+
+<svelte:window onkeydown={onKeydown} onpointerdown={onPointerdown} />
 
 <header
 	class="site-header-chrome sticky top-0 border-b border-border/40 bg-void-deep/[0.94] backdrop-blur-xl"
 >
 	<div class="header-row">
 		<a href="/" class="header-brand" aria-label="Noctalia home">
-			<img src="https://assets.noctalia.dev/noctalia-logo.svg" alt="" width="40" height="40" />
-			<span><strong>Noctalia</strong><span class="brand-tagline">quiet by design</span></span>
+			<img src="https://assets.noctalia.dev/noctalia-logo.svg" alt="" width="32" height="32" />
+			<strong>Noctalia</strong>
 		</a>
 		<nav class="primary-nav" aria-label="Site pages">
 			{#each siteNav as link (link.href)}
@@ -61,17 +97,9 @@
 				href={GITHUB_ORG_URL}
 				target="_blank"
 				rel="noopener noreferrer"
-				class="header-icon"
+				class="header-icon desktop-only"
 				aria-label="Noctalia on GitHub"
 				title="GitHub"><i class="ti ti-brand-github" aria-hidden="true"></i></a
-			>
-			<a
-				href="/ethos"
-				class="header-icon"
-				aria-label="Our Ethos"
-				title="Our Ethos"
-				aria-current={navActive('/ethos') ? 'page' : undefined}
-				><i class="ti ti-compass" aria-hidden="true"></i></a
 			>
 			<button
 				type="button"
@@ -81,52 +109,75 @@
 				aria-pressed={themeMode === 'light'}
 				><i class="ti {themeMode === 'dark' ? 'ti-sun' : 'ti-moon'}" aria-hidden="true"></i></button
 			>
-			<a href={docsUrl} target="_blank" rel="noopener noreferrer" class="header-docs"
-				>Get started <span aria-hidden="true">↗</span></a
+			<a
+				href={docsUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="header-docs desktop-only"
+				>Docs <span aria-hidden="true">↗</span></a
 			>
-			<DropdownMenu.Root>
-				<DropdownMenu.Trigger
-					bind:ref={menuTrigger}
-					class="header-icon menu-trigger"
-					aria-label="Open menu"
-					><i class="ti ti-menu-2" aria-hidden="true"></i></DropdownMenu.Trigger
-				>
-				<DropdownMenu.Portal>
-					<DropdownMenu.Content
-						align="end"
-						sideOffset={8}
-						class="z-[200] min-w-48 rounded-md border border-border bg-void-deep p-1.5 shadow-card outline-none"
-						onCloseAutoFocus={closeMenu}
-					>
-						{#each siteNav as link (link.href)}
-							<DropdownMenu.Item>
-								{#snippet child({ props })}<a
-										{...props}
-										href={link.href}
-										class="block cursor-pointer rounded-sm px-3 py-2.5 text-sm outline-none data-[highlighted]:bg-surface-2 {navActive(
-											link.href
-										)
-											? 'text-accent'
-											: 'text-fg'}"
-										aria-current={navActive(link.href) ? 'page' : undefined}>{link.label}</a
-									>{/snippet}
-							</DropdownMenu.Item>
-						{/each}
-						<DropdownMenu.Item
-							>{#snippet child({ props })}<a
-									{...props}
-									href={docsUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									class="block cursor-pointer rounded-sm px-3 py-2.5 text-sm text-fg outline-none data-[highlighted]:bg-surface-2"
-									>Documentation ↗</a
-								>{/snippet}</DropdownMenu.Item
-						>
-					</DropdownMenu.Content>
-				</DropdownMenu.Portal>
-			</DropdownMenu.Root>
+			<button
+				type="button"
+				bind:this={menuButton}
+				class="menu-button"
+				aria-expanded={menuOpen}
+				aria-controls="site-menu"
+				onclick={toggleMenu}
+				><i class="ti {menuOpen ? 'ti-x' : 'ti-menu-2'}" aria-hidden="true"></i><span
+					class="menu-label">{menuOpen ? 'Close' : 'Menu'}</span
+				></button
+			>
 		</div>
 	</div>
+	{#if menuOpen}
+		<nav id="site-menu" class="menu-panel" aria-label="Site menu" bind:this={menuPanel}>
+			<div class="menu-inner">
+				<p class="menu-heading">Projects</p>
+				<ul class="menu-projects">
+					{#each projectNav as link (link.href)}
+						<li>
+							<a
+								href={link.href}
+								class="menu-project"
+								class:active={navActive(link.href)}
+								aria-current={navActive(link.href) ? 'page' : undefined}
+							>
+								<img src={link.logo} alt="" width="32" height="32" />
+								<span><strong>{link.label}</strong><small>{link.role}</small></span>
+							</a>
+						</li>
+					{/each}
+				</ul>
+				<p class="menu-heading">More</p>
+				<ul class="menu-links">
+					{#each moreNav as link (link.href)}
+						<li>
+							<a
+								href={link.href}
+								class:active={navActive(link.href)}
+								aria-current={navActive(link.href) ? 'page' : undefined}>{link.label}</a
+							>
+						</li>
+					{/each}
+					<li>
+						<a href={docsUrl} target="_blank" rel="noopener noreferrer"
+							>Documentation <span aria-hidden="true">↗</span></a
+						>
+					</li>
+					<li>
+						<a href={GITHUB_ORG_URL} target="_blank" rel="noopener noreferrer"
+							>GitHub <span aria-hidden="true">↗</span></a
+						>
+					</li>
+					<li>
+						<a href="https://discord.noctalia.dev" target="_blank" rel="noopener noreferrer"
+							>Discord <span aria-hidden="true">↗</span></a
+						>
+					</li>
+				</ul>
+			</div>
+		</nav>
+	{/if}
 </header>
 
 <style>
@@ -144,26 +195,18 @@
 		display: flex;
 		align-items: center;
 		flex-shrink: 0;
-		gap: 0.7rem;
+		gap: 0.65rem;
 		border-radius: 3px;
 	}
 	.header-brand img {
-		width: 2.5rem;
-		height: 2.5rem;
+		width: 2rem;
+		height: 2rem;
 	}
 	.header-brand strong {
-		display: block;
-		font-size: 1.05rem;
+		font-size: 1.0625rem;
 		font-weight: 600;
-		letter-spacing: -0.035em;
-	}
-	.brand-tagline {
-		display: block;
-		margin-top: 0.15rem;
-		font-size: 0.6rem;
-		letter-spacing: 0.1em;
-		text-transform: uppercase;
-		color: var(--color-fg-dim);
+		line-height: 1;
+		letter-spacing: -0.03em;
 	}
 	.primary-nav {
 		display: flex;
@@ -176,7 +219,7 @@
 		height: 2.5rem;
 		padding-inline: 0.8rem;
 		border-radius: 4px;
-		font-size: 0.95rem;
+		font-size: 0.9375rem;
 		font-weight: 500;
 		white-space: nowrap;
 		color: var(--color-fg-dim);
@@ -184,10 +227,7 @@
 			color 180ms,
 			background 180ms;
 	}
-	.primary-nav a:hover {
-		color: var(--color-accent);
-		background: var(--color-surface-2);
-	}
+	.primary-nav a:hover,
 	.primary-nav a.active {
 		color: var(--color-accent);
 		background: var(--color-surface-2);
@@ -196,17 +236,17 @@
 		display: flex;
 		align-items: center;
 		flex-shrink: 0;
-		gap: 0.25rem;
+		gap: 0.375rem;
 	}
 	.header-icon {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
 		flex-shrink: 0;
-		width: 2.25rem;
-		height: 2.25rem;
+		width: 2.5rem;
+		height: 2.5rem;
 		border-radius: 4px;
-		font-size: 1rem;
+		font-size: 1.125rem;
 		color: var(--color-fg-dim);
 		transition:
 			background 180ms,
@@ -219,53 +259,157 @@
 	.header-docs {
 		display: inline-flex;
 		align-items: center;
-		justify-content: center;
-		gap: 0.6rem;
-		margin-left: 0.5rem;
-		padding: 0.65rem 0.9rem;
+		gap: 0.5rem;
+		height: 2.5rem;
+		margin-left: 0.25rem;
+		padding-inline: 1rem;
+		border: 1px solid var(--color-border);
 		border-radius: 4px;
-		color: var(--color-on-accent);
-		background: var(--color-accent);
-		font-size: 0.8rem;
+		font-size: 0.875rem;
 		font-weight: 600;
 		white-space: nowrap;
+		color: var(--color-fg);
+		transition:
+			border-color 180ms,
+			color 180ms;
+	}
+	.header-docs span {
+		color: var(--color-accent);
 	}
 	.header-docs:hover {
-		filter: brightness(1.06);
+		border-color: var(--color-accent);
+		color: var(--color-accent);
 	}
-	:global(.menu-trigger) {
+	.menu-button {
 		display: none;
+		align-items: center;
+		gap: 0.5rem;
+		height: 2.5rem;
+		padding-inline: 0.75rem;
+		border: 1px solid var(--color-border);
+		border-radius: 4px;
+		background: var(--color-surface-2);
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--color-fg);
+		transition: border-color 180ms;
+	}
+	.menu-button i {
+		font-size: 1.125rem;
+	}
+	.menu-button:hover,
+	.menu-button[aria-expanded='true'] {
+		border-color: var(--color-accent);
+	}
+	.menu-panel {
+		border-top: 1px solid var(--color-border);
+		max-height: calc(100dvh - 4rem);
+		overflow-y: auto;
+	}
+	.menu-inner {
+		max-width: 90rem;
+		margin-inline: auto;
+		padding: 1.25rem 1.25rem 1.5rem;
+	}
+	.menu-heading {
+		margin-bottom: 0.5rem;
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-fg-dim);
+	}
+	.menu-projects {
+		display: grid;
+		gap: 0.25rem;
+		margin-bottom: 1.25rem;
+	}
+	.menu-project {
+		display: flex;
+		align-items: center;
+		gap: 0.875rem;
+		padding: 0.625rem 0.75rem;
+		border-radius: 6px;
+		transition: background 180ms;
+	}
+	.menu-project:hover,
+	.menu-project.active {
+		background: var(--color-surface-2);
+	}
+	.menu-project img {
+		width: 2rem;
+		height: 2rem;
+	}
+	.menu-project strong {
+		display: block;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.3;
+	}
+	.menu-project.active strong {
+		color: var(--color-accent);
+	}
+	.menu-project small {
+		display: block;
+		font-size: 0.8125rem;
+		line-height: 1.4;
+		color: var(--color-fg-dim);
+	}
+	.menu-links {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0.25rem;
+	}
+	.menu-links a {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 2.75rem;
+		padding-inline: 0.75rem;
+		border-radius: 6px;
+		font-size: 0.9375rem;
+		line-height: 1.4;
+		color: var(--color-fg);
+	}
+	.menu-links a span {
+		color: var(--color-accent);
+	}
+	.menu-links a:hover {
+		background: var(--color-surface-2);
+	}
+	.menu-links a.active {
+		color: var(--color-accent);
 	}
 	@media (max-width: 899px) {
-		.primary-nav {
+		.primary-nav,
+		.desktop-only {
 			display: none;
 		}
-		:global(.menu-trigger) {
+		.menu-button {
 			display: inline-flex;
+		}
+	}
+	@media (min-width: 640px) and (max-width: 899px) {
+		.menu-projects {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+		.menu-links {
+			grid-template-columns: repeat(4, minmax(0, 1fr));
 		}
 	}
 	@media (max-width: 639px) {
 		.header-row {
 			height: 4rem;
 			padding-inline: 1rem;
-			gap: 0.5rem;
 		}
-		.header-brand {
-			gap: 0.5rem;
+		.menu-inner {
+			padding-inline: 1rem;
 		}
-		.header-brand img {
-			width: 2rem;
-			height: 2rem;
-		}
-		.header-brand strong {
-			font-size: 0.9rem;
-		}
-		.brand-tagline,
-		.header-docs {
+	}
+	@media (max-width: 379px) {
+		.menu-label {
 			display: none;
-		}
-		.header-actions {
-			gap: 0;
 		}
 	}
 </style>

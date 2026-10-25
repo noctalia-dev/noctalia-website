@@ -68,13 +68,13 @@
 					<img
 						src={logoUrl}
 						alt=""
-						class="h-10 w-10 shrink-0 drop-shadow-[0_4px_16px_rgb(255_245_155/0.2)]"
-						width="40"
-						height="40"
+						class="h-8 w-8 shrink-0 drop-shadow-[0_4px_16px_rgb(255_245_155/0.2)]"
+						width="32"
+						height="32"
 					/>
 					<div class="min-w-0">
-						<p class="font-sans text-base font-semibold tracking-tight text-fg">Noctalia</p>
-						<p class="text-[10px] font-medium uppercase tracking-[0.12em] text-fg-dim">
+						<p class="font-sans text-base font-semibold leading-tight tracking-tight text-fg">Noctalia</p>
+						<p class="mt-0.5 text-[11px] font-medium uppercase leading-snug tracking-[0.12em] text-fg-dim">
 							quiet by design
 						</p>
 					</div>

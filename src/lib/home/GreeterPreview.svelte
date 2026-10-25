@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import LayoutShowcase from '$lib/umbriel/LayoutShowcase.svelte';
 
 	let frame = $state<HTMLDivElement>();
 	let phase = $state(0);
@@ -10,11 +9,16 @@
 	let pageVisible = $state(true);
 	let clockTime = $state('--:--');
 	let clockDate = $state('');
+	let sessionIndex = $state(0);
+	// greetd lists every installed session; the demo cycles a few common ones.
+	const sessions = ['Umbriel', 'niri', 'Hyprland', 'Sway'];
 	const captions = [
-		'Choose your session.',
-		'From login to desktop.',
-		'Your windows, in a scrolling workspace.'
+		'A familiar face, before you sign in.',
+		'Type your password.',
+		'Pick any Wayland session.',
+		'Switch between light and dark from the corner.'
 	];
+	const durations = [2600, 2200, 2200, 3000];
 
 	onMount(() => {
 		const timeFormatter = new Intl.DateTimeFormat(undefined, {
@@ -63,10 +67,11 @@
 	$effect(() => {
 		const currentPhase = phase;
 		if (paused || reducedMotion || !visible || !pageVisible) return;
-		const timer = window.setTimeout(
-			() => (phase = (currentPhase + 1) % 3),
-			[2800, 1100, 4600][currentPhase]
-		);
+		const timer = window.setTimeout(() => {
+			const next = (currentPhase + 1) % durations.length;
+			if (next === 2) sessionIndex = (sessionIndex + 1) % sessions.length;
+			phase = next;
+		}, durations[currentPhase]);
 		return () => window.clearTimeout(timer);
 	});
 </script>
@@ -79,15 +84,15 @@
 	class:reduced-motion={reducedMotion}
 >
 	<div class="preview-label">
-		<span></span> From sign-in to your space <span class="preview-code">GREETER / 03</span>
+		<span></span> The login screen
 	</div>
 	<a
 		href="/greeter"
 		class="welcome"
-		aria-label="Illustration based on Noctalia Greeter’s actual interface: a clock above the centered user and password panel, a session selector below, a color scheme control at the top right, and power controls at the bottom right. The sequence then shows the same scrolling Umbriel layout, with windows arranged in a horizontal ribbon."
+		aria-label="Illustration based on Noctalia Greeter’s actual interface: a clock above the centered user and password panel, a session selector below, a color scheme control at the top right, and power controls at the bottom right."
 	>
 		<div class="scene" aria-hidden="true">
-			<!-- Login layout mirrors GreeterSurface::layoutScene; the desktop reuses Umbriel’s demo. -->
+			<!-- Login layout mirrors GreeterSurface::layoutScene. -->
 			<div class="login-scene">
 				<div class="scheme-selector">
 					<i class="ti ti-palette"></i><i class="ti ti-chevron-down"></i>
@@ -97,12 +102,22 @@
 					<span class="back-arrow"><i class="ti ti-arrow-left"></i></span>
 					<div class="user-identity"><i class="ti ti-user"></i><span>noctalia</span></div>
 					<div class="password-row">
-						<div class="password-field"><span class="input-caret"></span>Type password</div>
+						<div class="password-field">
+							{#if phase === 0 || reducedMotion}
+								<span class="input-caret"></span>Type password
+							{:else}
+								<span class="password-dots"
+									>{#each Array(9) as _, i}<span style:animation-delay="{i * 110}ms"></span
+										>{/each}</span
+								>
+							{/if}
+						</div>
 						<span class="login-arrow"><i class="ti ti-arrow-right"></i></span>
 					</div>
 					<div class="session-selector">
-						<i class="ti ti-device-desktop"></i><span>Umbriel</span><i class="ti ti-chevron-down"
-						></i>
+						<i class="ti ti-device-desktop"></i>{#key sessionIndex}<span class="session-name"
+								>{sessions[sessionIndex]}</span
+							>{/key}<i class="ti ti-chevron-down"></i>
 					</div>
 				</div>
 				<img
@@ -117,18 +132,11 @@
 					<span><i class="ti ti-reload"></i></span><span><i class="ti ti-power"></i></span>
 				</div>
 			</div>
-			<div class="desktop-scene">
-				<LayoutShowcase
-					compact
-					presentation
-					playing={!paused && visible && pageVisible && phase === 2}
-				/>
-			</div>
 		</div>
 	</a>
 	<div class="preview-caption">
 		<a href="/greeter"
-			>Greeter → Umbriel <span class="illustration-label">· illustration</span>
+			>Noctalia Greeter <span class="illustration-label">· illustration</span>
 			<span aria-hidden="true">↗</span></a
 		>
 		{#if reducedMotion}
@@ -145,7 +153,7 @@
 		{/if}
 	</div>
 	<p class="sequence-label" aria-hidden="true">
-		{reducedMotion ? 'Sign in with Greeter. Arrive in Umbriel.' : captions[phase]}
+		{reducedMotion ? captions[0] : captions[phase]}
 	</p>
 </div>
 
@@ -166,7 +174,8 @@
 		gap: 0.5rem;
 		padding: 0.9rem 1rem;
 		border-bottom: 1px solid var(--color-border);
-		font-size: 0.8rem;
+		font-size: 0.8125rem;
+		line-height: 1.4;
 		color: var(--color-fg-dim);
 	}
 	.preview-label > span:first-child {
@@ -174,9 +183,6 @@
 		height: 5px;
 		border-radius: 50%;
 		background: var(--color-accent-2);
-	}
-	.preview-code {
-		margin-left: auto;
 	}
 	.welcome {
 		display: block;
@@ -198,11 +204,12 @@
 		--greeter-fg: #f3edf7;
 		--greeter-muted: #7c80b4;
 		--greeter-primary: #fff59b;
+		--greeter-on-primary: #0e0e43;
 		position: absolute;
 		inset: 0;
 		background: var(--greeter-surface);
 		color: var(--greeter-fg);
-		transition: opacity 450ms ease;
+		transition: background-color 600ms ease;
 	}
 	.scheme-selector {
 		position: absolute;
@@ -319,7 +326,7 @@
 		height: 3.75cqw;
 		border-radius: 0.625cqw;
 		background: var(--greeter-primary);
-		color: #0e0e43;
+		color: var(--greeter-on-primary);
 		font-size: 1.667cqw;
 	}
 	.session-selector {
@@ -365,21 +372,59 @@
 		background: color-mix(in srgb, var(--greeter-surface) 78%, transparent);
 		font-size: 1.875cqw;
 	}
-	[data-greeter-phase='1'] .login-scene {
-		opacity: 0.65;
+	.login-scene * {
+		transition:
+			background-color 600ms ease,
+			border-color 600ms ease,
+			color 600ms ease,
+			box-shadow 300ms ease;
 	}
-	[data-greeter-phase='2'] .login-scene {
+	.password-dots {
+		display: flex;
+		gap: 0.7cqw;
+	}
+	.password-dots > span {
+		width: 0.9cqw;
+		height: 0.9cqw;
+		border-radius: 50%;
+		background: var(--greeter-fg);
 		opacity: 0;
+		animation: dot-in 160ms ease forwards;
 	}
-	.desktop-scene {
-		position: absolute;
-		inset: 0;
-		opacity: 0;
-		pointer-events: none;
-		transition: opacity 450ms ease;
+	@keyframes dot-in {
+		from {
+			opacity: 0;
+			transform: scale(0.4);
+		}
+		to {
+			opacity: 1;
+			transform: scale(1);
+		}
 	}
-	[data-greeter-phase='2'] .desktop-scene {
-		opacity: 1;
+	.session-name {
+		display: inline-block;
+		animation: session-in 320ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	@keyframes session-in {
+		from {
+			opacity: 0;
+			transform: translateY(40%);
+		}
+	}
+	[data-greeter-phase='2'] .session-selector,
+	[data-greeter-phase='3'] .scheme-selector {
+		border-color: var(--greeter-primary);
+		box-shadow: 0 0 0 0.3cqw color-mix(in srgb, var(--greeter-primary) 20%, transparent);
+	}
+	/* Phase 3 swaps to Noctalia's light scheme, the way the corner selector does live. */
+	[data-greeter-phase='3'] .login-scene {
+		--greeter-surface: #e6e8fa;
+		--greeter-surface-variant: #eff0ff;
+		--greeter-outline: #a8affc;
+		--greeter-fg: #2d3180;
+		--greeter-muted: #4b55c8;
+		--greeter-primary: #5d65f5;
+		--greeter-on-primary: #ffffff;
 	}
 
 	.preview-caption {

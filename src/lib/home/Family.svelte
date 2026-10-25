@@ -8,7 +8,7 @@
 
 	let { stars = {} }: { stars?: Partial<Record<string, number | null>> } = $props();
 	const homeImages = slideshowImages.filter((image) =>
-		/launcher-real|lemmy|lysec|ltar|zakei|hooxoo/.test(image.src)
+		/lemmy|lysec|ltar|zakei|hooxoo/.test(image.src)
 	);
 	const starFormat = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 
@@ -22,14 +22,16 @@
 <div id="family" class="project-directory">
 	{#each PRODUCTS as product, i (product.id)}
 		<Reveal delay={i * 50}>
-			<article class="project-entry" class:project-entry--reversed={i % 2 === 1}>
+			<article
+				id={product.id}
+				class="project-entry"
+				class:project-entry--reversed={i % 2 === 1}
+			>
 				<div class="project-copy">
 					<a href={product.pageUrl ?? product.docsUrl} class="project-overview">
-						<p class="project-category"><span>0{i + 1}</span> / {product.role}</p>
+						<p class="project-category eyebrow"><span>0{i + 1}</span> / {product.role}</p>
 						<div class="project-name">
-							{#if product.id !== 'noctalia'}
-								<img src={product.logoUrl} alt="" width="44" height="44" loading="lazy" />
-							{/if}
+							<img src={product.logoUrl} alt="" width="40" height="40" loading="lazy" />
 							<h2>{product.id === 'noctalia' ? 'Shell' : product.name}</h2>
 						</div>
 						<p class="project-note">{notes[product.id]}</p>
@@ -42,7 +44,7 @@
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="{stars[product.id]?.toLocaleString('en')} {product.name} stars on GitHub"
-							><span aria-hidden="true">☆</span>
+							><i class="ti ti-star" aria-hidden="true"></i>
 							{starFormat.format(stars[product.id]!)} <span>on GitHub</span></a
 						>
 					{/if}
@@ -72,7 +74,6 @@
 					<div class="project-visual screenshot-visual">
 						<div class="visual-label">
 							<span class="status-dot"></span> The everyday desktop
-							<span class="ml-auto">SHELL / 01</span>
 						</div>
 						<Slideshow images={homeImages} interval={5500} href="/shell" />
 						<a class="visual-caption" href="/shell"
@@ -81,14 +82,7 @@
 					</div>
 				{:else if product.id === 'umbriel'}
 					<div class="project-visual layout-visual">
-						<div class="visual-label">
-							<span class="status-dot"></span> Room for your windows
-							<span class="ml-auto">UMBRIEL / 02</span>
-						</div>
-						<div class="home-layout-preview"><LayoutShowcase compact href="/umbriel" /></div>
-						<a class="visual-caption" href="/umbriel#layouts"
-							>Four layouts. Take a closer look. <span aria-hidden="true">↗</span></a
-						>
+						<LayoutShowcase compact href="/umbriel" />
 					</div>
 				{:else}
 					<GreeterPreview />
@@ -103,6 +97,7 @@
 		scroll-margin-top: 5rem;
 	}
 	.project-entry {
+		scroll-margin-top: 4.5rem;
 		display: grid;
 		grid-template-columns: 2fr 3fr;
 		align-items: center;
@@ -110,21 +105,15 @@
 		padding-block: 3.5rem;
 		border-bottom: 1px solid var(--color-border);
 	}
-	.project-category {
-		font: 500 1rem var(--font-sans);
-		letter-spacing: 0.07em;
-		text-transform: uppercase;
-		color: var(--color-fg-dim);
-	}
 	.project-category > span {
 		color: var(--color-accent);
-		margin-right: 0.5rem;
+		margin-right: 0.35rem;
 	}
 	.project-name {
 		display: flex;
 		align-items: center;
 		gap: 1rem;
-		margin-top: 1.6rem;
+		margin-top: 1.25rem;
 	}
 	.project-name h2 {
 		font-size: 2.5rem;
@@ -134,6 +123,9 @@
 	}
 	.project-name img {
 		flex-shrink: 0;
+		width: 2.5rem;
+		height: 2.5rem;
+		object-fit: contain;
 	}
 	.project-overview {
 		display: block;
@@ -148,14 +140,14 @@
 	}
 	.project-note {
 		font-size: 1.125rem;
-		line-height: 1.6;
+		line-height: 1.5;
 		color: var(--color-fg);
-		margin-top: 1.3rem;
+		margin-top: 1.25rem;
 	}
 	.project-description {
 		max-width: 25rem;
 		font-size: 1rem;
-		line-height: 1.8;
+		line-height: 1.65;
 		color: var(--color-fg-dim);
 		margin-top: 0.6rem;
 	}
@@ -165,18 +157,16 @@
 		gap: 0.5rem;
 		margin-top: 0.9rem;
 		border-radius: 2px;
-		font: 0.875rem var(--font-sans);
+		font-size: 0.875rem;
+		line-height: 1.4;
 		color: var(--color-accent);
 	}
 	.project-stars > span:last-child {
-		font: 0.8rem var(--font-sans);
+		font-size: 0.8125rem;
 		color: var(--color-fg-dim);
 	}
 	.project-stars:hover {
 		color: var(--color-accent-2);
-	}
-	.home-layout-preview {
-		padding: 0.9rem 1rem 0;
 	}
 	.project-links {
 		display: flex;
@@ -224,7 +214,8 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.9rem 1rem;
-		font: 0.8rem var(--font-sans);
+		font-size: 0.8125rem;
+		line-height: 1.4;
 		color: var(--color-fg-dim);
 		border-bottom: 1px solid var(--color-border);
 	}
@@ -243,7 +234,8 @@
 		justify-content: space-between;
 		gap: 1rem;
 		padding: 0.85rem 1rem;
-		font-size: 0.8rem;
+		font-size: 0.8125rem;
+		line-height: 1.4;
 		color: var(--color-fg-dim);
 	}
 	.visual-caption > span {

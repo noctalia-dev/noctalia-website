@@ -160,6 +160,16 @@ html[data-theme='light'] {
 		transform: translateY(0);
 	}
 
+	/* Shared small-caps label: hero eyebrow, section markers, menu headings. */
+	.eyebrow {
+		font-size: 0.75rem;
+		font-weight: 500;
+		line-height: 1.4;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--color-fg-dim);
+	}
+
 	.fancy-section-title {
 		text-wrap: balance;
 	}
