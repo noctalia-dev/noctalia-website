@@ -1,25 +1,31 @@
 <script lang="ts">
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 </script>
 
 <SiteHeader />
 
-<main class="site-main">
-	<div class="site-shell--narrow">
-		<header class="mb-10 text-center md:mb-12">
-			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">
-				Privacy Policy
-			</h1>
-			<p class="mt-3 text-fg-dim">Last updated: June 27, 2026</p>
-		</header>
+<main class="pb-24">
+	<ProjectIntro
+		title="Privacy Policy"
+		eyebrow="Privacy & data"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="What Noctalia collects or accesses, why, and how we handle it."
+		detail="Our approach to telemetry, optional integrations, and the data on your device."
+	>
+		{#snippet footnote()}
+			<p>Last updated: June 27, 2026</p>
+		{/snippet}
+	</ProjectIntro>
 
-		<div class="card-surface space-y-10 p-6 md:p-10">
+	<div class="site-shell pt-12 md:pt-16">
+		<div class="mx-auto max-w-4xl card-surface space-y-10 p-6 md:p-10">
 			<p class="text-lg leading-relaxed text-fg-dim">
 				We believe that open source software should be transparent about what it does. This policy
-				describes exactly what data Noctalia collects or accesses, why we collect or access
-				it, and how we handle it.
+				describes exactly what data Noctalia collects or accesses, why we collect or access it, and
+				how we handle it.
 			</p>
 
 			<section class="space-y-3">
@@ -36,9 +42,9 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">API access logs are disabled:</strong> We do not keep server access
-						logs for <span class="text-fg">api.noctalia.dev</span>. Opt-in telemetry is stored
-						separately as telemetry records, not as access logs.
+						<strong class="text-fg">API access logs are disabled:</strong> We do not keep server
+						access logs for <span class="text-fg">api.noctalia.dev</span>. Opt-in telemetry is
+						stored separately as telemetry records, not as access logs.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -49,20 +55,20 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Automatic location is optional:</strong> IP-based location lookup is
-						used only when you enable auto-location.
+						<strong class="text-fg">Automatic location is optional:</strong> IP-based location lookup
+						is used only when you enable auto-location.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Calendar data stays local:</strong> Noctalia reads calendar
-						data locally on your device. Calendar content is not sent to or stored on Noctalia servers.
+						<strong class="text-fg">Calendar data stays local:</strong> Noctalia reads calendar data
+						locally on your device. Calendar content is not sent to or stored on Noctalia servers.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Short telemetry retention:</strong> Telemetry data is kept for a maximum
-						of 30 days, then permanently deleted.
+						<strong class="text-fg">Short telemetry retention:</strong> Telemetry data is kept for a
+						maximum of 30 days, then permanently deleted.
 					</li>
 				</ul>
 			</section>
@@ -87,8 +93,8 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">System info:</strong> Compositor (e.g., Niri, Hyprland, Umbriel), OS name and
-						version, total RAM.
+						<strong class="text-fg">System info:</strong> Compositor (e.g., Niri, Hyprland, Umbriel),
+						OS name and version, total RAM.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -204,8 +210,8 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						Noctalia reads your Google Calendar data locally on your device to display
-						calendar information in the shell.
+						Noctalia reads your Google Calendar data locally on your device to display calendar
+						information in the shell.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
@@ -242,7 +248,9 @@
 				</h2>
 				<p class="text-fg-dim">
 					Noctalia can optionally use approximate location to support weather, night light, and
-					automatic theme schedules. This is controlled by the <span class="text-fg">auto_locate</span>
+					automatic theme schedules. This is controlled by the <span class="text-fg"
+						>auto_locate</span
+					>
 					setting and is disabled unless you enable it.
 				</p>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -287,8 +295,8 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						You can disconnect Google Calendar in Noctalia or revoke Noctalia's access from
-						your Google Account at any time.
+						You can disconnect Google Calendar in Noctalia or revoke Noctalia's access from your
+						Google Account at any time.
 					</li>
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"

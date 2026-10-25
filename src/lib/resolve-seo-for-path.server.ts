@@ -9,6 +9,9 @@ import {
 	SEO_EMBED_PREVIEW,
 	SEO_ETHOS,
 	SEO_HOME,
+	SEO_SHELL,
+	SEO_UMBRIEL,
+	SEO_GREETER,
 	SEO_PLUGINS_INDEX,
 	SEO_PRIVACY,
 	SEO_PALETTES,
@@ -38,6 +41,15 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 	if (normalizedPath === '/embed-preview') {
 		return { seo: SEO_EMBED_PREVIEW, normalizedPath, notFound: false, unknown: false };
 	}
+	if (normalizedPath === '/shell' || normalizedPath === '/shell/') {
+		return { seo: SEO_SHELL, normalizedPath: '/shell', notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/umbriel' || normalizedPath === '/umbriel/') {
+		return { seo: SEO_UMBRIEL, normalizedPath: '/umbriel', notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/greeter' || normalizedPath === '/greeter/') {
+		return { seo: SEO_GREETER, normalizedPath: '/greeter', notFound: false, unknown: false };
+	}
 	if (a === 'blog' && !b) {
 		return { seo: SEO_BLOG_INDEX, normalizedPath, notFound: false, unknown: false };
 	}
@@ -60,7 +72,12 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 		return { seo: seoBlogPost(post), normalizedPath, notFound: false, unknown: false };
 	}
 	if (normalizedPath === '/changelogs' || normalizedPath === '/changelogs/') {
-		return { seo: SEO_CHANGELOG_INDEX, normalizedPath: '/changelogs', notFound: false, unknown: false };
+		return {
+			seo: SEO_CHANGELOG_INDEX,
+			normalizedPath: '/changelogs',
+			notFound: false,
+			unknown: false
+		};
 	}
 	if (normalizedPath === '/plugins' || normalizedPath === '/plugins/') {
 		return { seo: SEO_PLUGINS_INDEX, normalizedPath: '/plugins', notFound: false, unknown: false };
@@ -95,7 +112,12 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 		return { seo: SEO_ETHOS, normalizedPath: '/ethos', notFound: false, unknown: false };
 	}
 	if (normalizedPath === '/contributors' || normalizedPath === '/contributors/') {
-		return { seo: SEO_CONTRIBUTORS, normalizedPath: '/contributors', notFound: false, unknown: false };
+		return {
+			seo: SEO_CONTRIBUTORS,
+			normalizedPath: '/contributors',
+			notFound: false,
+			unknown: false
+		};
 	}
 
 	// e.g. /docs deep links, future routes

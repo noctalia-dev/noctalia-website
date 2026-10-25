@@ -17,6 +17,9 @@ const modules = import.meta.glob('./assets/slideshow/*.{png,jpg,jpeg,webp,avif}'
 
 function altFromPath(path: string): string {
 	const file = path.split('/').pop() ?? '';
+	if (file === '00-launcher-real.webp') {
+		return 'Noctalia app launcher, captured from the running desktop shell';
+	}
 	const words = file
 		.replace(/\.[^.]+$/, '')
 		.replace(/[-_]+/g, ' ')

@@ -8,6 +8,9 @@ export const prerender = true;
 
 const STATIC_PAGES = [
 	{ path: '/',             priority: '1.0', changefreq: 'weekly' },
+	{ path: '/shell',        priority: '0.9', changefreq: 'weekly' },
+	{ path: '/umbriel',      priority: '0.9', changefreq: 'weekly' },
+	{ path: '/greeter',      priority: '0.8', changefreq: 'weekly' },
 	{ path: '/plugins',      priority: '0.9', changefreq: 'daily'  },
 	{ path: '/palettes',     priority: '0.8', changefreq: 'weekly' },
 	{ path: '/blog',         priority: '0.8', changefreq: 'weekly' },

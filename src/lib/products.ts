@@ -18,6 +18,8 @@ export interface Product {
 	logoUrl: string;
 	repoUrl: string;
 	docsUrl: string;
+	/** Focused product page, when the project has one on this site. */
+	pageUrl?: string;
 	/** The flagship gets accent emphasis in the family grid. */
 	flagship?: boolean;
 }
@@ -33,6 +35,7 @@ export const PRODUCTS: readonly Product[] = [
 		logoUrl: 'https://assets.noctalia.dev/noctalia-logo.svg',
 		repoUrl: 'https://github.com/noctalia-dev/noctalia',
 		docsUrl: `${DOCS_BASE_URL}/noctalia/`,
+		pageUrl: '/shell',
 		flagship: true
 	},
 	{
@@ -44,7 +47,8 @@ export const PRODUCTS: readonly Product[] = [
 		status: { label: 'Young · moving fast', tone: 'young' },
 		logoUrl: 'https://assets.noctalia.dev/umbriel.svg',
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
-		docsUrl: `${DOCS_BASE_URL}/umbriel/`
+		docsUrl: `${DOCS_BASE_URL}/umbriel/`,
+		pageUrl: '/umbriel'
 	},
 	{
 		id: 'greeter',
@@ -55,6 +59,7 @@ export const PRODUCTS: readonly Product[] = [
 		status: { label: 'Stable', tone: 'stable' },
 		logoUrl: 'https://assets.noctalia.dev/greeter.svg',
 		repoUrl: 'https://github.com/noctalia-dev/noctalia-greeter',
-		docsUrl: `${DOCS_BASE_URL}/greeter/`
+		docsUrl: `${DOCS_BASE_URL}/greeter/`,
+		pageUrl: '/greeter'
 	}
 ];

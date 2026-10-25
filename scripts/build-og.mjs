@@ -387,6 +387,21 @@ async function main() {
 		'Home',
 		'Noctalia - a family of native Wayland projects: a desktop shell, a compositor, and a login screen.'
 	);
+	await w(
+		'og/shell.webp',
+		'Shell',
+		'A native Wayland desktop shell. Bar, launcher, control center, lock screen, and wallpaper-driven theming, configured together.'
+	);
+	await w(
+		'og/umbriel.webp',
+		'Umbriel',
+		'A Wayland compositor with Scrolling, Dwindle, Master, and Floating layouts. Explore four ways to arrange your windows.'
+	);
+	await w(
+		'og/greeter.webp',
+		'Greeter',
+		'A greetd login screen that shares your Noctalia wallpaper, colors, and font. A familiar desktop from the moment you sign in.'
+	);
 	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
 	await w('og/changelog.webp', 'Changelog', 'Release notes for Noctalia v5 and later.');
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');

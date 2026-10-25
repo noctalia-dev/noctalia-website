@@ -14,25 +14,26 @@
 
 	let active = $state(0);
 	let hovered = $state(false);
+	let paused = $state(false);
 	/** Slides that are fading out; they keep their animation running until the fade ends. */
 	let leaving = $state<number[]>([]);
 	let tabHidden = $state(false);
 	let reducedMotion = $state(false);
 	let el = $state<HTMLElement | null>(null);
 
-	/** Shuffled viewing order (indices into `images`); null until hydration so
-	   SSR and the client render the same initial DOM (no hydration mismatch). */
+	/** Keep the first image as the poster, then shuffle the remaining images.
+	   Null until hydration so SSR and the client share the same initial DOM. */
 	let order = $state<number[] | null>(null);
 	const displayImages = $derived(order ? order.map((i) => images[i]) : images);
 
 	onMount(() => {
-		const indices = images.map((_, i) => i);
+		const indices = images.map((_, i) => i).slice(1);
 		// Fisher-Yates shuffle.
 		for (let i = indices.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
 			[indices[i], indices[j]] = [indices[j], indices[i]];
 		}
-		order = indices;
+		order = images.length ? [0, ...indices] : [];
 	});
 
 	function goTo(index: number) {
@@ -113,7 +114,7 @@
 			scheduledFor = slide;
 			remaining = interval;
 		}
-		if (images.length < 2 || tabHidden || reducedMotion || hovered) return;
+		if (images.length < 2 || tabHidden || reducedMotion || hovered || paused) return;
 		startTimer(remaining);
 		return () => {
 			// Freezing (hover, hidden tab, …): keep whatever time was left so a
@@ -209,6 +210,18 @@
 					></button>
 				{/each}
 			</div>
+			{#if !reducedMotion}
+				<button
+					type="button"
+					class="slideshow__arrow slideshow__playback right-3"
+					onclick={() => (paused = !paused)}
+					aria-label={paused ? 'Play slideshow' : 'Pause slideshow'}
+					aria-pressed={paused}
+				>
+					<i class="ti {paused ? 'ti-player-play' : 'ti-player-pause'} text-base" aria-hidden="true"
+					></i>
+				</button>
+			{/if}
 		{/if}
 	</div>
 {/if}
@@ -350,6 +363,13 @@
 			opacity 0.25s ease,
 			background 0.25s ease,
 			transform 0.25s ease;
+	}
+
+	.slideshow__playback {
+		top: auto;
+		bottom: 0.5rem;
+		transform: none;
+		opacity: 1;
 	}
 
 	.slideshow__arrow:hover {

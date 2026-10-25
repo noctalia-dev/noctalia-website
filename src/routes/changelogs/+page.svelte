@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import { PRODUCTS } from '$lib/products';
@@ -47,22 +48,24 @@
 <SiteHeader />
 
 <main class="changelog-page">
-	<section class="site-shell changelog-hero">
-		<div class="changelog-hero__copy">
-			<p class="section-eyebrow">
-				<span class="section-eyebrow__signal" aria-hidden="true"></span>
-				Release notes
-			</p>
-			<h1>Releases from <span>our projects.</span></h1>
-			<p class="changelog-intro">
-				Follow releases across our family of native Wayland projects.
-			</p>
+	<ProjectIntro
+		title="Releases"
+		eyebrow="Release notes"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="Follow releases across our family of native Wayland projects."
+		detail="Read the latest release notes or browse the archive for each project."
+		anchorHref="#release-archive"
+		anchorLabel="Browse the archive"
+	>
+		{#snippet actions()}
 			<a class="rss-button" href="/rss.xml" target="_blank" rel="noopener noreferrer">
 				<i class="ti ti-rss" aria-hidden="true"></i>
 				Subscribe to releases
 			</a>
-		</div>
+		{/snippet}
+	</ProjectIntro>
 
+	<section class="site-shell pt-12 pb-16 md:pt-16 md:pb-20" aria-label="Latest project releases">
 		<div class="project-release-grid" aria-label="Latest project releases">
 			{#if latest}
 				<a
@@ -111,7 +114,11 @@
 		</div>
 	</section>
 
-	<section id="release-archive" class="site-shell release-section" aria-labelledby="release-archive-title">
+	<section
+		id="release-archive"
+		class="site-shell release-section"
+		aria-labelledby="release-archive-title"
+	>
 		<header class="release-section__header">
 			<div>
 				<p class="section-eyebrow">Project archive</p>
@@ -169,19 +176,19 @@
 									href={releaseHref(release.tagName)}
 									aria-label="Read {release.tagName} release notes"
 								>
-					<span class="release-list__number" aria-hidden="true">
-						{String(index + 1).padStart(2, '0')}
-					</span>
-					<div>
-						<div class="release-list__meta">
-							<time datetime={release.publishedAt}>{formatDate(release.publishedAt)}</time>
-							{#if index === 0}
-								<span class="release-badge release-badge--latest">Latest</span>
-							{/if}
-							{#if release.prerelease}<span class="release-badge">Pre-release</span>{/if}
-						</div>
-						<h3>{release.tagName}</h3>
-					</div>
+									<span class="release-list__number" aria-hidden="true">
+										{String(index + 1).padStart(2, '0')}
+									</span>
+									<div>
+										<div class="release-list__meta">
+											<time datetime={release.publishedAt}>{formatDate(release.publishedAt)}</time>
+											{#if index === 0}
+												<span class="release-badge release-badge--latest">Latest</span>
+											{/if}
+											{#if release.prerelease}<span class="release-badge">Pre-release</span>{/if}
+										</div>
+										<h3>{release.tagName}</h3>
+									</div>
 								</a>
 							</li>
 						{/each}
@@ -221,16 +228,6 @@
 		padding-bottom: 7rem;
 	}
 
-	.changelog-hero {
-		max-width: 72rem;
-		padding-top: clamp(4rem, 8vw, 7rem);
-		padding-bottom: clamp(5rem, 9vw, 7rem);
-	}
-
-	.changelog-hero__copy {
-		max-width: 46rem;
-	}
-
 	.section-eyebrow {
 		display: flex;
 		align-items: center;
@@ -244,44 +241,11 @@
 		color: var(--color-accent-2);
 	}
 
-	.section-eyebrow__signal {
-		width: 0.5rem;
-		height: 0.5rem;
-		border-radius: 999px;
-		background: var(--color-accent-2);
-		box-shadow:
-			0 0 0 0.3rem color-mix(in srgb, var(--color-accent-2) 12%, transparent),
-			0 0 1.2rem color-mix(in srgb, var(--color-accent-2) 60%, transparent);
-	}
-
-	.changelog-hero h1 {
-		margin: 0;
-		font-size: clamp(3.2rem, 6vw, 5.2rem);
-		font-weight: 620;
-		line-height: 0.93;
-		letter-spacing: -0.065em;
-		color: var(--color-fg);
-		text-wrap: balance;
-	}
-
-	.changelog-hero h1 span {
-		color: var(--color-accent);
-	}
-
-	.changelog-intro {
-		max-width: 42rem;
-		margin: 1.75rem 0 0;
-		font-size: clamp(1rem, 2vw, 1.18rem);
-		line-height: 1.75;
-		color: var(--color-fg-dim);
-	}
-
 	.rss-button {
 		display: inline-flex;
 		align-items: center;
 		gap: 0.55rem;
 		min-height: 2.75rem;
-		margin-top: 1.8rem;
 		padding: 0.6rem 0.9rem;
 		border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 		border-radius: var(--radius-md);
@@ -289,7 +253,10 @@
 		font-size: 0.8rem;
 		font-weight: 650;
 		color: var(--color-fg);
-		transition: border-color 180ms ease, color 180ms ease, transform 180ms ease;
+		transition:
+			border-color 180ms ease,
+			color 180ms ease,
+			transform 180ms ease;
 	}
 
 	.rss-button:hover {
@@ -301,7 +268,6 @@
 	.project-release-grid {
 		display: grid;
 		gap: 1rem;
-		margin-top: clamp(3rem, 6vw, 4.5rem);
 	}
 
 	.project-release-card {
@@ -321,7 +287,10 @@
 		text-align: left;
 		color: var(--color-fg);
 		cursor: pointer;
-		transition: transform 250ms ease, border-color 250ms ease, box-shadow 250ms ease;
+		transition:
+			transform 250ms ease,
+			border-color 250ms ease,
+			box-shadow 250ms ease;
 	}
 
 	.project-release-card::before {
@@ -405,7 +374,6 @@
 	}
 
 	.release-section {
-		max-width: 70rem;
 		scroll-margin-top: 5rem;
 	}
 
@@ -466,7 +434,10 @@
 		font-weight: 650;
 		color: var(--color-fg-dim);
 		cursor: pointer;
-		transition: border-color 180ms ease, background 180ms ease, color 180ms ease;
+		transition:
+			border-color 180ms ease,
+			background 180ms ease,
+			color 180ms ease;
 	}
 
 	.project-tab small {
@@ -523,7 +494,9 @@
 		border-radius: calc(var(--radius-md) - 1px);
 		background: color-mix(in srgb, var(--color-void-deep) 24%, transparent);
 		scroll-margin-top: 5.5rem;
-		transition: border-color 180ms ease, background 180ms ease;
+		transition:
+			border-color 180ms ease,
+			background 180ms ease;
 	}
 
 	.release-list__link {
@@ -657,40 +630,15 @@
 		color: var(--color-fg-dim);
 	}
 
-	@media (min-width: 760px) and (max-width: 999px) {
+	@media (min-width: 760px) {
 		.project-release-grid {
 			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-	}
-
-	@media (min-width: 1000px) {
-		.changelog-hero {
-			display: grid;
-			grid-template-columns: minmax(0, 38rem) minmax(22rem, 28rem);
-			align-items: center;
-			justify-content: center;
-			gap: 2rem;
-		}
-
-		.project-release-grid {
-			width: 100%;
-			max-width: 28rem;
-			justify-self: end;
-			margin-top: 0;
 		}
 	}
 
 	@media (max-width: 640px) {
 		.changelog-page {
 			padding-bottom: 5rem;
-		}
-
-		.changelog-hero {
-			padding-top: 3.5rem;
-		}
-
-		.changelog-hero h1 {
-			font-size: clamp(3rem, 15vw, 4.3rem);
 		}
 
 		.project-release-card__footer {
@@ -714,7 +662,6 @@
 		.release-list__number {
 			display: none;
 		}
-
 	}
 
 	@media (prefers-reduced-motion: reduce) {

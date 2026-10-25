@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import type { Contributor } from '$lib/contributors.server';
@@ -15,29 +16,34 @@
 
 <SiteHeader />
 
-<main class="site-main">
-	<div class="site-shell">
-		<header class="mb-12 text-center">
-			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Contributors</h1>
-			<p class="mt-3 text-fg-dim md:text-lg">
-				The people who help build
-				<a
-					href={data.repoUrl}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="font-medium text-accent transition hover:brightness-110"
-				>
-					Noctalia
-				</a>.
-			</p>
+<main class="pb-24">
+	<ProjectIntro
+		title="Contributors"
+		eyebrow="Community"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="The people who help build Noctalia."
+		detail="Meet the contributors behind the project, with their contributions on GitHub."
+	>
+		{#snippet actions()}
+			<a
+				href={data.repoUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-accent transition-colors hover:text-accent-2"
+				>Noctalia on GitHub <span aria-hidden="true">↗</span></a
+			>
+		{/snippet}
+		{#snippet footnote()}
 			{#if data.contributors.length > 0}
-				<p class="mt-2 text-sm text-fg-dim">
+				<p>
 					{data.contributors.length}
 					{data.contributors.length === 1 ? 'contributor' : 'contributors'} on GitHub
 				</p>
 			{/if}
-		</header>
+		{/snippet}
+	</ProjectIntro>
 
+	<div class="site-shell pt-12 md:pt-16">
 		{#if data.contributors.length === 0}
 			<div class="card-surface px-6 py-10 text-center text-fg-dim">
 				<p>Contributors could not be loaded right now.</p>

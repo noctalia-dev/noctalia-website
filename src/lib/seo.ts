@@ -26,6 +26,30 @@ export const SEO_HOME: PageSeo = {
 	ogImagePath: '/og.webp'
 };
 
+export const SEO_SHELL: PageSeo = {
+	title: `Noctalia Shell  -  ${SITE_NAME}`,
+	description:
+		'A native Wayland desktop shell. Bar, launcher, control center, lock screen, and wallpaper-driven theming, configured together.',
+	pathLabel: 'Shell',
+	ogImagePath: '/og/shell.webp'
+};
+
+export const SEO_UMBRIEL: PageSeo = {
+	title: `Umbriel  -  ${SITE_NAME}`,
+	description:
+		'A Wayland compositor with Scrolling, Dwindle, Master, and Floating layouts. Explore four ways to arrange your windows.',
+	pathLabel: 'Umbriel',
+	ogImagePath: '/og/umbriel.webp'
+};
+
+export const SEO_GREETER: PageSeo = {
+	title: `Noctalia Greeter  -  ${SITE_NAME}`,
+	description:
+		'A greetd login screen that shares your Noctalia wallpaper, colors, and font. A familiar desktop from the moment you sign in.',
+	pathLabel: 'Greeter',
+	ogImagePath: '/og/greeter.webp'
+};
+
 export const SEO_BLOG_INDEX: PageSeo = {
 	title: `Blog  -  ${SITE_NAME}`,
 	description: 'News from the Noctalia team.',
@@ -103,9 +127,7 @@ export function seoBlogPost(post: { slug: string; title: string; description: st
 	};
 }
 
-export function seoChangelogRelease(release: {
-	tagName: string;
-}): PageSeo {
+export function seoChangelogRelease(release: { tagName: string }): PageSeo {
 	return {
 		title: `${release.tagName} release notes  -  ${SITE_NAME}`,
 		description: `What changed in Noctalia ${release.tagName}.`,

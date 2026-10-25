@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
-	import { PRODUCTS } from '$lib/products';
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
 	const supportUrl = 'https://buymeacoffee.com/noctalia';
@@ -14,27 +13,27 @@
 			title: 'Explore',
 			links: [
 				{ href: '/', label: 'Home' },
-				{ href: '/blog', label: 'Blog' },
-				{ href: '/changelogs', label: 'Changelog' },
-				{ href: '/plugins', label: 'Plugins' },
-				{ href: '/palettes', label: 'Palettes' }
+				{ href: '/shell', label: 'Shell' },
+				{ href: '/umbriel', label: 'Compositor' },
+				{ href: '/greeter', label: 'Greeter' },
+				{ href: '/plugins', label: 'Plugins' }
 			]
-		},
-		{
-			title: 'Projects',
-			links: PRODUCTS.map((product) => ({
-				href: product.docsUrl,
-				label: product.name,
-				external: true
-			}))
 		},
 		{
 			title: 'Resources',
 			links: [
+				{ href: '/blog', label: 'Blog' },
+				{ href: '/changelogs', label: 'Releases' },
+				{ href: '/ethos', label: 'Our Ethos' },
+				{ href: '/palettes', label: 'Palettes' }
+			]
+		},
+		{
+			title: 'Documentation',
+			links: [
 				{ href: DOCS_BASE_URL, label: 'Documentation', external: true },
 				{ href: GITHUB_ORG_URL, label: 'GitHub', external: true },
-				{ href: '/contributors', label: 'Contributors' },
-				{ href: '/ethos', label: 'Our Ethos' }
+				{ href: '/contributors', label: 'Contributors' }
 			]
 		},
 		{
@@ -57,10 +56,12 @@
 <footer
 	class="site-footer-chrome relative mt-auto border-t border-border/50 backdrop-blur-xl backdrop-saturate-125"
 >
-	<div class="site-footer-accent-line pointer-events-none absolute inset-x-0 top-0 h-px" aria-hidden="true"
+	<div
+		class="site-footer-accent-line pointer-events-none absolute inset-x-0 top-0 h-px"
+		aria-hidden="true"
 	></div>
 
-	<div class="mx-auto max-w-6xl px-4 py-10 sm:px-5 sm:py-12">
+	<div class="mx-auto w-full max-w-[90rem] px-4 py-10 sm:px-5 sm:py-12">
 		<div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-16">
 			<div class="lg:max-w-sm lg:shrink-0">
 				<div class="flex items-center gap-3">
@@ -79,8 +80,8 @@
 					</div>
 				</div>
 				<p class="mt-4 max-w-sm text-sm leading-relaxed text-fg-dim">
-					A sleek, customizable desktop shell crafted for Wayland - with the Umbriel compositor and
-					the Greeter alongside it.
+					A family of native Wayland projects. A desktop shell, a compositor, and a login screen,
+					built with a shared attention to detail.
 				</p>
 				<a
 					href={supportUrl}

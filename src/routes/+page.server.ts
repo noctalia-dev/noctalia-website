@@ -1,27 +1,35 @@
 import { SEO_HOME } from '$lib/seo';
+import { githubFetch } from '$lib/github.server';
 import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { getAllReleases } from '$lib/releases.server';
 
-async function getPluginCount(): Promise<number> {
+async function projectStars(repo: string): Promise<number | null> {
 	try {
-		const plugins = await getRegistryPlugins();
-		return plugins.filter(isValidPlugin).length;
-	} catch (err) {
-		console.error('Error fetching plugin count:', err);
+		const response = await githubFetch(`https://api.github.com/repos/noctalia-dev/${repo}`);
+		if (!response.ok) return null;
+		const project = await response.json();
+		return typeof project.stargazers_count === 'number' ? project.stargazers_count : null;
+	} catch {
+		return null;
 	}
-	return 0;
 }
 
-async function getReleaseCount(): Promise<number> {
+async function pluginCount(): Promise<number | null> {
 	try {
-		return (await getAllReleases()).length;
-	} catch (err) {
-		console.error('Error fetching release count:', err);
+		return (await getRegistryPlugins()).filter(isValidPlugin).length || null;
+	} catch {
+		return null;
 	}
-	return 0;
 }
 
 export async function load() {
-	const [pluginCount, releaseCount] = await Promise.all([getPluginCount(), getReleaseCount()]);
-	return { pluginCount, releaseCount, seo: SEO_HOME };
+	const [count, shellStars, umbrielStars] = await Promise.all([
+		pluginCount(),
+		projectStars('noctalia'),
+		projectStars('umbriel')
+	]);
+	return {
+		pluginCount: count,
+		stars: { noctalia: shellStars, umbriel: umbrielStars },
+		seo: SEO_HOME
+	};
 }

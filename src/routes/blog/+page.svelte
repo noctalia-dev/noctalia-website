@@ -1,5 +1,6 @@
 <script lang="ts">
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import type { BlogPost } from '$lib/blog';
@@ -17,13 +18,16 @@
 
 <SiteHeader />
 
-<main class="site-main">
-	<div class="site-shell">
-		<header class="mb-12 text-center">
-			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Blog</h1>
-			<p class="mt-3 text-fg-dim md:text-lg">News from the Noctalia team.</p>
-		</header>
+<main class="pb-24">
+	<ProjectIntro
+		title="Blog"
+		eyebrow="News & updates"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="News from the Noctalia team."
+		detail="Project announcements and updates from the people building Noctalia."
+	/>
 
+	<div class="site-shell pt-12 md:pt-16">
 		<div class="grid gap-5 [grid-template-columns:repeat(auto-fill,minmax(min(100%,20rem),1fr))]">
 			{#each data.posts as post}
 				<a
@@ -35,7 +39,9 @@
 						<span>·</span>
 						<span>by {post.author}</span>
 					</div>
-					<h2 class="text-lg font-semibold tracking-tight text-fg group-hover:text-accent md:text-xl">
+					<h2
+						class="text-lg font-semibold tracking-tight text-fg group-hover:text-accent md:text-xl"
+					>
 						{post.title}
 					</h2>
 					<p class="line-clamp-3 text-sm leading-relaxed text-fg-dim">{post.description}</p>

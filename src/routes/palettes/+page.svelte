@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
@@ -13,7 +14,9 @@
 		lightSwatches: string[];
 	}
 
-	let { data } = $props<{ data: { corePalettes: PaletteItem[], communityPalettes: PaletteItem[] } }>();
+	let { data } = $props<{
+		data: { corePalettes: PaletteItem[]; communityPalettes: PaletteItem[] };
+	}>();
 	let corePalettes = $state<PaletteItem[]>([]);
 	let communityPalettes = $state<PaletteItem[]>([]);
 	let allCorePalettes = $state<PaletteItem[]>([]);
@@ -30,8 +33,8 @@
 
 		// Combine both for search, tagging each with isCore
 		const allPalettes = [
-			...allCorePalettes.map(p => ({ ...p, isCore: true })),
-			...allCommunityPalettes.map(p => ({ ...p, isCore: false }))
+			...allCorePalettes.map((p) => ({ ...p, isCore: true })),
+			...allCommunityPalettes.map((p) => ({ ...p, isCore: false }))
 		];
 
 		fuse = new Fuse(allPalettes, {
@@ -61,8 +64,8 @@
 			return;
 		}
 		const results = fuse.search(searchQuery).map((r) => r.item);
-		corePalettes = results.filter(p => p.isCore);
-		communityPalettes = results.filter(p => !p.isCore);
+		corePalettes = results.filter((p) => p.isCore);
+		communityPalettes = results.filter((p) => !p.isCore);
 	});
 
 	function getSwatches(palette: PaletteItem): string[] {
@@ -72,13 +75,16 @@
 
 <SiteHeader />
 
-<main class="palettes-page site-main">
-	<div class="site-shell">
-		<div class="page-header">
-			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Palettes</h1>
-			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">Explore color palettes for Noctalia.</p>
-		</div>
+<main class="palettes-page pb-24">
+	<ProjectIntro
+		title="Palettes"
+		eyebrow="Desktop colors"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="Explore color palettes for Noctalia."
+		detail="Browse built-in colors and community palettes for your desktop."
+	/>
 
+	<div class="site-shell pt-12 md:pt-16">
 		<div class="search-section">
 			<div class="search-container">
 				<i class="ti ti-search search-icon" aria-hidden="true"></i>
@@ -90,18 +96,15 @@
 					autocomplete="off"
 				/>
 				{#if searchQuery}
-					<button
-					class="search-clear"
-					onclick={() => searchQuery = ''}
-					aria-label="Clear search"
-				>
-					<i class="ti ti-x text-lg leading-none" aria-hidden="true"></i>
-				</button>
-			{/if}
+					<button class="search-clear" onclick={() => (searchQuery = '')} aria-label="Clear search">
+						<i class="ti ti-x text-lg leading-none" aria-hidden="true"></i>
+					</button>
+				{/if}
 			</div>
 			{#if searchQuery}
 				<div class="search-results-info">
-					Found {corePalettes.length + communityPalettes.length} {corePalettes.length + communityPalettes.length === 1 ? 'palette' : 'palettes'}
+					Found {corePalettes.length + communityPalettes.length}
+					{corePalettes.length + communityPalettes.length === 1 ? 'palette' : 'palettes'}
 				</div>
 			{/if}
 		</div>
@@ -135,7 +138,12 @@
 					<h2 class="section-title">Community Palettes</h2>
 					<p class="section-subtitle">
 						Palettes created by the community, downloadable within Noctalia.
-						<a class="section-link" href="https://github.com/noctalia-dev/community-palettes" target="_blank" rel="noopener noreferrer">Contribute on GitHub</a>
+						<a
+							class="section-link"
+							href="https://github.com/noctalia-dev/community-palettes"
+							target="_blank"
+							rel="noopener noreferrer">Contribute on GitHub</a
+						>
 					</p>
 					<div class="palettes-grid">
 						{#each communityPalettes as palette}
@@ -162,88 +170,84 @@
 
 <style>
 	/* Page-specific styles */
-		.page-header {
-			text-align: center;
-			margin-bottom: 3rem;
-		}
 
-		.search-section {
-			margin-bottom: 3rem;
-		}
+	.search-section {
+		margin-bottom: 3rem;
+	}
 
-		.search-container {
-			position: relative;
-			display: flex;
-			align-items: center;
-			max-width: 600px;
-			margin: 0 auto;
-			background: var(--mSurfaceVariant);
-			border: 2px solid var(--mOutline);
-			border-radius: 1rem;
-			padding: 0.75rem 1rem;
-			transition: all 0.3s ease;
-		}
+	.search-container {
+		position: relative;
+		display: flex;
+		align-items: center;
+		max-width: 600px;
+		margin: 0 auto;
+		background: var(--mSurfaceVariant);
+		border: 2px solid var(--mOutline);
+		border-radius: 1rem;
+		padding: 0.75rem 1rem;
+		transition: all 0.3s ease;
+	}
 
-		.search-container:focus-within {
-			border-color: var(--mPrimary);
-			box-shadow: 0 0 0 4px rgba(255, 245, 155, 0.1);
-		}
+	.search-container:focus-within {
+		border-color: var(--mPrimary);
+		box-shadow: 0 0 0 4px rgba(255, 245, 155, 0.1);
+	}
 
-		:global([data-theme='light']) .search-container:focus-within {
-			box-shadow: 0 0 0 4px rgba(93, 101, 245, 0.1);
-		}
+	:global([data-theme='light']) .search-container:focus-within {
+		box-shadow: 0 0 0 4px rgba(93, 101, 245, 0.1);
+	}
 
-		.search-icon {
-			color: var(--mOnSurfaceVariant);
-			font-size: 1.25rem;
-			line-height: 1;
-			margin-right: 0.75rem;
-			flex-shrink: 0;
-		}
+	.search-icon {
+		color: var(--mOnSurfaceVariant);
+		font-size: 1.25rem;
+		line-height: 1;
+		margin-right: 0.75rem;
+		flex-shrink: 0;
+	}
 
-		.search-input {
-			flex: 1;
-			background: transparent;
-			border: none;
-			outline: none;
-			color: var(--mOnSurface);
-			font-size: 1rem;
-			font-family: inherit;
-			padding: 0;
-		}
+	.search-input {
+		flex: 1;
+		background: transparent;
+		border: none;
+		outline: none;
+		color: var(--mOnSurface);
+		font-size: 1rem;
+		font-family: inherit;
+		padding: 0;
+	}
 
-		.search-input::placeholder {
-			color: var(--mOnSurfaceVariant);
-			opacity: 0.6;
-		}
+	.search-input::placeholder {
+		color: var(--mOnSurfaceVariant);
+		opacity: 0.6;
+	}
 
-		.search-clear {
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			width: 32px;
-			height: 32px;
-			border-radius: 0.5rem;
-			background: transparent;
-			border: none;
-			color: var(--mOnSurfaceVariant);
-			cursor: pointer;
-			transition: all 0.2s ease;
-			margin-left: 0.5rem;
-			flex-shrink: 0;
-		}
+	.search-clear {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 0.5rem;
+		background: transparent;
+		border: none;
+		color: var(--mOnSurfaceVariant);
+		cursor: pointer;
+		transition: all 0.2s ease;
+		margin-left: 0.5rem;
+		flex-shrink: 0;
+	}
 
-		.search-clear:hover {
-			background: var(--mSurface);
-			color: var(--mOnSurface);
-		}
+	.search-clear:hover {
+		background: var(--mSurface);
+		color: var(--mOnSurface);
+	}
 
-		.search-results-info {
-			text-align: center;
-			margin-top: 1rem;
-			color: var(--mOnSurfaceVariant);
-			font-size: 0.9375rem;
-		}
+	.search-results-info {
+		text-align: center;
+		margin-top: 1rem;
+		color: var(--mOnSurfaceVariant);
+		font-size: 0.9375rem;
+	}
 
 	.section {
 		margin-bottom: 3rem;
@@ -262,7 +266,11 @@
 		margin-bottom: 1.5rem;
 	}
 
-	.palettes-grid { display:grid; grid-template-columns: repeat(6, 1fr); gap:1.25rem }
+	.palettes-grid {
+		display: grid;
+		grid-template-columns: repeat(6, 1fr);
+		gap: 1.25rem;
+	}
 	.palette-card {
 		background: var(--mSurface);
 		border: 1.5px solid var(--mOutline);
@@ -303,11 +311,15 @@
 	.palette-card:hover {
 		transform: translateY(-8px);
 		border-color: var(--mPrimary);
-		box-shadow: 0 16px 40px rgba(255, 245, 155, 0.15), 0 0 0 1px rgba(255, 245, 155, 0.2);
+		box-shadow:
+			0 16px 40px rgba(255, 245, 155, 0.15),
+			0 0 0 1px rgba(255, 245, 155, 0.2);
 	}
 
 	:global([data-theme='light']) .palette-card:hover {
-		box-shadow: 0 16px 40px rgba(93, 101, 245, 0.15), 0 0 0 1px rgba(93, 101, 245, 0.2);
+		box-shadow:
+			0 16px 40px rgba(93, 101, 245, 0.15),
+			0 0 0 1px rgba(93, 101, 245, 0.2);
 	}
 
 	.palette-card-header {
@@ -349,24 +361,40 @@
 		transform: scale(1.05);
 	}
 
-	.empty { padding:2rem; text-align:center; color:var(--mOnSurfaceVariant) }
+	.empty {
+		padding: 2rem;
+		text-align: center;
+		color: var(--mOnSurfaceVariant);
+	}
 
 	@media (max-width: 1200px) {
-		.palettes-grid { grid-template-columns: repeat(5, 1fr); }
+		.palettes-grid {
+			grid-template-columns: repeat(5, 1fr);
+		}
 	}
 
 	@media (max-width: 992px) {
-		.palettes-grid { grid-template-columns: repeat(4, 1fr); }
+		.palettes-grid {
+			grid-template-columns: repeat(4, 1fr);
+		}
 	}
 
 	@media (max-width: 768px) {
-		.palettes-grid { grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-		.palette-card { padding: 1rem; }
-		.swatches { gap: 6px; }
+		.palettes-grid {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1rem;
+		}
+		.palette-card {
+			padding: 1rem;
+		}
+		.swatches {
+			gap: 6px;
+		}
 	}
 
-	@media (max-width:640px) {
-		.search-container { min-width: 160px }
+	@media (max-width: 640px) {
+		.search-container {
+			min-width: 160px;
+		}
 	}
-
 </style>

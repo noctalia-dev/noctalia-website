@@ -1,6 +1,5 @@
 <script lang="ts">
 	import '@fontsource-variable/inter/wght.css';
-	import '@fontsource-variable/jetbrains-mono/wght.css';
 	import './tabler-icons.css';
 	import './layout.css';
 	import { onMount } from 'svelte';
@@ -20,7 +19,9 @@
 
 	let { children } = $props();
 
-	const canonicalUrl = $derived(`${SITE_ORIGIN}${page.url.pathname === '/' ? '' : page.url.pathname}`);
+	const canonicalUrl = $derived(
+		`${SITE_ORIGIN}${page.url.pathname === '/' ? '' : page.url.pathname}`
+	);
 
 	const metaTitle = $derived(page.data.seo?.title ?? DEFAULT_OG_TITLE);
 	const metaDescription = $derived(page.data.seo?.description ?? DEFAULT_DESCRIPTION);
@@ -29,15 +30,50 @@
 		page.data.seo?.ogImagePath ? `${SITE_ORIGIN}${page.data.seo.ogImagePath}` : DEFAULT_OG_IMAGE
 	);
 	const ogImageAlt = $derived(metaTitle);
+	let pageAnimation: Animation | undefined;
+	let navigationSequence = 0;
 
-	onNavigate((navigation) => {
-		if (typeof document === 'undefined' || !document.startViewTransition) return;
-		return new Promise<void>((fulfil) => {
-			document.startViewTransition(async () => {
-				fulfil();
-				await navigation.complete;
-			});
-		});
+	onNavigate(async (navigation) => {
+		if (navigation.from?.url.pathname === navigation.to?.url.pathname) return;
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+		const sequence = ++navigationSequence;
+		pageAnimation?.cancel();
+		const paths = ['/', '/shell', '/umbriel', '/greeter', '/plugins', '/blog', '/changelogs'];
+		const from = paths.indexOf(navigation.from?.url.pathname ?? '/');
+		const to = paths.indexOf(navigation.to?.url.pathname ?? '/');
+		const direction = from >= 0 && to >= 0 && to < from ? -1 : 1;
+		const outgoing = document.querySelector('main')?.animate(
+			[
+				{ opacity: 1, transform: 'translateX(0)', filter: 'blur(0)' },
+				{ opacity: 0.2, transform: `translateX(${-direction * 14}px)`, filter: 'blur(2px)' }
+			],
+			{ duration: 130, easing: 'ease-in', fill: 'forwards' }
+		);
+		pageAnimation = outgoing;
+		try {
+			await outgoing?.finished;
+		} catch {
+			/* A newer navigation can replace this one. */
+		}
+		return () => {
+			outgoing?.cancel();
+			if (
+				sequence !== navigationSequence ||
+				window.matchMedia('(prefers-reduced-motion: reduce)').matches
+			)
+				return;
+			pageAnimation = document.querySelector('main')?.animate(
+				[
+					{
+						opacity: 0,
+						transform: `translateX(${direction * 30}px) translateY(8px)`,
+						filter: 'blur(4px)'
+					},
+					{ opacity: 1, transform: 'translateX(0) translateY(0)', filter: 'blur(0)' }
+				],
+				{ duration: 440, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+			);
+		};
 	});
 
 	onMount(() => {

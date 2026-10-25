@@ -2,13 +2,14 @@
 	import { onMount } from 'svelte';
 	import { page } from '$app/stores';
 	import SiteHeader from '$lib/site-header.svelte';
+	import ProjectIntro from '$lib/project-intro.svelte';
 	import SiteFooter from '$lib/site-footer.svelte';
 	import ScrollToTop from '$lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
 	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
 	import { pluginMetricKey } from '$lib/plugin-identity';
 	import { pluginMetrics, refreshPluginMetrics } from '$lib/plugin-metrics';
-	
+
 	interface Plugin {
 		id: string;
 		catalogId: string;
@@ -62,16 +63,20 @@
 	}
 
 	// Split the filtered list into the two sources rendered as separate sections.
-	let officialPlugins = $derived(sortPlugins(plugins.filter((plugin) => plugin.source === 'official')));
-	let communityPlugins = $derived(sortPlugins(plugins.filter((plugin) => plugin.source !== 'official')));
+	let officialPlugins = $derived(
+		sortPlugins(plugins.filter((plugin) => plugin.source === 'official'))
+	);
+	let communityPlugins = $derived(
+		sortPlugins(plugins.filter((plugin) => plugin.source !== 'official'))
+	);
 	// Does the catalog contain any community plugins at all (ignoring filters)?
 	let hasCommunitySource = $derived(allPlugins.some((plugin) => plugin.source !== 'official'));
 	let isFiltering = $derived(
 		Boolean(searchQuery || selectedTags.length > 0 || selectedCompositors.length > 0)
 	);
 
-	let totalOfficialCount = $derived(allPlugins.filter(p => p.source === 'official').length);
-	let totalCommunityCount = $derived(allPlugins.filter(p => p.source !== 'official').length);
+	let totalOfficialCount = $derived(allPlugins.filter((p) => p.source === 'official').length);
+	let totalCommunityCount = $derived(allPlugins.filter((p) => p.source !== 'official').length);
 	let totalPluginCount = $derived(allPlugins.length);
 
 	onMount(() => {
@@ -123,8 +128,8 @@
 
 		// Apply tag filter (OR logic - show plugins matching any selected tag)
 		if (selectedTags.length > 0) {
-			filtered = filtered.filter(plugin =>
-				selectedTags.some(tag => plugin.tags?.includes(tag))
+			filtered = filtered.filter((plugin) =>
+				selectedTags.some((tag) => plugin.tags?.includes(tag))
 			);
 		}
 
@@ -138,8 +143,8 @@
 		// Apply search filter
 		if (fuse && searchQuery.trim()) {
 			const results = fuse.search(searchQuery);
-			const searchIds = new Set(results.map(r => r.item.id));
-			filtered = filtered.filter(plugin => searchIds.has(plugin.id));
+			const searchIds = new Set(results.map((r) => r.item.id));
+			filtered = filtered.filter((plugin) => searchIds.has(plugin.id));
 		}
 
 		plugins = filtered;
@@ -217,18 +222,39 @@
 
 <SiteHeader />
 
-<main class="plugins-page site-main">
-	<div class="site-shell w-full">
-		<div class="page-header">
-			<h1 class="font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">Plugins</h1>
-			<p class="page-subtitle mt-3 text-fg-dim md:text-lg">
-				Extend Noctalia with official and community plugins
-				{#if totalPluginCount > 0}
-					<span class="page-subtitle-count">· {totalPluginCount} available</span>
-				{/if}
-			</p>
+<main class="plugins-page pb-20 md:pb-28">
+	<ProjectIntro
+		title="Plugins"
+		eyebrow="Noctalia Shell ecosystem"
+		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
+		summary="Add the tools that make your desktop yours."
+		detail="Browse official and community plugins for Noctalia Shell. Find widgets, integrations, and small utilities, then narrow the catalog to your compositor and the way you work."
+		anchorHref="#catalog"
+		anchorLabel="Explore the catalog"
+	>
+		{#snippet actions()}
+			<a
+				href="#catalog"
+				class="btn-primary-glow inline-flex items-center gap-3 rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-on-accent transition hover:brightness-105"
+			>
+				Browse plugins <span aria-hidden="true">↓</span>
+			</a>
+			<a
+				href="https://github.com/noctalia-dev/community-plugins"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-dim transition-colors hover:text-accent-2"
+			>
+				Share a plugin <span aria-hidden="true">↗</span>
+			</a>
+		{/snippet}
+	</ProjectIntro>
+
+	<section id="catalog" class="site-shell catalog-shell" aria-label="Plugin catalog">
+		<div class="catalog-heading">
+			<p>Official &amp; community</p>
+			{#if totalPluginCount > 0}<p>{totalPluginCount} plugins to explore</p>{/if}
 		</div>
-		
 		{#if loading}
 			<div class="loading-state">
 				<div class="spinner"></div>
@@ -246,7 +272,7 @@
 						<input
 							type="search"
 							class="search-input"
-							placeholder="Search plugins by name, description or author..."
+							placeholder="Search by name, description, or author"
 							aria-label="Search plugins"
 							bind:value={searchQuery}
 							autocomplete="off"
@@ -266,7 +292,7 @@
 				<div class="filters-heading">
 					<div class="filters-title">
 						<i class="ti ti-adjustments-horizontal" aria-hidden="true"></i>
-						<span>Filter plugins</span>
+						<span>Find your fit</span>
 					</div>
 					<label class="sort-control">
 						<span>Sort by</span>
@@ -333,135 +359,136 @@
 							{/each}
 						</div>
 					</div>
-
 				</div>
 
 				{#if isFiltering}
-					<div class="search-results-info">
-						Found {plugins.length} {plugins.length === 1 ? 'plugin' : 'plugins'}
+					<div class="search-results-info" role="status">
+						Found {plugins.length}
+						{plugins.length === 1 ? 'plugin' : 'plugins'}
 						<button class="clear-filters-btn" onclick={clearFilters}>Clear filters</button>
 					</div>
 				{/if}
 			</div>
-			
-				{#snippet pluginCard(plugin: Plugin)}
-					<a href="/plugins/{plugin.source}/{plugin.id}" class="plugin-card">
-						<div class="plugin-preview">
-							<img
-								src={getPreviewUrl(plugin)}
-								alt={plugin.name}
-								onerror={handleImageError}
-							/>
-							<div class="preview-placeholder" style="display: none;">
-								<i
-									class={`${getIconClass(plugin)} placeholder-icon`}
-									use:ensureTablerIcon={getIconClass(plugin)}
-									aria-hidden="true"
-								></i>
-							</div>
-							<div class="preview-overlay">
-								<span class="preview-text">View Details</span>
-							</div>
+
+			{#snippet pluginCard(plugin: Plugin)}
+				<a href="/plugins/{plugin.source}/{plugin.id}" class="plugin-card">
+					<div class="plugin-preview">
+						<img
+							src={getPreviewUrl(plugin)}
+							alt=""
+							loading="lazy"
+							decoding="async"
+							onerror={handleImageError}
+						/>
+						<div class="preview-placeholder" style="display: none;">
+							<i
+								class={`${getIconClass(plugin)} placeholder-icon`}
+								use:ensureTablerIcon={getIconClass(plugin)}
+								aria-hidden="true"
+							></i>
 						</div>
-						<div class="plugin-info">
-							<div class="plugin-name-row">
-								<span class="plugin-icon" aria-hidden="true">
-									<i
-										class={getIconClass(plugin)}
-										use:ensureTablerIcon={getIconClass(plugin)}
-									></i>
+						<span class="preview-arrow" aria-hidden="true">↗</span>
+					</div>
+					<div class="plugin-info">
+						<div class="plugin-name-row">
+							<span class="plugin-icon" aria-hidden="true">
+								<i class={getIconClass(plugin)} use:ensureTablerIcon={getIconClass(plugin)}></i>
+							</span>
+							<h3 class="plugin-name">{plugin.name}</h3>
+							{#if plugin.source === 'official'}
+								<span class="official-badge" title="Official Plugin">
+									<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
 								</span>
-								<h3 class="plugin-name">{plugin.name}</h3>
-								{#if plugin.source === 'official'}
-									<span class="official-badge" title="Official Plugin">
-										<i class="ti ti-shield-check text-base leading-none" aria-hidden="true"></i>
+							{/if}
+						</div>
+						<p class="plugin-description">{plugin.description}</p>
+						{#if plugin.tags && plugin.tags.length > 0}
+							<div class="plugin-tags">
+								{#each plugin.tags as tag}
+									<span class="plugin-tag" class:compositor={isCompositorTag(tag)}>
+										{#if isCompositorTag(tag)}
+											<i class="ti ti-device-desktop" aria-hidden="true"></i>
+										{/if}
+										{isCompositorTag(tag) ? formatCompositor(tag) : tag}
 									</span>
-								{/if}
+								{/each}
 							</div>
-							<p class="plugin-description">{plugin.description}</p>
-							{#if plugin.tags && plugin.tags.length > 0}
-								<div class="plugin-tags">
-									{#each plugin.tags as tag}
-										<span class="plugin-tag" class:compositor={isCompositorTag(tag)}>
-											{#if isCompositorTag(tag)}
-												<i class="ti ti-device-desktop" aria-hidden="true"></i>
-											{/if}
-											{isCompositorTag(tag) ? formatCompositor(tag) : tag}
-										</span>
-									{/each}
-								</div>
-							{/if}
-							<div class="plugin-footer">
-								<span class="plugin-author" title={plugin.author.split('<')[0].trim()}>
-									<i class="ti ti-user" aria-hidden="true"></i>
-									<span class="plugin-author-name">{plugin.author.split('<')[0].trim()}</span>
-								</span>
-								<span class="plugin-stats">
-									<PluginRecommendations source={plugin.source} catalogId={plugin.catalogId} badge />
-									<span class="plugin-version">v{plugin.version}</span>
-								</span>
-							</div>
+						{/if}
+						<div class="plugin-footer">
+							<span class="plugin-author" title={plugin.author.split('<')[0].trim()}>
+								<i class="ti ti-user" aria-hidden="true"></i>
+								<span class="plugin-author-name">{plugin.author.split('<')[0].trim()}</span>
+							</span>
+							<span class="plugin-stats">
+								<PluginRecommendations source={plugin.source} catalogId={plugin.catalogId} badge />
+								<span class="plugin-version">v{plugin.version}</span>
+							</span>
 						</div>
-					</a>
-				{/snippet}
-
-				{#if isFiltering && plugins.length === 0}
-					<div class="no-results">
-						<i class="ti ti-search-off no-results-icon" aria-hidden="true"></i>
-						<h3>No plugins found</h3>
-						<p>Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}>clear all filters</button></p>
 					</div>
-				{:else}
-					<div class="plugins-section">
-						<h2 class="section-title">
-							Official Plugins
-							{#if totalOfficialCount > 0}
-								<span class="section-count">
-									{#if isFiltering}({officialPlugins.length} of {totalOfficialCount}){:else}({totalOfficialCount}){/if}
-								</span>
-							{/if}
-						</h2>
-						{#if officialPlugins.length > 0}
-							<div class="plugins-grid">
-								{#each officialPlugins as plugin}
-									{@render pluginCard(plugin)}
-								{/each}
-							</div>
-						{:else}
-							<p class="source-empty">No official plugins match your filters.</p>
+				</a>
+			{/snippet}
+
+			{#if isFiltering && plugins.length === 0}
+				<div class="no-results">
+					<i class="ti ti-search-off no-results-icon" aria-hidden="true"></i>
+					<h3>No plugins found</h3>
+					<p>
+						Try adjusting your filters or <button class="clear-search-link" onclick={clearFilters}
+							>clear all filters</button
+						>
+					</p>
+				</div>
+			{:else}
+				<div class="plugins-section">
+					<h2 class="section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
+						Official plugins
+						{#if totalOfficialCount > 0}
+							<span class="section-count">
+								{#if isFiltering}({officialPlugins.length} of {totalOfficialCount}){:else}({totalOfficialCount}){/if}
+							</span>
 						{/if}
-					</div>
+					</h2>
+					{#if officialPlugins.length > 0}
+						<div class="plugins-grid">
+							{#each officialPlugins as plugin}
+								{@render pluginCard(plugin)}
+							{/each}
+						</div>
+					{:else}
+						<p class="source-empty">No official plugins match your filters.</p>
+					{/if}
+				</div>
 
-					<hr class="source-separator" />
+				<hr class="source-separator" />
 
-					<div class="plugins-section">
-						<h2 class="section-title">
-							Community Plugins
-							{#if totalCommunityCount > 0}
-								<span class="section-count">
-									{#if isFiltering}({communityPlugins.length} of {totalCommunityCount}){:else}({totalCommunityCount}){/if}
-								</span>
-							{/if}
-						</h2>
-						{#if communityPlugins.length > 0}
-							<div class="plugins-grid">
-								{#each communityPlugins as plugin}
-									{@render pluginCard(plugin)}
-								{/each}
-							</div>
-						{:else if isFiltering}
-							<p class="source-empty">No community plugins match your filters.</p>
-						{:else}
-							<div class="source-coming-soon">
-								<div class="coming-soon-icon">🌱</div>
-								<h3>Community plugins are coming soon</h3>
-								<p>Build your own and share it with the Noctalia community.</p>
-							</div>
+				<div class="plugins-section">
+					<h2 class="section-title font-sans text-3xl font-semibold tracking-tight md:text-4xl">
+						Community plugins
+						{#if totalCommunityCount > 0}
+							<span class="section-count">
+								{#if isFiltering}({communityPlugins.length} of {totalCommunityCount}){:else}({totalCommunityCount}){/if}
+							</span>
 						{/if}
-					</div>
-				{/if}
+					</h2>
+					{#if communityPlugins.length > 0}
+						<div class="plugins-grid">
+							{#each communityPlugins as plugin}
+								{@render pluginCard(plugin)}
+							{/each}
+						</div>
+					{:else if isFiltering}
+						<p class="source-empty">No community plugins match your filters.</p>
+					{:else}
+						<div class="source-coming-soon">
+							<i class="ti ti-puzzle coming-soon-icon" aria-hidden="true"></i>
+							<h3>There’s room for your idea.</h3>
+							<p>Build your own and share it with the Noctalia community.</p>
+						</div>
+					{/if}
+				</div>
+			{/if}
 		{/if}
-	</div>
+	</section>
 </main>
 
 <SiteFooter />
@@ -471,644 +498,512 @@
 	.plugins-page {
 		min-height: 60vh;
 	}
-
-	.page-header {
-		text-align: center;
-		margin-bottom: 3rem;
+	.catalog-shell {
+		padding-top: 3rem;
+		scroll-margin-top: 6rem;
 	}
-	
-	.catalog-controls {
-		padding: 1.25rem;
-		border: 1px solid var(--mOutline);
-		border-radius: 1.25rem;
-		background: var(--mSurfaceVariant);
-		box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.04);
-	}
-
-	.search-section {
+	.catalog-heading {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		gap: 0.5rem 2rem;
 		margin-bottom: 1.5rem;
+		font-size: 0.75rem;
+		color: var(--color-fg-dim);
 	}
-	
+	.catalog-heading p:first-child {
+		font-weight: 500;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--color-accent-2);
+	}
+	.catalog-controls {
+		padding-bottom: 1.75rem;
+		border-bottom: 1px solid var(--color-border);
+	}
+	.search-section {
+		margin-bottom: 1.75rem;
+	}
 	.search-container {
 		position: relative;
 		display: flex;
 		align-items: center;
-		max-width: 600px;
-		margin: 0 auto;
-		background: var(--mSurfaceVariant);
-		border: 2px solid var(--mOutline);
-		border-radius: 1rem;
-		padding: 0.75rem 1rem;
-		transition: all 0.3s ease;
+		width: 100%;
+		padding: 0.9rem 1rem;
+		border: 1px solid var(--color-border);
+		border-radius: 0.375rem;
+		background: color-mix(in srgb, var(--color-void) 75%, transparent);
+		transition:
+			border-color 180ms,
+			box-shadow 180ms;
 	}
-	
 	.search-container:focus-within {
-		border-color: var(--mPrimary);
-		box-shadow: 0 0 0 4px rgba(255, 245, 155, 0.1);
+		border-color: var(--color-accent-2);
+		box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent-2) 12%, transparent);
 	}
-	
-	:global([data-theme='light']) .search-container:focus-within {
-		box-shadow: 0 0 0 4px rgba(93, 101, 245, 0.1);
-	}
-	
 	.search-icon {
-		color: var(--mOnSurfaceVariant);
-		font-size: 1.25rem;
-		line-height: 1;
-		margin-right: 0.75rem;
 		flex-shrink: 0;
+		margin-right: 0.75rem;
+		font-size: 1.15rem;
+		line-height: 1;
+		color: var(--color-fg-dim);
 	}
-	
 	.search-input {
 		flex: 1;
-		background: transparent;
+		min-width: 0;
+		padding: 0;
 		border: none;
 		outline: none;
-		color: var(--mOnSurface);
-		font-size: 1rem;
-		font-family: inherit;
-		padding: 0;
+		background: transparent;
+		font: inherit;
+		font-size: 0.95rem;
+		color: var(--color-fg);
 	}
-	
 	.search-input::placeholder {
-		color: var(--mOnSurfaceVariant);
-		opacity: 0.6;
+		color: var(--color-fg-dim);
 	}
-	
 	.search-clear {
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 32px;
-		height: 32px;
-		border-radius: 0.5rem;
-		background: transparent;
-		border: none;
-		color: var(--mOnSurfaceVariant);
-		cursor: pointer;
-		transition: all 0.2s ease;
-		margin-left: 0.5rem;
 		flex-shrink: 0;
+		width: 2rem;
+		height: 2rem;
+		margin-left: 0.5rem;
+		border-radius: 0.2rem;
+		color: var(--color-fg-dim);
+		cursor: pointer;
 	}
-	
 	.search-clear:hover {
-		background: var(--mSurface);
-		color: var(--mOnSurface);
+		color: var(--color-accent-2);
 	}
-
 	.filters-heading {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding-top: 1.25rem;
-		border-top: 1px solid var(--mOutline);
 	}
-
 	.filters-title {
 		display: flex;
 		align-items: center;
 		gap: 0.5rem;
-		color: var(--mOnSurface);
-		font-weight: 650;
+		font-size: 0.85rem;
+		font-weight: 500;
+		color: var(--color-fg);
 	}
-
 	.filters-title .ti {
-		color: var(--mPrimary);
-		font-size: 1.125rem;
+		color: var(--color-accent-2);
+		font-size: 1.1rem;
 	}
-
 	.sort-control {
 		display: flex;
 		align-items: center;
-		gap: 0.625rem;
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.875rem;
+		gap: 0.65rem;
+		font-size: 0.75rem;
+		color: var(--color-fg-dim);
 	}
-
 	.sort-control select {
-		border: 1px solid var(--mOutline);
-		border-radius: 0.625rem;
-		background: var(--mSurface);
-		color: var(--mOnSurface);
+		padding: 0.5rem 1.8rem 0.5rem 0.65rem;
+		border: 1px solid var(--color-border);
+		border-radius: 0.25rem;
+		background: var(--color-void);
 		font: inherit;
-		padding: 0.5rem 2rem 0.5rem 0.75rem;
+		color: var(--color-fg);
 		cursor: pointer;
 	}
-
 	.sort-control select:focus-visible {
-		outline: 2px solid var(--mPrimary);
+		outline: 2px solid var(--color-accent-2);
 		outline-offset: 2px;
 	}
-
 	.filter-groups {
 		display: grid;
 		gap: 1rem;
 		margin-top: 1.25rem;
 	}
-
 	.filter-group {
 		display: grid;
 		grid-template-columns: 7rem 1fr;
 		align-items: start;
 		gap: 1rem;
 	}
-
 	.filter-label {
 		display: flex;
 		align-items: center;
 		gap: 0.4rem;
-		padding-top: 0.5rem;
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.8125rem;
-		font-weight: 700;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
+		padding-top: 0.4rem;
+		font-size: 0.72rem;
+		font-weight: 500;
+		color: var(--color-fg-dim);
 	}
-
-	.filter-group + .filter-group {
-		padding-top: 1rem;
-		border-top: 1px solid var(--mOutline);
-	}
-	
-	.search-results-info {
-		text-align: center;
-		margin-top: 1rem;
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.9375rem;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 1rem;
-	}
-
-	.clear-filters-btn {
-		background: transparent;
-		border: 1px solid var(--mOutline);
-		color: var(--mOnSurfaceVariant);
-		padding: 0.25rem 0.75rem;
-		border-radius: 0.5rem;
-		font-size: 0.875rem;
-		cursor: pointer;
-		transition: all 0.2s ease;
-	}
-
-	.clear-filters-btn:hover {
-		background: var(--mSurfaceVariant);
-		border-color: var(--mPrimary);
-		color: var(--mPrimary);
-	}
-
 	.tag-filters {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.5rem;
-		justify-content: flex-start;
+		gap: 0.4rem;
 	}
-
 	.tag-chip {
-		padding: 0.5rem 1rem;
-		border-radius: 2rem;
-		border: 1px solid rgb(33 33 95 / 0.75);
-		background: rgb(17 17 45 / 0.88);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.875rem;
+		padding: 0.35rem 0.7rem;
+		border: 1px solid transparent;
+		border-radius: 0.25rem;
+		background: transparent;
+		font: inherit;
+		font-size: 0.75rem;
+		text-align: center;
+		color: var(--color-fg-dim);
 		cursor: pointer;
 		transition:
-			background 0.2s ease,
-			border-color 0.2s ease,
-			color 0.2s ease,
-			box-shadow 0.2s ease;
-		flex: 0 0 auto;
-		text-align: center;
-		min-width: fit-content;
-		max-width: 12rem;
-		box-shadow: inset 0 1px 0 0 rgb(255 255 255 / 0.05);
+			border-color 180ms,
+			background-color 180ms,
+			color 180ms;
 	}
-
 	.tag-chip:hover {
-		border-color: rgb(255 245 155 / 0.35);
-		background: rgb(21 21 56 / 0.92);
-		color: var(--mPrimary);
-		box-shadow:
-			inset 0 1px 0 0 rgb(255 255 255 / 0.06),
-			0 0 20px -8px rgb(255 245 155 / 0.15);
+		color: var(--color-fg);
+		border-color: var(--color-border);
 	}
-
 	.tag-chip.selected {
-		background: var(--mPrimary);
-		border-color: rgb(255 245 155 / 0.55);
-		color: var(--mOnPrimary);
-		box-shadow:
-			0 8px 24px -10px rgb(255 245 155 / 0.35),
-			inset 0 1px 0 0 rgb(255 255 255 / 0.25);
+		border-color: color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+		background: color-mix(in srgb, var(--color-accent-2) 8%, transparent);
+		color: var(--color-accent-2);
 	}
-
-	.compositor-chip {
-		border-color: color-mix(in srgb, var(--mPrimary) 28%, var(--mOutline));
-	}
-
-	.compositor-chip:not(.selected) {
-		color: var(--mPrimary);
-	}
-
-	.no-results {
-		text-align: center;
-		padding: 4rem 2rem;
-		color: var(--mOnSurfaceVariant);
-	}
-	
-	.no-results-icon {
-		font-size: 4rem;
-		margin-bottom: 1rem;
-		opacity: 0.5;
-	}
-	
-	.no-results h3 {
-		font-size: 1.5rem;
-		color: var(--mOnSurface);
-		margin-bottom: 0.5rem;
-	}
-	
-	.no-results p {
-		font-size: 1rem;
-		line-height: 1.6;
-	}
-	
-	.clear-search-link {
-		background: none;
-		border: none;
-		color: var(--mPrimary);
-		cursor: pointer;
-		text-decoration: underline;
-		font-family: inherit;
-		font-size: inherit;
-		padding: 0;
-	}
-	
-	.clear-search-link:hover {
-		color: var(--mPrimary);
-		opacity: 0.8;
-	}
-	
-	.loading-state,
-	.error-state {
+	.search-results-info {
 		display: flex;
-		flex-direction: column;
+		flex-wrap: wrap;
 		align-items: center;
-		justify-content: center;
-		padding: 4rem 2rem;
+		justify-content: space-between;
 		gap: 1rem;
-		color: var(--mOnSurfaceVariant);
+		margin-top: 1.5rem;
+		font-size: 0.8rem;
+		color: var(--color-fg-dim);
 	}
-	
-	.spinner {
-		width: 48px;
-		height: 48px;
-		border: 3px solid var(--mOutline);
-		border-top-color: var(--mPrimary);
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
+	.clear-filters-btn,
+	.clear-search-link {
+		padding: 0;
+		border-radius: 0.15rem;
+		font: inherit;
+		color: var(--color-accent-2);
+		text-decoration: underline;
+		text-underline-offset: 0.25rem;
+		cursor: pointer;
 	}
-	
-	@keyframes spin {
-		to { transform: rotate(360deg); }
+	.clear-filters-btn:hover,
+	.clear-search-link:hover {
+		color: var(--color-accent);
 	}
-	
 	.plugins-section {
-		margin-top: 4rem;
+		margin-top: 3.5rem;
 	}
-
 	.section-title {
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--mOnSurface);
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		gap: 0.5rem 1rem;
 		margin-bottom: 2rem;
-		letter-spacing: -0.02em;
+		color: var(--color-fg);
 	}
-
 	.section-count {
-		font-size: 1.25rem;
-		font-weight: 500;
-		color: var(--mOnSurfaceVariant);
-		margin-left: 0.5rem;
+		font-size: 0.85rem;
+		font-weight: 400;
+		color: var(--color-fg-dim);
 		letter-spacing: 0;
 	}
-
-	.page-subtitle-count {
-		font-size: 0.9em;
-		opacity: 0.75;
-		margin-left: 0.35rem;
-	}
-
 	.source-separator {
-		margin-top: 4rem;
+		margin-top: 3.5rem;
 		border: none;
-		border-top: 1px solid var(--mOutline);
+		border-top: 1px solid var(--color-border);
 	}
-
 	.source-empty {
-		color: var(--mOnSurfaceVariant);
-		font-size: 1rem;
+		color: var(--color-fg-dim);
+		font-size: 0.95rem;
 	}
-
-	.source-coming-soon {
-		text-align: center;
-		padding: 3rem 2rem;
-		border: 1px dashed var(--mOutline);
-		border-radius: 1rem;
-		background: var(--mSurfaceVariant);
-		color: var(--mOnSurfaceVariant);
-	}
-
-	.coming-soon-icon {
-		font-size: 3rem;
-		margin-bottom: 0.75rem;
-		opacity: 0.7;
-	}
-
-	.source-coming-soon h3 {
-		font-size: 1.5rem;
-		color: var(--mOnSurface);
-		margin-bottom: 0.5rem;
-	}
-
-	.source-coming-soon p {
-		font-size: 1rem;
-		line-height: 1.6;
-	}
-
 	.plugins-grid {
 		display: grid;
-		grid-template-columns: repeat(4, 1fr);
-		gap: 2rem;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 1.5rem;
 	}
-	
 	.plugin-card {
-		border-radius: 1rem;
-		background: var(--mSurfaceVariant);
-		border: 1px solid var(--mOutline);
-		overflow: hidden;
-		cursor: pointer;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 		display: flex;
 		flex-direction: column;
-		text-align: left;
-		padding: 0;
 		width: 100%;
+		min-width: 0;
+		overflow: hidden;
+		border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+		border-radius: 0.375rem;
+		background: color-mix(in srgb, var(--color-void) 60%, transparent);
+		text-align: left;
 		text-decoration: none;
 		color: inherit;
+		transition:
+			border-color 180ms,
+			background-color 180ms;
 	}
-	
-	.plugin-card:hover {
-		transform: translateY(-4px);
-		border-color: var(--mPrimary);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2), 0 0 24px rgba(255, 245, 155, 0.15);
+	.plugin-card:hover,
+	.plugin-card:focus-visible {
+		border-color: color-mix(in srgb, var(--color-accent-2) 55%, var(--color-border));
+		background: color-mix(in srgb, var(--color-void) 90%, transparent);
 	}
-	
-	:global([data-theme='light']) .plugin-card:hover {
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1), 0 0 24px rgba(93, 101, 245, 0.1);
+	.plugin-card:focus-visible {
+		outline: 2px solid var(--color-accent-2);
+		outline-offset: 4px;
 	}
-	
 	.plugin-preview {
 		position: relative;
 		width: 100%;
 		aspect-ratio: 16 / 9;
 		overflow: hidden;
-		background: var(--mSurface);
+		background: var(--color-void);
+		border-bottom: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
 	}
-	
 	.plugin-preview img {
+		display: block;
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: transform 0.3s ease;
 	}
-	
-	.plugin-card:hover .plugin-preview img {
-		transform: scale(1.05);
-	}
-	
 	.preview-placeholder {
 		width: 100%;
 		height: 100%;
 		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		background: linear-gradient(135deg, var(--mSurfaceVariant), var(--mSurface));
-		color: var(--mOnSurfaceVariant);
-		gap: 0.5rem;
+		background:
+			radial-gradient(
+				ellipse at 70% 100%,
+				color-mix(in srgb, var(--color-accent-3) 12%, transparent),
+				transparent 70%
+			),
+			var(--color-void);
+		color: var(--color-accent-3);
 	}
-	
 	.placeholder-icon {
 		font-size: 3rem;
 		opacity: 0.5;
 	}
-	
-	.preview-overlay {
+	.preview-arrow {
 		position: absolute;
-		inset: 0;
-		background: rgba(0, 0, 0, 0.7);
+		right: 0.75rem;
+		bottom: 0.65rem;
 		display: flex;
 		align-items: center;
 		justify-content: center;
+		width: 1.7rem;
+		height: 1.7rem;
+		border: 1px solid color-mix(in srgb, var(--color-accent-2) 35%, transparent);
+		border-radius: 50%;
+		background: var(--color-void-deep);
+		color: var(--color-accent-2);
 		opacity: 0;
-		transition: opacity 0.3s ease;
-		backdrop-filter: blur(4px);
+		transform: translate(-0.2rem, 0.2rem);
+		transition:
+			opacity 180ms,
+			transform 180ms;
 	}
-	
-	.plugin-card:hover .preview-overlay {
+	.plugin-card:hover .preview-arrow,
+	.plugin-card:focus-visible .preview-arrow {
 		opacity: 1;
+		transform: none;
 	}
-	
-	.preview-text {
-		color: white;
-		font-weight: 600;
-		font-size: 1.125rem;
-	}
-	
 	.plugin-info {
-		padding: 1.5rem;
 		display: flex;
 		flex-direction: column;
-		gap: 0.75rem;
 		flex: 1;
+		gap: 0.8rem;
+		padding: 1.15rem;
 	}
-	
 	.plugin-name-row {
 		display: flex;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.6rem;
 	}
-
 	.plugin-icon {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 2rem;
-		height: 2rem;
-		border: 1px solid color-mix(in srgb, var(--mPrimary) 30%, var(--mOutline));
-		border-radius: 0.625rem;
-		background: color-mix(in srgb, var(--mPrimary) 10%, transparent);
-		color: var(--mPrimary);
-		font-size: 1.125rem;
 		flex-shrink: 0;
+		color: var(--color-accent-2);
+		font-size: 1.15rem;
 	}
-
 	.plugin-name {
-		font-size: 1.25rem;
-		font-weight: 700;
-		color: var(--mOnSurface);
-		letter-spacing: -0.01em;
+		min-width: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.4;
+		letter-spacing: -0.02em;
+		overflow-wrap: anywhere;
+		color: var(--color-fg);
 	}
-
 	.official-badge {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		color: var(--mPrimary);
 		flex-shrink: 0;
+		color: var(--color-accent-2);
 	}
-
-	.official-badge .ti {
-		filter: drop-shadow(0 0 4px rgba(255, 245, 155, 0.4));
-	}
-
-	:global([data-theme='light']) .official-badge .ti {
-		filter: drop-shadow(0 0 4px rgba(93, 101, 245, 0.3));
-	}
-
 	.plugin-description {
-		color: var(--mOnSurfaceVariant);
-		line-height: 1.6;
-		font-size: 0.9375rem;
 		flex: 1;
+		font-size: 0.875rem;
+		line-height: 1.7;
+		color: var(--color-fg-dim);
 	}
-
 	.plugin-tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.375rem;
-		margin-top: 0.25rem;
+		gap: 0.35rem 0.5rem;
 	}
-
 	.plugin-tag {
-		padding: 0.125rem 0.5rem;
-		border-radius: 1rem;
-		background: var(--mSurface);
-		color: var(--mOnSurfaceVariant);
-		font-size: 0.75rem;
-		border: 1px solid var(--mOutline);
+		padding: 0.1rem 0.35rem;
+		border: 1px solid color-mix(in srgb, var(--color-border) 75%, transparent);
+		border-radius: 0.2rem;
+		font-size: 0.65rem;
+		color: var(--color-fg-dim);
 	}
-
 	.plugin-tag.compositor {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.25rem;
-		border-color: color-mix(in srgb, var(--mPrimary) 30%, var(--mOutline));
-		color: var(--mPrimary);
+		gap: 0.2rem;
+		color: var(--color-accent-2);
+		border-color: color-mix(in srgb, var(--color-accent-2) 22%, var(--color-border));
 	}
-	
 	.plugin-footer {
+		--plugin-meta-font-size: 0.72rem;
+		--plugin-meta-horizontal-padding: 0.4rem;
+		--plugin-meta-vertical-padding: 0.2rem;
 		display: flex;
-		--plugin-meta-font-size: 0.8125rem;
-		--plugin-meta-horizontal-padding: 0.875rem;
-		--plugin-meta-vertical-padding: 0.25rem;
-		gap: 0.75rem;
+		align-items: center;
 		justify-content: space-between;
-		align-items: center;
-		padding-top: 0.75rem;
-		border-top: 1px solid var(--mOutline);
+		gap: 0.5rem;
+		padding-top: 0.8rem;
+		border-top: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
 	}
-	
-	.plugin-stats {
-		display: inline-flex;
-		flex-shrink: 0;
-		align-items: center;
-		gap: 0.75rem;
-	}
-
 	.plugin-author {
 		display: inline-flex;
 		flex: 1 1 0;
 		align-items: center;
-		gap: 0.5rem;
+		gap: 0.3rem;
 		min-width: 0;
-		max-width: 100%;
-		padding: var(--plugin-meta-vertical-padding) var(--plugin-meta-horizontal-padding);
-		background: var(--mSurfaceVariant);
-		border: 1px solid var(--mOutline);
-		border-radius: 2rem;
-		color: var(--mOnSurface);
+		color: var(--color-fg-dim);
 		font-size: var(--plugin-meta-font-size);
-		font-weight: 500;
 	}
-
 	.plugin-author .ti {
 		flex-shrink: 0;
-		color: var(--mPrimary);
-		line-height: 1;
-		opacity: 0.8;
 	}
-
 	.plugin-author-name {
 		min-width: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
-
+	.plugin-stats {
+		display: inline-flex;
+		flex-shrink: 0;
+		align-items: center;
+		gap: 0.4rem;
+	}
 	.plugin-version {
-		color: var(--mPrimary);
 		font-size: var(--plugin-meta-font-size);
-		font-weight: 600;
-		background: rgba(255, 245, 155, 0.15);
-		padding: 0.25rem 0.625rem;
-		border: 1px solid transparent;
-		border-radius: 2rem;
+		font-weight: 500;
+		color: var(--color-fg-dim);
 	}
-	
-	:global([data-theme='light']) .plugin-version {
-		background: rgba(93, 101, 245, 0.1);
-		color: var(--mPrimary);
+	.no-results,
+	.loading-state,
+	.error-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 1rem;
+		padding: 4rem 1rem;
+		color: var(--color-fg-dim);
+		text-align: center;
 	}
-	
+	.no-results-icon {
+		font-size: 2rem;
+		opacity: 0.6;
+	}
+	.no-results h3,
+	.source-coming-soon h3 {
+		font-size: 1.25rem;
+		font-weight: 500;
+		letter-spacing: -0.02em;
+		color: var(--color-fg);
+	}
+	.no-results p,
+	.source-coming-soon p {
+		font-size: 0.9rem;
+		line-height: 1.7;
+	}
+	.source-coming-soon {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.75rem;
+		padding: 2rem 0;
+		color: var(--color-fg-dim);
+	}
+	.coming-soon-icon {
+		font-size: 1.5rem;
+		color: var(--color-accent-2);
+	}
+	.spinner {
+		width: 2rem;
+		height: 2rem;
+		border: 2px solid var(--color-border);
+		border-top-color: var(--color-accent-2);
+		border-radius: 50%;
+		animation: spin 1s linear infinite;
+	}
+	@keyframes spin {
+		to {
+			transform: rotate(360deg);
+		}
+	}
 	@media (max-width: 1200px) {
 		.plugins-grid {
-			grid-template-columns: repeat(3, 1fr);
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
-
 	@media (max-width: 900px) {
 		.plugins-grid {
-			grid-template-columns: repeat(2, 1fr);
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
-
-	@media (max-width: 768px) {
-		.catalog-controls {
-			padding: 1rem;
+	@media (max-width: 640px) {
+		.catalog-shell {
+			padding-top: 2.5rem;
 		}
-
 		.filters-heading {
 			align-items: flex-start;
 			flex-direction: column;
 		}
-
+		.sort-control {
+			justify-content: space-between;
+			width: 100%;
+		}
 		.filter-group {
 			grid-template-columns: 1fr;
 			gap: 0.5rem;
 		}
-
 		.filter-label {
 			padding-top: 0;
 		}
-
 		.plugins-grid {
 			grid-template-columns: 1fr;
+			gap: 1.25rem;
+		}
+		.plugin-info {
+			padding: 1.15rem;
+		}
+		.plugin-description {
+			font-size: 0.875rem;
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.search-container,
+		.tag-chip,
+		.plugin-card,
+		.preview-arrow {
+			transition: none;
+		}
+		.spinner {
+			animation: none;
 		}
 	}
 </style>
