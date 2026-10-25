@@ -139,6 +139,7 @@
 	<div
 		bind:this={el}
 		class="slideshow group {className}"
+		class:slideshow--paused={paused}
 		role="group"
 		aria-roledescription="carousel"
 		aria-label="Noctalia screenshots"
@@ -317,10 +318,12 @@
 			animation-name: slideshow-drift-out;
 		}
 
-		/* Freeze the drift while hovered, in lockstep with the JS countdown, so
-		   the slide visibly continues from where it stopped on mouse leave. */
+		/* Freeze the drift while hovered or paused, in lockstep with the JS countdown,
+		   so the slide visibly continues from where it stopped. */
 		.slideshow:hover .slideshow__backdrop-img,
-		.slideshow:hover .slideshow__img {
+		.slideshow:hover .slideshow__img,
+		.slideshow--paused .slideshow__backdrop-img,
+		.slideshow--paused .slideshow__img {
 			animation-play-state: paused;
 		}
 	}
