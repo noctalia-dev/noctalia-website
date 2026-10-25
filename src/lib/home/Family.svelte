@@ -24,13 +24,17 @@
 		<Reveal delay={i * 50}>
 			<article class="project-entry" class:project-entry--reversed={i % 2 === 1}>
 				<div class="project-copy">
-					<p class="project-category"><span>0{i + 1}</span> / {product.role}</p>
-					<div class="project-name">
-						<img src={product.logoUrl} alt="" width="44" height="44" loading="lazy" />
-						<h2>{product.id === 'noctalia' ? 'Noctalia Shell' : product.name}</h2>
-					</div>
-					<p class="project-note">{notes[product.id]}</p>
-					<p class="project-description">{product.blurb}</p>
+					<a href={product.pageUrl ?? product.docsUrl} class="project-overview">
+						<p class="project-category"><span>0{i + 1}</span> / {product.role}</p>
+						<div class="project-name">
+							{#if product.id !== 'noctalia'}
+								<img src={product.logoUrl} alt="" width="44" height="44" loading="lazy" />
+							{/if}
+							<h2>{product.id === 'noctalia' ? 'Shell' : product.name}</h2>
+						</div>
+						<p class="project-note">{notes[product.id]}</p>
+						<p class="project-description">{product.blurb}</p>
+					</a>
 					{#if stars[product.id] != null}
 						<a
 							class="project-stars"
@@ -70,7 +74,7 @@
 							<span class="status-dot"></span> The everyday desktop
 							<span class="ml-auto">SHELL / 01</span>
 						</div>
-						<Slideshow images={homeImages} interval={5500} />
+						<Slideshow images={homeImages} interval={5500} href="/shell" />
 						<a class="visual-caption" href="/shell"
 							>Desktops from the community <span aria-hidden="true">↗</span></a
 						>
@@ -81,7 +85,7 @@
 							<span class="status-dot"></span> Room for your windows
 							<span class="ml-auto">UMBRIEL / 02</span>
 						</div>
-						<div class="home-layout-preview"><LayoutShowcase compact /></div>
+						<div class="home-layout-preview"><LayoutShowcase compact href="/umbriel" /></div>
 						<a class="visual-caption" href="/umbriel#layouts"
 							>Four layouts. Take a closer look. <span aria-hidden="true">↗</span></a
 						>
@@ -107,7 +111,7 @@
 		border-bottom: 1px solid var(--color-border);
 	}
 	.project-category {
-		font: 0.65rem var(--font-mono);
+		font: 500 1rem var(--font-sans);
 		letter-spacing: 0.07em;
 		text-transform: uppercase;
 		color: var(--color-fg-dim);
@@ -123,7 +127,7 @@
 		margin-top: 1.6rem;
 	}
 	.project-name h2 {
-		font-size: 2.25rem;
+		font-size: 2.5rem;
 		font-weight: 600;
 		letter-spacing: -0.055em;
 		line-height: 1.1;
@@ -131,15 +135,26 @@
 	.project-name img {
 		flex-shrink: 0;
 	}
+	.project-overview {
+		display: block;
+		border-radius: 4px;
+	}
+	.project-overview h2 {
+		transition: color 180ms;
+	}
+	.project-overview:hover h2,
+	.project-overview:focus-visible h2 {
+		color: var(--color-accent);
+	}
 	.project-note {
-		font-size: 0.95rem;
+		font-size: 1.125rem;
 		line-height: 1.6;
 		color: var(--color-fg);
 		margin-top: 1.3rem;
 	}
 	.project-description {
 		max-width: 25rem;
-		font-size: 0.85rem;
+		font-size: 1rem;
 		line-height: 1.8;
 		color: var(--color-fg-dim);
 		margin-top: 0.6rem;
@@ -150,11 +165,11 @@
 		gap: 0.5rem;
 		margin-top: 0.9rem;
 		border-radius: 2px;
-		font: 0.75rem var(--font-mono);
+		font: 0.875rem var(--font-sans);
 		color: var(--color-accent);
 	}
 	.project-stars > span:last-child {
-		font: 0.65rem var(--font-sans);
+		font: 0.8rem var(--font-sans);
 		color: var(--color-fg-dim);
 	}
 	.project-stars:hover {
@@ -169,7 +184,7 @@
 		align-items: center;
 		gap: 1.5rem;
 		margin-top: 1.8rem;
-		font-size: 0.8rem;
+		font-size: 1rem;
 	}
 	.project-primary,
 	.project-source {
@@ -177,7 +192,8 @@
 		gap: 1.4rem;
 		align-items: center;
 		border-radius: 2px;
-		padding-bottom: 0.4rem;
+		min-height: 2.75rem;
+		padding-block: 0.5rem;
 	}
 	.project-primary {
 		color: var(--color-accent);
@@ -208,7 +224,7 @@
 		align-items: center;
 		gap: 0.5rem;
 		padding: 0.9rem 1rem;
-		font: 0.6rem var(--font-mono);
+		font: 0.8rem var(--font-sans);
 		color: var(--color-fg-dim);
 		border-bottom: 1px solid var(--color-border);
 	}
@@ -227,7 +243,7 @@
 		justify-content: space-between;
 		gap: 1rem;
 		padding: 0.85rem 1rem;
-		font-size: 0.65rem;
+		font-size: 0.8rem;
 		color: var(--color-fg-dim);
 	}
 	.visual-caption > span {
@@ -256,7 +272,7 @@
 			max-width: 32rem;
 		}
 		.visual-label {
-			font-size: 0.55rem;
+			font-size: 0.75rem;
 		}
 	}
 </style>

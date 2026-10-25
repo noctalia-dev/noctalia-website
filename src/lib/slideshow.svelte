@@ -5,10 +5,12 @@
 	let {
 		images,
 		interval = 6000,
+		href,
 		class: className = ''
 	}: {
 		images: SlideImage[];
 		interval?: number;
+		href?: string;
 		class?: string;
 	} = $props();
 
@@ -145,15 +147,21 @@
 		onmouseleave={onMouseLeave}
 	>
 		{#each displayImages as image, i (image.src)}
-			<div
+			<svelte:element
+				this={href ? 'a' : 'div'}
+				{href}
+				tabindex={href ? (i === active ? 0 : -1) : undefined}
+				class:slideshow__slide--linked={!!href}
 				class="slideshow__slide {i === active ? 'slideshow__slide--active' : ''} {leaving.includes(
 					i
 				)
 					? 'slideshow__slide--leaving'
 					: ''}"
-				role="group"
+				role={href ? undefined : 'group'}
 				aria-roledescription="slide"
-				aria-label="{i + 1} of {images.length}"
+				aria-label={href
+					? `Explore Noctalia Shell: ${image.alt} (${i + 1} of ${images.length})`
+					: `${i + 1} of ${images.length}`}
 				aria-hidden={i !== active}
 			>
 				<img
@@ -173,7 +181,7 @@
 					decoding="async"
 					draggable="false"
 				/>
-			</div>
+			</svelte:element>
 		{/each}
 
 		{#if images.length > 1}
@@ -255,6 +263,9 @@
 	.slideshow__slide--active {
 		opacity: 1;
 		z-index: 2;
+	}
+	.slideshow__slide--active.slideshow__slide--linked {
+		pointer-events: auto;
 	}
 
 	/* Outgoing slide: fades out underneath while its drift animation keeps

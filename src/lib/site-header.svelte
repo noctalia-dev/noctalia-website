@@ -176,7 +176,7 @@
 		height: 2.5rem;
 		padding-inline: 0.8rem;
 		border-radius: 4px;
-		font-size: 0.85rem;
+		font-size: 0.95rem;
 		font-weight: 500;
 		white-space: nowrap;
 		color: var(--color-fg-dim);
@@ -236,7 +236,7 @@
 	:global(.menu-trigger) {
 		display: none;
 	}
-	@media (max-width: 1199px) {
+	@media (max-width: 899px) {
 		.primary-nav {
 			display: none;
 		}

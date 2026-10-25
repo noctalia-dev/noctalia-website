@@ -20,7 +20,7 @@
 		eyebrow="The Noctalia projects"
 		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
 		summary="A family of projects that feel like one desktop."
-		detail="A native Wayland desktop shell, compositor, and login screen sharing one look, one palette, and one philosophy. Each tunable to match your setup. Use them together, or choose the pieces you need."
+		detail="Our native Wayland desktop shell, compositor, and login screen share one look, one palette, and one philosophy. Each is tunable to your setup. Use them together, or choose the pieces you need."
 		anchorHref="#family"
 		anchorLabel="Meet the projects"
 		back={false}
@@ -51,13 +51,15 @@
 		<Reveal>
 			<div class="plugin-row">
 				<div class="plugin-copy">
-					<p class="plugin-marker">04 <span>/ THE SHELL ECOSYSTEM</span></p>
-					<h2 id="plugins-title">Plugins.</h2>
-					<p class="plugin-intro">A few more things your desktop can do.</p>
-					<p class="plugin-description">
-						Small additions for Noctalia Shell, made by the team and the community. Find something
-						useful in the catalog, or build a plugin of your own.
-					</p>
+					<a href="/plugins" class="plugin-overview">
+						<p class="plugin-marker">04 <span>/ THE SHELL ECOSYSTEM</span></p>
+						<h2 id="plugins-title">Plugins.</h2>
+						<p class="plugin-intro">A few more things your desktop can do.</p>
+						<p class="plugin-description">
+							Small additions for Noctalia Shell, made by the team and the community. Find something
+							useful in the catalog, or build a plugin of your own.
+						</p>
+					</a>
 					<a class="directory-link mt-6 text-accent" href="/plugins"
 						>Open the catalog <span aria-hidden="true">→</span></a
 					>
@@ -149,7 +151,8 @@
 		justify-content: space-between;
 		gap: 1.5rem;
 		border-radius: 2px;
-		font-size: 0.8rem;
+		min-height: 2.75rem;
+		font-size: 1rem;
 		font-weight: 600;
 		color: var(--color-fg);
 		text-decoration: none;
@@ -173,7 +176,7 @@
 		border-bottom: 1px solid var(--color-border);
 	}
 	.plugin-marker {
-		font: 0.65rem var(--font-mono);
+		font: 500 1rem var(--font-sans);
 		letter-spacing: 0.07em;
 		color: var(--color-accent);
 	}
@@ -183,23 +186,35 @@
 	}
 	.plugin-row h2 {
 		margin-top: 1.5rem;
-		font-size: 2.25rem;
+		font-size: 2.5rem;
 		letter-spacing: -0.055em;
 		font-weight: 600;
 	}
 	.plugin-intro {
 		margin-top: 1.3rem;
-		font-size: 0.95rem;
+		font-size: 1.125rem;
+		line-height: 1.6;
 	}
 	.plugin-description {
 		max-width: 25rem;
 		margin-top: 0.6rem;
-		font-size: 0.85rem;
+		font-size: 1rem;
 		line-height: 1.8;
 		color: var(--color-fg-dim);
 	}
 	.plugin-panel {
 		min-width: 0;
+	}
+	.plugin-overview {
+		display: block;
+		border-radius: 4px;
+	}
+	.plugin-overview h2 {
+		transition: color 180ms;
+	}
+	.plugin-overview:hover h2,
+	.plugin-overview:focus-visible h2 {
+		color: var(--color-accent);
 	}
 	@media (min-width: 761px) {
 		.plugin-row {

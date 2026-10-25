@@ -32,19 +32,15 @@
 </script>
 
 <header class="site-shell pt-9 md:pt-14" data-logo-side={mirrored ? 'right' : 'left'}>
-	<Reveal>
-		{#if back}
+	{#if back}
+		<Reveal>
 			<a
 				href="/"
 				class="inline-flex items-center gap-2 rounded-sm text-sm text-fg-dim transition-colors hover:text-accent"
 				><span aria-hidden="true">←</span> The Noctalia projects</a
 			>
-		{:else}
-			<p class="text-sm text-fg-dim">
-				Noctalia <span class="mx-2 text-accent" aria-hidden="true">/</span> quiet by design
-			</p>
-		{/if}
-	</Reveal>
+		</Reveal>
+	{/if}
 	<div
 		class="intro-grid mt-10 grid items-end gap-8 border-b border-border/65 pb-10 md:mt-16 md:gap-12 md:pb-14"
 		class:intro-grid--reversed={mirrored}

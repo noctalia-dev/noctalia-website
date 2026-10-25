@@ -81,9 +81,9 @@
 	<div class="preview-label">
 		<span></span> From sign-in to your space <span class="preview-code">GREETER / 03</span>
 	</div>
-	<div
+	<a
+		href="/greeter"
 		class="welcome"
-		role="img"
 		aria-label="Illustration based on Noctalia Greeter’s actual interface: a clock above the centered user and password panel, a session selector below, a color scheme control at the top right, and power controls at the bottom right. The sequence then shows the same scrolling Umbriel layout, with windows arranged in a horizontal ribbon."
 	>
 		<div class="scene" aria-hidden="true">
@@ -125,7 +125,7 @@
 				/>
 			</div>
 		</div>
-	</div>
+	</a>
 	<div class="preview-caption">
 		<a href="/greeter"
 			>Greeter → Umbriel <span class="illustration-label">· illustration</span>
@@ -166,7 +166,7 @@
 		gap: 0.5rem;
 		padding: 0.9rem 1rem;
 		border-bottom: 1px solid var(--color-border);
-		font-size: 0.6rem;
+		font-size: 0.8rem;
 		color: var(--color-fg-dim);
 	}
 	.preview-label > span:first-child {
@@ -179,6 +179,7 @@
 		margin-left: auto;
 	}
 	.welcome {
+		display: block;
 		position: relative;
 		overflow: hidden;
 		aspect-ratio: 16 / 9;
@@ -387,7 +388,7 @@
 		align-items: center;
 		gap: 0.75rem;
 		padding: 0.75rem 1rem 0;
-		font-size: 0.65rem;
+		font-size: 0.8rem;
 		color: var(--color-fg-dim);
 	}
 	.preview-caption a {
@@ -423,11 +424,11 @@
 	}
 	.sequence-label {
 		padding: 0.3rem 1rem 0.9rem;
-		font-size: 0.6rem;
+		font-size: 0.75rem;
 		color: var(--color-fg-dim);
 	}
 	.motion-status {
-		font-size: 0.6rem;
+		font-size: 0.75rem;
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.greeter-preview *,

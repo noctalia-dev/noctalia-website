@@ -4,8 +4,9 @@
 	let {
 		compact = false,
 		presentation = false,
-		playing = true
-	}: { compact?: boolean; presentation?: boolean; playing?: boolean } = $props();
+		playing = true,
+		href
+	}: { compact?: boolean; presentation?: boolean; playing?: boolean; href?: string } = $props();
 
 	type LayoutId = 'scrolling' | 'dwindle' | 'master' | 'floating';
 	type Rectangle = { x: number; y: number; w: number; h: number };
@@ -221,7 +222,15 @@
 	{/if}
 
 	<div class="layout-preview">
-		<div class="desktop" role="img" aria-label="{active.name} window layout: {active.description}">
+		<svelte:element
+			this={href ? 'a' : 'div'}
+			{href}
+			class="desktop"
+			role={href ? undefined : 'img'}
+			aria-label="{href
+				? 'Explore Umbriel: '
+				: ''}{active.name} window layout: {active.description}"
+		>
 			<div class="desktop-bar" aria-hidden="true">
 				<span class="desktop-brand"><span class="desktop-moon"></span> umbriel</span>
 				<span class="workspace-indicator"><span class="workspace-dot"></span> workspace 01</span>
@@ -299,7 +308,7 @@
 					</div>
 				{/each}
 			</div>
-		</div>
+		</svelte:element>
 
 		{#if !presentation}
 			<div class="preview-caption">
@@ -427,6 +436,7 @@
 		min-width: 0;
 	}
 	.desktop {
+		display: block;
 		container-type: inline-size;
 		overflow: hidden;
 		border: 1px solid color-mix(in srgb, var(--color-accent-3) 30%, var(--color-border));

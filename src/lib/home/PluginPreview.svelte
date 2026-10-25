@@ -8,7 +8,7 @@
 <div class="plugin-preview" aria-label="Wallpaper Depth plugin preview">
 	<div class="thumbnail-stage">
 		{#if !imageFailed}
-			<a href={pluginHref} class="thumbnail-link" aria-label="Explore Wallpaper Depth">
+			<a href="/plugins" class="thumbnail-link" aria-label="Browse Noctalia Shell plugins">
 				<img
 					src="/previews/wallpaper-depth.webp"
 					alt="Wallpaper Depth plugin thumbnail"
@@ -19,7 +19,7 @@
 				/>
 			</a>
 		{:else}
-			<a href={pluginHref} class="thumbnail-fallback"
+			<a href="/plugins" class="thumbnail-fallback"
 				><img
 					src="https://assets.noctalia.dev/noctalia-logo.svg"
 					alt=""
