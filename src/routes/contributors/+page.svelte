@@ -25,13 +25,10 @@
 		detail="Meet the contributors behind the project, with their contributions on GitHub."
 	>
 		{#snippet actions()}
-			<a
-				href={data.repoUrl}
-				target="_blank"
-				rel="noopener noreferrer"
-				class="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-accent transition-colors hover:text-accent-2"
-				>Noctalia on GitHub <span aria-hidden="true">↗</span></a
+			<a href={data.repoUrl} target="_blank" rel="noopener noreferrer" class="action-secondary"
+				><i class="ti ti-brand-github" aria-hidden="true"></i> Noctalia on GitHub</a
 			>
+			<a href="/ethos" class="action-secondary">How we work <span aria-hidden="true">→</span></a>
 		{/snippet}
 		{#snippet footnote()}
 			{#if data.contributors.length > 0}

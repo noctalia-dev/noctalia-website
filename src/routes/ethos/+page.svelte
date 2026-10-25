@@ -9,7 +9,7 @@
 
 <main class="pb-24">
 	<ProjectIntro
-		title="Our Ethos"
+		title="Our ethos"
 		eyebrow="How we work"
 		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
 		summary="How we work with the people who use and build Noctalia."

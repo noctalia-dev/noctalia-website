@@ -24,7 +24,7 @@
 			links: [
 				{ href: '/blog', label: 'Blog' },
 				{ href: '/changelogs', label: 'Releases' },
-				{ href: '/ethos', label: 'Our Ethos' },
+				{ href: '/ethos', label: 'Our ethos' },
 				{ href: '/palettes', label: 'Palettes' }
 			]
 		},
@@ -40,7 +40,7 @@
 			title: 'Community',
 			links: [
 				{ href: discordUrl, label: 'Discord', external: true },
-				{ href: '/rss.xml', label: 'RSS Feed' }
+				{ href: '/rss.xml', label: 'RSS feed' }
 			]
 		}
 	];

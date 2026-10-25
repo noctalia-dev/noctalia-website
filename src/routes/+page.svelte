@@ -50,7 +50,10 @@
 			<div class="community">
 				<div>
 					<h2 id="community-title">Made by people who use it.</h2>
-					<p>Come build a desktop with us.</p>
+					<p>
+						Free and open source, built by a small team in our spare time.
+						<a href="/ethos" class="ethos-link">Read how we work <span aria-hidden="true">→</span></a>
+					</p>
 				</div>
 				<div class="community-actions">
 					<a href="https://discord.noctalia.dev" target="_blank" rel="noopener noreferrer"
@@ -165,6 +168,20 @@
 		font-size: 1rem;
 		line-height: 1.5;
 		color: var(--color-fg-dim);
+	}
+	.ethos-link {
+		color: var(--color-fg);
+		font-weight: 500;
+		text-decoration: underline;
+		text-decoration-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+		text-underline-offset: 0.25em;
+		transition:
+			color 180ms,
+			text-decoration-color 180ms;
+	}
+	.ethos-link:hover {
+		color: var(--color-accent);
+		text-decoration-color: currentColor;
 	}
 	.community-actions {
 		display: flex;

@@ -27,18 +27,11 @@
 
 	let { data } = $props<{ data: { plugins: Plugin[] } }>();
 
-	let plugins = $state<Plugin[]>([]);
-	let allPlugins = $state<Plugin[]>([]);
-	let loading = $state(false);
-	let error = $state<string | null>(null);
+	const allPlugins: Plugin[] = $derived(data.plugins);
 	let searchQuery = $state('');
-	let fuse: Fuse<Plugin> | null = $state(null);
 	let selectedTags = $state<string[]>([]);
 	let selectedCompositors = $state<string[]>([]);
-	let availableTags = $state<string[]>([]);
-	let availableCompositors = $state<string[]>([]);
 	let sortOption = $state<'name' | 'updated' | 'recommendations' | 'trending'>('name');
-
 	const COMPOSITORS = ['niri', 'hyprland', 'umbriel', 'mangowc', 'sway', 'labwc', 'scroll'];
 
 	function sortPlugins(items: Plugin[]): Plugin[] {
@@ -63,15 +56,6 @@
 		});
 	}
 
-	// Split the filtered list into the two sources rendered as separate sections.
-	let officialPlugins = $derived(
-		sortPlugins(plugins.filter((plugin) => plugin.source === 'official'))
-	);
-	let communityPlugins = $derived(
-		sortPlugins(plugins.filter((plugin) => plugin.source !== 'official'))
-	);
-	// Does the catalog contain any community plugins at all (ignoring filters)?
-	let hasCommunitySource = $derived(allPlugins.some((plugin) => plugin.source !== 'official'));
 	let isFiltering = $derived(
 		Boolean(searchQuery || selectedTags.length > 0 || selectedCompositors.length > 0)
 	);
@@ -80,27 +64,20 @@
 	let totalCommunityCount = $derived(allPlugins.filter((p) => p.source !== 'official').length);
 	let totalPluginCount = $derived(allPlugins.length);
 
-	onMount(() => {
-		void refreshPluginMetrics();
-		// Preserve catalog order
-		allPlugins = data.plugins;
-
-		// Keep compositor compatibility separate from descriptive tags.
-		const tagSet = new Set<string>();
-		const compositorSet = new Set<string>();
-		allPlugins.forEach((plugin) => {
-			plugin.tags?.forEach((tag) => {
-				if (isCompositorTag(tag)) compositorSet.add(tag);
-				else tagSet.add(tag);
-			});
-		});
-		availableTags = Array.from(tagSet).sort();
-		availableCompositors = Array.from(compositorSet).sort(
+	// Keep compositor compatibility separate from descriptive tags.
+	let availableTags = $derived(
+		[...new Set(allPlugins.flatMap((p) => p.tags ?? []).filter((t) => !isCompositorTag(t)))].sort()
+	);
+	let availableCompositors = $derived(
+		[...new Set(allPlugins.flatMap((p) => p.tags ?? []).filter(isCompositorTag))].sort(
 			(a, b) => COMPOSITORS.indexOf(a) - COMPOSITORS.indexOf(b)
-		);
+		)
+	);
 
-		// Initialize Fuse.js for fuzzy search
-		fuse = new Fuse(allPlugins, {
+	// Fuzzy index is built on the first search, not on page load.
+	let fuse: Fuse<Plugin> | null = null;
+	function searchMatches(query: string): Set<string> {
+		fuse ??= new Fuse(allPlugins, {
 			keys: [
 				{ name: 'name', weight: 0.5 },
 				{ name: 'description', weight: 0.3 },
@@ -109,46 +86,49 @@
 				{ name: 'tags', weight: 0.4 }
 			],
 			threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
-			includeScore: true,
 			minMatchCharLength: 2
 		});
+		return new Set(fuse.search(query).map((r) => r.item.id));
+	}
 
-		plugins = allPlugins;
+	// Tag and compositor groups combine with AND; each group permits one active choice.
+	let plugins = $derived.by(() => {
+		let filtered = allPlugins;
+		if (selectedTags.length > 0) {
+			filtered = filtered.filter((plugin) =>
+				selectedTags.some((tag) => plugin.tags?.includes(tag))
+			);
+		}
+		if (selectedCompositors.length > 0) {
+			filtered = filtered.filter((plugin) =>
+				selectedCompositors.some((compositor) => plugin.tags?.includes(compositor))
+			);
+		}
+		const query = searchQuery.trim();
+		if (query) {
+			const ids = searchMatches(query);
+			filtered = filtered.filter((plugin) => ids.has(plugin.id));
+		}
+		return filtered;
+	});
 
-		// Preserve direct links to either a regular tag or a compositor.
+	// Split the filtered list into the two sources rendered as separate sections.
+	let officialPlugins = $derived(
+		sortPlugins(plugins.filter((plugin) => plugin.source === 'official'))
+	);
+	let communityPlugins = $derived(
+		sortPlugins(plugins.filter((plugin) => plugin.source !== 'official'))
+	);
+
+	onMount(() => {
+		void refreshPluginMetrics();
+		// Preserve direct links to either a regular tag or a compositor (the page is prerendered).
 		const urlTag = $page.url.searchParams.get('tag');
 		if (urlTag && availableCompositors.includes(urlTag)) {
 			selectedCompositors = [urlTag];
 		} else if (urlTag && availableTags.includes(urlTag)) {
 			selectedTags = [urlTag];
 		}
-	});
-
-	$effect(() => {
-		let filtered = allPlugins;
-
-		// Apply tag filter (OR logic - show plugins matching any selected tag)
-		if (selectedTags.length > 0) {
-			filtered = filtered.filter((plugin) =>
-				selectedTags.some((tag) => plugin.tags?.includes(tag))
-			);
-		}
-
-		// Filter groups combine with AND, while each group permits one active choice.
-		if (selectedCompositors.length > 0) {
-			filtered = filtered.filter((plugin) =>
-				selectedCompositors.some((compositor) => plugin.tags?.includes(compositor))
-			);
-		}
-
-		// Apply search filter
-		if (fuse && searchQuery.trim()) {
-			const results = fuse.search(searchQuery);
-			const searchIds = new Set(results.map((r) => r.item.id));
-			filtered = filtered.filter((plugin) => searchIds.has(plugin.id));
-		}
-
-		plugins = filtered;
 	});
 
 	function toggleTag(tag: string) {
@@ -183,30 +163,7 @@
 	}
 
 	function getIconClass(plugin: Plugin): string {
-		const icon = plugin.icon?.trim();
-		return `ti ti-${icon && /^[a-z0-9-]+$/.test(icon) ? icon : 'puzzle'}`;
-	}
-
-	function ensureTablerIcon(node: HTMLElement, iconClass: string) {
-		let frame = 0;
-
-		function check(nextIconClass: string) {
-			iconClass = nextIconClass;
-			cancelAnimationFrame(frame);
-			node.classList.remove('ti-puzzle');
-			frame = requestAnimationFrame(() => {
-				const content = getComputedStyle(node, '::before').content;
-				if (!content || content === 'none' || content === 'normal' || content === '""') {
-					node.classList.add('ti-puzzle');
-				}
-			});
-		}
-
-		check(iconClass);
-		return {
-			update: check,
-			destroy: () => cancelAnimationFrame(frame)
-		};
+		return `ti ti-${plugin.icon ?? 'puzzle'}`;
 	}
 
 	function getPreviewUrl(plugin: Plugin): string {
@@ -252,16 +209,6 @@
 				? `${totalPluginCount} plugins from the team and the community. Search, or narrow them down by compositor and tag.`
 				: 'Search, or narrow the catalog down by compositor and tag.'}
 		/>
-		{#if loading}
-			<div class="loading-state">
-				<div class="spinner"></div>
-				<p>Loading plugins...</p>
-			</div>
-		{:else if error}
-			<div class="error-state">
-				<p>Error: {error}</p>
-			</div>
-		{:else}
 			<div class="catalog-controls">
 				<div class="search-section">
 					<div class="search-container">
@@ -378,18 +325,14 @@
 							onerror={handleImageError}
 						/>
 						<div class="preview-placeholder" style="display: none;">
-							<i
-								class={`${getIconClass(plugin)} placeholder-icon`}
-								use:ensureTablerIcon={getIconClass(plugin)}
-								aria-hidden="true"
-							></i>
+							<i class={`${getIconClass(plugin)} placeholder-icon`} aria-hidden="true"></i>
 						</div>
 						<span class="preview-arrow" aria-hidden="true">↗</span>
 					</div>
 					<div class="plugin-info">
 						<div class="plugin-name-row">
 							<span class="plugin-icon" aria-hidden="true">
-								<i class={getIconClass(plugin)} use:ensureTablerIcon={getIconClass(plugin)}></i>
+								<i class={getIconClass(plugin)}></i>
 							</span>
 							<h3 class="plugin-name">{plugin.name}</h3>
 							{#if plugin.source === 'official'}
@@ -484,7 +427,6 @@
 					{/if}
 				</div>
 			{/if}
-		{/if}
 	</section>
 </main>
 
@@ -690,6 +632,9 @@
 		display: flex;
 		flex-direction: column;
 		width: 100%;
+		/* ~300 cards: let the browser skip layout and paint for the ones offscreen. */
+		content-visibility: auto;
+		contain-intrinsic-size: auto 22rem;
 		min-width: 0;
 		overflow: hidden;
 		text-align: left;
@@ -854,9 +799,7 @@
 		font-weight: 500;
 		color: var(--color-fg-dim);
 	}
-	.no-results,
-	.loading-state,
-	.error-state {
+	.no-results {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -893,19 +836,6 @@
 	.coming-soon-icon {
 		font-size: 1.5rem;
 		color: var(--color-accent-2);
-	}
-	.spinner {
-		width: 2rem;
-		height: 2rem;
-		border: 2px solid var(--color-border);
-		border-top-color: var(--color-accent-2);
-		border-radius: 50%;
-		animation: spin 1s linear infinite;
-	}
-	@keyframes spin {
-		to {
-			transform: rotate(360deg);
-		}
 	}
 	@media (max-width: 1200px) {
 		.plugins-grid {
@@ -950,9 +880,6 @@
 		.plugin-card,
 		.preview-arrow {
 			transition: none;
-		}
-		.spinner {
-			animation: none;
 		}
 	}
 </style>
