@@ -66,16 +66,21 @@
 	let selectionAnimation: Animation | undefined;
 	const layoutId = $derived(selected);
 	const active = $derived(layouts.find((layout) => layout.id === layoutId)!);
-	const cycleLength = $derived(
-		layoutId === 'dwindle' ? 5 : layoutId === 'master' || layoutId === 'scrolling' ? 4 : 3
-	);
+	const cycleLength = $derived(layoutId === 'dwindle' ? 5 : 4);
 	const displayPhase = $derived(reducedMotion ? cycleLength - 1 : phase);
 	const demoApps = $derived(layoutId === 'dwindle' ? apps : apps.slice(0, 4));
 	const visibleWindowCount = $derived(
 		layoutId === 'master' || layoutId === 'dwindle' ? displayPhase + 1 : 4
 	);
 	// Scrolling focuses Browser, then the stacked Terminal, then Files (twice: normal, then widened).
-	const focused = $derived(layoutId === 'scrolling' ? [0, 3, 2, 2][displayPhase] : displayPhase);
+	// Floating focuses Browser, then keeps Editor in focus while it is moved, resized, and snapped.
+	const focused = $derived(
+		layoutId === 'scrolling'
+			? [0, 3, 2, 2][displayPhase]
+			: layoutId === 'floating'
+				? Math.min(displayPhase, 1)
+				: displayPhase
+	);
 	const progress = $derived(
 		layoutId === 'scrolling'
 			? [
@@ -100,9 +105,10 @@
 							'One main window. Three alongside.'
 						][displayPhase]
 					: [
-							'Your windows, where you want them.',
-							'Move a window. Make it yours.',
-							'Snap to the edges for a tidy view.'
+							'Windows overlap, just as you left them.',
+							'Drag a window anywhere.',
+							'Resize it from any edge.',
+							'Drop it on a screen edge to snap it into place.'
 						][displayPhase]
 	);
 
@@ -138,19 +144,18 @@
 					: { x: 64, y: 7 + (index - 1) * (companionHeight + 2), w: 32, h: companionHeight }
 			);
 		}
-		if (displayPhase === 2) {
-			return [
-				{ x: 4, y: 7, w: 44, h: 86 },
-				{ x: 50, y: 7, w: 46, h: 86 },
-				{ x: 56, y: 12, w: 30, h: 42 },
-				{ x: 16, y: 53, w: 35, h: 38 }
-			];
-		}
+		// Floating: only Editor changes (move, resize, snap); everything else stays where it was left.
+		const editor: Rectangle[] = [
+			{ x: 38, y: 26, w: 44, h: 54 },
+			{ x: 50, y: 12, w: 44, h: 54 },
+			{ x: 50, y: 12, w: 46, h: 80 },
+			{ x: 51, y: 7, w: 45, h: 86 }
+		];
 		return [
-			{ x: 7, y: 12, w: 49, h: 62 },
-			{ x: displayPhase === 1 ? 21 : 43, y: displayPhase === 1 ? 17 : 30, w: 48, h: 61 },
-			{ x: 58, y: 8, w: 30, h: 44 },
-			{ x: 16, y: 53, w: 35, h: 38 }
+			{ x: 6, y: 9, w: 50, h: 60 },
+			editor[displayPhase],
+			{ x: 12, y: 56, w: 34, h: 36 },
+			{ x: 62, y: 62, w: 32, h: 30 }
 		];
 	}
 
@@ -319,11 +324,7 @@
 						style:top="{rectangle.y}%"
 						style:width="{rectangle.w}%"
 						style:height="{rectangle.h}%"
-						style:z-index={layoutId === 'floating' && displayPhase === 2
-							? 5 - index
-							: focused === index
-								? 5
-								: index + 1}
+						style:z-index={focused === index ? 5 : index + 1}
 					>
 						<div class="window-title">
 							<span class="window-app"><i class="ti {app.icon}"></i><span>{app.name}</span></span>
