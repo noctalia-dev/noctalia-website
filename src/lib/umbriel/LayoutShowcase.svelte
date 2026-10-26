@@ -40,7 +40,7 @@
 			name: 'Floating',
 			hint: 'A familiar kind of freedom',
 			description:
-				'Move and resize windows wherever you like, just as on a traditional desktop. Snap them to an edge when you want a little more order.'
+				'Move, resize, and snap windows wherever you like. Minimize an app to put it aside, then restore it right where you left it.'
 		}
 	];
 
@@ -66,19 +66,27 @@
 	let selectionAnimation: Animation | undefined;
 	const layoutId = $derived(selected);
 	const active = $derived(layouts.find((layout) => layout.id === layoutId)!);
-	const cycleLength = $derived(layoutId === 'dwindle' ? 5 : 4);
-	const displayPhase = $derived(reducedMotion ? cycleLength - 1 : phase);
-	const demoApps = $derived(layoutId === 'dwindle' ? apps : apps.slice(0, 4));
-	const visibleWindowCount = $derived(
-		layoutId === 'master' || layoutId === 'dwindle' ? displayPhase + 1 : 4
+	const cycleLength = $derived(layoutId === 'floating' ? 6 : layoutId === 'dwindle' ? 5 : 4);
+	const displayPhase = $derived(
+		reducedMotion ? (layoutId === 'floating' ? 4 : cycleLength - 1) : phase
 	);
+	const demoApps = $derived(layoutId === 'dwindle' ? apps : apps.slice(0, 4));
+	const editorMinimized = $derived(layoutId === 'floating' && displayPhase === 4);
+	const visibleWindowCount = $derived(demoApps.filter((_, index) => isWindowVisible(index)).length);
+
+	function isWindowVisible(index: number): boolean {
+		if (layoutId === 'master' || layoutId === 'dwindle') return index <= displayPhase;
+		return !(editorMinimized && index === 1);
+	}
 	// Scrolling focuses Browser, then the stacked Terminal, then Files (twice: normal, then widened).
-	// Floating focuses Browser, then keeps Editor in focus while it is moved, resized, and snapped.
+	// Floating returns focus to Browser while Editor is minimized, then restores Editor's focus.
 	const focused = $derived(
 		layoutId === 'scrolling'
 			? [0, 3, 2, 2][displayPhase]
 			: layoutId === 'floating'
-				? Math.min(displayPhase, 1)
+				? editorMinimized
+					? 0
+					: Math.min(displayPhase, 1)
 				: displayPhase
 	);
 	const progress = $derived(
@@ -108,7 +116,9 @@
 							'Windows overlap, just as you left them.',
 							'Drag a window anywhere.',
 							'Resize it from any edge.',
-							'Drop it on a screen edge to snap it into place.'
+							'Drop it on a screen edge to snap it into place.',
+							'Minimize a window. Keep it ready for later.',
+							'Restore it, right where you left it.'
 						][displayPhase]
 	);
 
@@ -144,7 +154,7 @@
 					: { x: 64, y: 7 + (index - 1) * (companionHeight + 2), w: 32, h: companionHeight }
 			);
 		}
-		// Floating: only Editor changes (move, resize, snap); everything else stays where it was left.
+		// Editor retains its snapped geometry while minimizing and restoring.
 		const editor: Rectangle[] = [
 			{ x: 38, y: 26, w: 44, h: 54 },
 			{ x: 50, y: 12, w: 44, h: 54 },
@@ -153,7 +163,7 @@
 		];
 		return [
 			{ x: 6, y: 9, w: 50, h: 60 },
-			editor[displayPhase],
+			editor[Math.min(displayPhase, 3)],
 			{ x: 12, y: 56, w: 34, h: 36 },
 			{ x: 62, y: 62, w: 32, h: 30 }
 		];
@@ -254,6 +264,7 @@
 	data-layout={layoutId}
 	data-phase={displayPhase}
 	data-window-count={visibleWindowCount}
+	data-minimized={editorMinimized}
 >
 	{#if compact}
 		<div class="compact-bar">
@@ -314,12 +325,17 @@
 			<div class="desktop-workspace" bind:this={workspace} aria-hidden="true">
 				{#each demoApps as app, index (app.name)}
 					{@const rectangle = windows[index]}
+					{@const shown = isWindowVisible(index)}
 					<div
 						class="demo-window {app.tone}"
 						class:focused={focused === index}
-						data-window-visible={index < visibleWindowCount}
-						style:opacity={index < visibleWindowCount ? 1 : 0}
-						style:transform={index < visibleWindowCount ? 'none' : 'translateY(0.5rem) scale(0.96)'}
+						data-window-visible={shown}
+						style:opacity={shown ? 1 : 0}
+						style:transform={editorMinimized && index === 1
+							? 'translateX(-52%) scale(0.08)'
+							: shown
+								? 'none'
+								: 'translateY(0.5rem) scale(0.96)'}
 						style:left="{rectangle.x}%"
 						style:top="{rectangle.y}%"
 						style:width="{rectangle.w}%"
@@ -328,7 +344,14 @@
 					>
 						<div class="window-title">
 							<span class="window-app"><i class="ti {app.icon}"></i><span>{app.name}</span></span>
-							<span class="window-actions"><span></span><span></span></span>
+							<span class="window-actions">
+								{#if layoutId === 'floating'}
+									<span class="window-minimize" class:highlight={index === 1 && displayPhase === 3}>
+										<i class="ti ti-minus"></i>
+									</span>
+								{:else}<span></span>{/if}
+								<span></span>
+							</span>
 						</div>
 						<div class="window-content">
 							{#if index === 0}
@@ -373,6 +396,13 @@
 						</div>
 					</div>
 				{/each}
+				{#if layoutId === 'floating'}
+					<div class="minimized-app" class:shown={editorMinimized}>
+						<i class="ti ti-code"></i><span>Editor</span><span class="minimized-status"
+							>minimized</span
+						>
+					</div>
+				{/if}
 			</div>
 		</svelte:element>
 
@@ -517,6 +547,39 @@
 			0 0 0 1px color-mix(in srgb, var(--window-tone) 10%, transparent),
 			0 7px 25px rgb(0 0 0 / 0.22);
 	}
+	[data-layout='floating'] .demo-window {
+		transform-origin: center bottom;
+	}
+	.minimized-app {
+		position: absolute;
+		left: 50%;
+		bottom: 3%;
+		z-index: 6;
+		display: flex;
+		align-items: center;
+		gap: 0.6em;
+		padding: 0.5em 0.8em;
+		border: 1px solid color-mix(in srgb, var(--color-accent) 60%, var(--color-border));
+		border-radius: 0.4rem;
+		background: var(--color-void);
+		color: var(--color-fg);
+		font-size: clamp(0.6rem, 1.8cqw, 0.875rem);
+		transform: translate(-50%, 0.5rem) scale(0.9);
+		opacity: 0;
+		transition:
+			opacity 250ms ease,
+			transform 350ms cubic-bezier(0.22, 1, 0.36, 1);
+	}
+	.minimized-app.shown {
+		opacity: 1;
+		transform: translate(-50%, 0) scale(1);
+	}
+	.minimized-app i {
+		color: var(--color-accent);
+	}
+	.minimized-status {
+		color: var(--color-fg-dim);
+	}
 	.window-title {
 		flex-shrink: 0;
 		display: flex;
@@ -542,6 +605,7 @@
 	}
 	.window-actions {
 		display: flex;
+		align-items: center;
 		gap: 0.3rem;
 	}
 	.window-actions span {
@@ -550,6 +614,20 @@
 		border-radius: 50%;
 		background: var(--window-tone);
 		opacity: 0.35;
+	}
+	.window-actions .window-minimize {
+		display: grid;
+		place-items: center;
+		width: 1.2em;
+		height: 1.2em;
+		border-radius: 0.2rem;
+		background: transparent;
+		opacity: 0.65;
+	}
+	.window-actions .window-minimize.highlight {
+		background: var(--window-tone);
+		color: var(--color-void);
+		opacity: 1;
 	}
 	.window-content {
 		flex: 1;
@@ -881,7 +959,8 @@
 	}
 	@media (prefers-reduced-motion: reduce) {
 		.layout-choice,
-		.demo-window {
+		.demo-window,
+		.minimized-app {
 			transition: none;
 		}
 	}
