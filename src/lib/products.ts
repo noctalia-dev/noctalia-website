@@ -33,7 +33,7 @@ export const PRODUCTS: readonly Product[] = [
 		name: 'Noctalia',
 		role: 'Desktop shell',
 		navLabel: 'Shell',
-		fullName: 'Noctalia Shell',
+		fullName: 'Noctalia',
 		blurb:
 			'Bar, launcher, control center, lock screen, and wallpaper-driven theming - configured in one place, on every major Wayland compositor.',
 		logoUrl: 'https://assets.noctalia.dev/noctalia-logo.svg',

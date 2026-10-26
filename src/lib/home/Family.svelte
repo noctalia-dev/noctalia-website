@@ -32,7 +32,7 @@
 						<p class="project-category eyebrow"><span>0{i + 1}</span> / {product.role}</p>
 						<div class="project-name">
 							<img src={product.logoUrl} alt="" width="40" height="40" loading="lazy" />
-							<h2>{product.id === 'noctalia' ? 'Shell' : product.name}</h2>
+							<h2>{product.name}</h2>
 						</div>
 						<p class="project-note">{notes[product.id]}</p>
 						<p class="project-description">{product.blurb}</p>
