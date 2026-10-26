@@ -12,7 +12,12 @@
 		role: p.fullName,
 		logo: p.logoUrl
 	}));
-	const siteNav = [...projectNav, { href: '/plugins', label: 'Plugins' }, { href: '/blog', label: 'Blog' }];
+	const siteNav = [
+		...projectNav,
+		{ href: '/plugins', label: 'Plugins' },
+		{ href: '/blog', label: 'Blog' },
+		{ href: '/changelogs', label: 'Releases' }
+	];
 	const moreNav = [
 		{ href: '/plugins', label: 'Plugins' },
 		{ href: '/blog', label: 'Blog' },
