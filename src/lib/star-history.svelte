@@ -73,10 +73,6 @@
 		min-height: 12rem;
 		margin: 0;
 		overflow: hidden;
-		padding: 0.5rem;
-		border: 1px solid var(--color-border);
-		border-radius: 0.5rem;
-		background: color-mix(in srgb, var(--color-void-deep) 85%, transparent);
 	}
 	.star-chart img {
 		display: block;

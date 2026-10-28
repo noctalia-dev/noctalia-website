@@ -56,7 +56,7 @@
 							class="project-primary"
 						>
 							{product.pageUrl
-								? `Explore ${product.id === 'noctalia' ? 'Shell' : product.name}`
+								? `Explore ${product.name}`
 								: 'Greeter documentation'}
 							<span aria-hidden="true">{product.pageUrl ? '→' : '↗'}</span>
 						</a>

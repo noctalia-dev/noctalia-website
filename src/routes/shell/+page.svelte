@@ -152,7 +152,7 @@
 		number={4}
 		name="Noctalia"
 		repo="noctalia-dev/noctalia"
-		chartUrl="https://api.noctalia.dev/stars"
+		chartUrl="https://api.noctalia.dev/stars-animated/noctalia"
 	/>
 
 	<PageOutro

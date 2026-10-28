@@ -95,7 +95,7 @@
 		number={3}
 		name="Umbriel"
 		repo="noctalia-dev/umbriel"
-		chartUrl="https://api.noctalia.dev/stars/umbriel"
+		chartUrl="https://api.noctalia.dev/stars-animated/umbriel"
 	/>
 
 	<PageOutro

@@ -78,7 +78,7 @@
 		number={2}
 		name="Greeter"
 		repo="noctalia-dev/noctalia-greeter"
-		chartUrl="https://api.noctalia.dev/stars/noctalia-greeter"
+		chartUrl="https://api.noctalia.dev/stars-animated/greeter"
 	/>
 
 	<PageOutro
