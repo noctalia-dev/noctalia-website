@@ -350,6 +350,15 @@ async function writeOgThumbnail(outPathRel, thumbnail, globalDigest, prevCache, 
 	console.log(`Wrote static/${outPathRel} (plugin thumbnail)`);
 }
 
+/** Run `fn` over `items` with at most `limit` in flight. */
+async function mapPool(items, limit, fn) {
+	let next = 0;
+	const worker = async () => {
+		while (next < items.length) await fn(items[next++]);
+	};
+	await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+}
+
 function parseDescriptionFromMd(raw) {
 	const m = raw.match(/^description:\s*(.+)$/m);
 	if (!m) return '';
@@ -443,7 +452,7 @@ async function main() {
 			}
 			const catalog = parseToml(await res.text());
 			const rows = Array.isArray(catalog.plugin) ? catalog.plugin : [];
-			for (const row of rows) {
+			await mapPool(rows, 16, async (row) => {
 				const slug = typeof row.id === 'string' ? row.id.split('/').pop() : '';
 				const plugin = {
 					id: slug,
@@ -461,7 +470,7 @@ async function main() {
 				} catch {
 					/* description stays empty */
 				}
-				if (!isValidPlugin(plugin)) continue;
+				if (!isValidPlugin(plugin)) return;
 
 				const outPathRel = `og/plugin/${source.slug}/${plugin.id}.webp`;
 				const thumbnail = await fetchThumbnail(`${base}/${plugin.id}/thumbnail.webp`);
@@ -472,7 +481,7 @@ async function main() {
 					console.warn(`No thumbnail for ${source.slug}/${plugin.id}; using the generated card`);
 					await w(outPathRel, 'Plugin: ' + plugin.name, plugin.description);
 				}
-			}
+			});
 		} catch (e) {
 			console.warn(`Skipping ${source.repo} OG images (offline or network error):`, e?.message || e);
 		}

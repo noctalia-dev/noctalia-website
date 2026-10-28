@@ -10,7 +10,7 @@
 		"plugin-wall": "node scripts/build-plugin-wall.mjs",
 		"dev": "node scripts/build-og.mjs && vite dev",
 		"start": "node scripts/build-og.mjs && vite dev",
-		"prebuild": "node scripts/build-og.mjs && node scripts/build-github-showcase.mjs && node scripts/build-plugin-wall.mjs",
+		"prebuild": "node scripts/prebuild.mjs",
 		"build": "vite build",
 		"prepreview": "node scripts/build-og.mjs && node scripts/build-github-showcase.mjs",
 		"preview": "vite preview",
