@@ -1,65 +1,65 @@
 {
-  "version": 1,
+  "version": 2,
   "palettes": [
     {
       "name": "Ayu",
       "path": "Ayu",
-      "dark": {"mPrimary":"#E6B450","mOnPrimary":"#0B0E14","mSecondary":"#AAD94C","mOnSecondary":"#0B0E14","mTertiary":"#39BAE6","mOnTertiary":"#0B0E14","mError":"#D95757","mOnError":"#0B0E14","mSurface":"#0B0E14","mOnSurface":"#BFBDB6","mSurfaceVariant":"#1e222a","mOnSurfaceVariant":"#636A72","mOutline":"#565B66","mShadow":"#000000","mHover":"#39BAE6","mOnHover":"#0B0E14"},
-      "light": {"mPrimary":"#FF8F40","mOnPrimary":"#F8F9FA","mSecondary":"#86B300","mOnSecondary":"#F8F9FA","mTertiary":"#55B4D4","mOnTertiary":"#F8F9FA","mError":"#E65050","mOnError":"#F8F9FA","mSurface":"#F8F9FA","mOnSurface":"#5C6166","mSurfaceVariant":"#E4E6E9","mOnSurfaceVariant":"#8A9199","mOutline":"#8A9199","mShadow":"#F8F9FA","mHover":"#55B4D4","mOnHover":"#F8F9FA"}
+      "dark": {"primary":"#e6b450","on_primary":"#0b0e14","secondary":"#aad94c","on_secondary":"#0b0e14","tertiary":"#39bae6","on_tertiary":"#0b0e14","error":"#d95757","on_error":"#0b0e14","surface":"#0b0e14","on_surface":"#d1d1c7","surface_container":"#1e222a","on_surface_variant":"#8e959e","outline_variant":"#565b66","shadow":"#000000","hover":"#39bae6","on_hover":"#0b0e14"},
+      "light": {"primary":"#ff8f40","on_primary":"#f8f9fa","secondary":"#86b300","on_secondary":"#f8f9fa","tertiary":"#55b4d4","on_tertiary":"#f8f9fa","error":"#e65050","on_error":"#f8f9fa","surface":"#f8f9fa","on_surface":"#42474c","surface_container":"#e4e6e9","on_surface_variant":"#6e757c","outline_variant":"#8a9199","shadow":"#f8f9fa","hover":"#55b4d4","on_hover":"#f8f9fa"}
     },
     {
       "name": "Catppuccin",
       "path": "Catppuccin",
-      "dark": {"mPrimary":"#cba6f7","mOnPrimary":"#11111b","mSecondary":"#fab387","mOnSecondary":"#11111b","mTertiary":"#94e2d5","mOnTertiary":"#11111b","mError":"#f38ba8","mOnError":"#11111b","mSurface":"#1e1e2e","mOnSurface":"#cdd6f4","mSurfaceVariant":"#313244","mOnSurfaceVariant":"#a3b4eb","mOutline":"#4c4f69","mShadow":"#11111b","mHover":"#94e2d5","mOnHover":"#11111b"},
-      "light": {"mPrimary":"#8839ef","mOnPrimary":"#eff1f5","mSecondary":"#fe640b","mOnSecondary":"#eff1f5","mTertiary":"#40a02b","mOnTertiary":"#eff1f5","mError":"#d20f39","mOnError":"#dce0e8","mSurface":"#eff1f5","mOnSurface":"#4c4f69","mSurfaceVariant":"#ccd0da","mOnSurfaceVariant":"#6c6f85","mOutline":"#a5adcb","mShadow":"#dce0e8","mHover":"#40a02b","mOnHover":"#eff1f5"}
+      "dark": {"primary":"#cba6f7","on_primary":"#11111b","secondary":"#fab387","on_secondary":"#11111b","tertiary":"#94e2d5","on_tertiary":"#11111b","error":"#f38ba8","on_error":"#11111b","surface":"#1e1e2e","on_surface":"#cdd6f4","surface_container":"#313244","on_surface_variant":"#a3b4eb","outline_variant":"#4c4f69","shadow":"#11111b","hover":"#94e2d5","on_hover":"#11111b"},
+      "light": {"primary":"#8839ef","on_primary":"#eff1f5","secondary":"#fe640b","on_secondary":"#eff1f5","tertiary":"#40a02b","on_tertiary":"#eff1f5","error":"#d20f39","on_error":"#dce0e8","surface":"#eff1f5","on_surface":"#4c4f69","surface_container":"#ccd0da","on_surface_variant":"#6c6f85","outline_variant":"#a5adcb","shadow":"#dce0e8","hover":"#40a02b","on_hover":"#eff1f5"}
     },
     {
       "name": "Dracula",
       "path": "Dracula",
-      "dark": {"mPrimary":"#bd93f9","mOnPrimary":"#282A36","mSecondary":"#ff79c6","mOnSecondary":"#4e1d32","mTertiary":"#8be9fd","mOnTertiary":"#003543","mError":"#FF5555","mOnError":"#282A36","mSurface":"#282A36","mOnSurface":"#F8F8F2","mSurfaceVariant":"#44475A","mOnSurfaceVariant":"#d6d8e0","mOutline":"#5a5e77","mShadow":"#282A36","mHover":"#8be9fd","mOnHover":"#003543"},
-      "light": {"mPrimary":"#8332f4","mOnPrimary":"#ffffff","mSecondary":"#ff1399","mOnSecondary":"#ffffff","mTertiary":"#0398b9","mOnTertiary":"#ffffff","mError":"#FF5555","mOnError":"#282A36","mSurface":"#f8f8f2","mOnSurface":"#282a36","mSurfaceVariant":"#e6e6ea","mOnSurfaceVariant":"#44475a","mOutline":"#cacad3","mShadow":"#d6d8e0","mHover":"#0398b9","mOnHover":"#ffffff"}
+      "dark": {"primary":"#bd93f9","on_primary":"#282a36","secondary":"#ff79c6","on_secondary":"#4e1d32","tertiary":"#8be9fd","on_tertiary":"#003543","error":"#ff5555","on_error":"#282a36","surface":"#282a36","on_surface":"#f8f8f2","surface_container":"#44475a","on_surface_variant":"#d6d8e0","outline_variant":"#5a5e77","shadow":"#282a36","hover":"#8be9fd","on_hover":"#003543"},
+      "light": {"primary":"#8332f4","on_primary":"#ffffff","secondary":"#ff1399","on_secondary":"#ffffff","tertiary":"#0398b9","on_tertiary":"#ffffff","error":"#ff5555","on_error":"#282a36","surface":"#f8f8f2","on_surface":"#282a36","surface_container":"#e6e6ea","on_surface_variant":"#44475a","outline_variant":"#cacad3","shadow":"#d6d8e0","hover":"#0398b9","on_hover":"#ffffff"}
     },
     {
       "name": "Eldritch",
       "path": "Eldritch",
-      "dark": {"mPrimary":"#37f499","mOnPrimary":"#171928","mSecondary":"#04d1f9","mOnSecondary":"#171928","mTertiary":"#a48cf2","mOnTertiary":"#171928","mError":"#f16c75","mOnError":"#171928","mSurface":"#212337","mOnSurface":"#ebfafa","mSurfaceVariant":"#292e42","mOnSurfaceVariant":"#ABB4DA","mOutline":"#3b4261","mShadow":"#414868","mHover":"#a48cf2","mOnHover":"#171928"},
-      "light": {"mPrimary":"#37f499","mOnPrimary":"#171928","mSecondary":"#04d1f9","mOnSecondary":"#171928","mTertiary":"#a48cf2","mOnTertiary":"#171928","mError":"#f16c75","mOnError":"#171928","mSurface":"#ffffff","mOnSurface":"#171928","mSurfaceVariant":"#f2f4f8","mOnSurfaceVariant":"#3b4261","mOutline":"#b0b6c3","mShadow":"#e0e3e8","mHover":"#a48cf2","mOnHover":"#171928"}
+      "dark": {"primary":"#37f499","on_primary":"#171928","secondary":"#04d1f9","on_secondary":"#171928","tertiary":"#a48cf2","on_tertiary":"#171928","error":"#f16c75","on_error":"#171928","surface":"#212337","on_surface":"#ebfafa","surface_container":"#292e42","on_surface_variant":"#abb4da","outline_variant":"#3b4261","shadow":"#414868","hover":"#a48cf2","on_hover":"#171928"},
+      "light": {"primary":"#fb5bb6","on_primary":"#1e2029","secondary":"#0ad6ff","on_secondary":"#1e2029","tertiary":"#8a69f7","on_tertiary":"#1e2029","error":"#fb5b66","on_error":"#1e2029","surface":"#f0f3f4","on_surface":"#1e2029","surface_container":"#d5d9db","on_surface_variant":"#1e2029","outline_variant":"#c9cbcd","shadow":"#e2e6e8","hover":"#8a69f7","on_hover":"#1e2029"}
     },
     {
       "name": "Gruvbox",
       "path": "Gruvbox",
-      "dark": {"mPrimary":"#b8bb26","mOnPrimary":"#282828","mSecondary":"#fabd2f","mOnSecondary":"#282828","mTertiary":"#83a598","mOnTertiary":"#282828","mError":"#fb4934","mOnError":"#282828","mSurface":"#282828","mOnSurface":"#fbf1c7","mSurfaceVariant":"#3c3836","mOnSurfaceVariant":"#ebdbb2","mOutline":"#57514e","mShadow":"#282828","mHover":"#83a598","mOnHover":"#282828"},
-      "light": {"mPrimary":"#98971a","mOnPrimary":"#fbf1c7","mSecondary":"#d79921","mOnSecondary":"#fbf1c7","mTertiary":"#458588","mOnTertiary":"#fbf1c7","mError":"#cc241d","mOnError":"#fbf1c7","mSurface":"#fbf1c7","mOnSurface":"#3c3836","mSurfaceVariant":"#ebdbb2","mOnSurfaceVariant":"#7c6f64","mOutline":"#bdae93","mShadow":"#d5c4a1","mHover":"#458588","mOnHover":"#fbf1c7"}
+      "dark": {"primary":"#b8bb26","on_primary":"#282828","secondary":"#fabd2f","on_secondary":"#282828","tertiary":"#83a598","on_tertiary":"#282828","error":"#fb4934","on_error":"#282828","surface":"#282828","on_surface":"#fbf1c7","surface_container":"#3c3836","on_surface_variant":"#ebdbb2","outline_variant":"#57514e","shadow":"#282828","hover":"#83a598","on_hover":"#282828"},
+      "light": {"primary":"#98971a","on_primary":"#fbf1c7","secondary":"#d79921","on_secondary":"#fbf1c7","tertiary":"#458588","on_tertiary":"#fbf1c7","error":"#cc241d","on_error":"#fbf1c7","surface":"#fbf1c7","on_surface":"#3c3836","surface_container":"#ebdbb2","on_surface_variant":"#7c6f64","outline_variant":"#bdae93","shadow":"#d5c4a1","hover":"#458588","on_hover":"#fbf1c7"}
     },
     {
       "name": "Kanagawa",
       "path": "Kanagawa",
-      "dark": {"mPrimary":"#76946a","mOnPrimary":"#1f1f28","mSecondary":"#c0a36e","mOnSecondary":"#1f1f28","mTertiary":"#7e9cd8","mOnTertiary":"#1f1f28","mError":"#c34043","mOnError":"#1f1f28","mSurface":"#1f1f28","mOnSurface":"#c8c093","mSurfaceVariant":"#2a2a37","mOnSurfaceVariant":"#717c7c","mOutline":"#363646","mShadow":"#1f1f28","mHover":"#7e9cd8","mOnHover":"#1f1f28"},
-      "light": {"mPrimary":"#6f894e","mOnPrimary":"#f2ecbc","mSecondary":"#77713f","mOnSecondary":"#f2ecbc","mTertiary":"#4d699b","mOnTertiary":"#f2ecbc","mError":"#c84053","mOnError":"#f2ecbc","mSurface":"#f2ecbc","mOnSurface":"#545464","mSurfaceVariant":"#e5ddb0","mOnSurfaceVariant":"#8a8980","mOutline":"#cfc49c","mShadow":"#f2ecbc","mHover":"#4d699b","mOnHover":"#f2ecbc"}
+      "dark": {"primary":"#76946a","on_primary":"#1f1f28","secondary":"#c0a36e","on_secondary":"#1f1f28","tertiary":"#7e9cd8","on_tertiary":"#1f1f28","error":"#c34043","on_error":"#1f1f28","surface":"#1f1f28","on_surface":"#c8c093","surface_container":"#2a2a37","on_surface_variant":"#717c7c","outline_variant":"#363646","shadow":"#1f1f28","hover":"#7e9cd8","on_hover":"#1f1f28"},
+      "light": {"primary":"#6f894e","on_primary":"#f2ecbc","secondary":"#77713f","on_secondary":"#f2ecbc","tertiary":"#4d699b","on_tertiary":"#f2ecbc","error":"#c84053","on_error":"#f2ecbc","surface":"#f2ecbc","on_surface":"#545464","surface_container":"#e5ddb0","on_surface_variant":"#8a8980","outline_variant":"#cfc49c","shadow":"#f2ecbc","hover":"#4d699b","on_hover":"#f2ecbc"}
     },
     {
       "name": "Noctalia-default",
       "path": "Noctalia-default",
-      "dark": {"mPrimary":"#fff59b","mOnPrimary":"#0e0e43","mSecondary":"#a9aefe","mOnSecondary":"#0e0e43","mTertiary":"#9BFECE","mOnTertiary":"#0e0e43","mError":"#FD4663","mOnError":"#0e0e43","mSurface":"#070722","mOnSurface":"#f3edf7","mSurfaceVariant":"#11112d","mOnSurfaceVariant":"#7c80b4","mOutline":"#21215F","mShadow":"#070722","mHover":"#9BFECE","mOnHover":"#0e0e43"},
-      "light": {"mPrimary":"#5d65f5","mOnPrimary":"#dadcff","mSecondary":"#8E93D8","mOnSecondary":"#dadcff","mTertiary":"#0e0e43","mOnTertiary":"#fef29a","mError":"#FD4663","mOnError":"#0e0e43","mSurface":"#e6e8fa","mOnSurface":"#0e0e43","mSurfaceVariant":"#eff0ff","mOnSurfaceVariant":"#4b55c8","mOutline":"#8288fc","mShadow":"#f3edf7","mHover":"#0e0e43","mOnHover":"#fef29a"}
+      "dark": {"primary":"#fff59b","on_primary":"#0e0e43","secondary":"#a9aefe","on_secondary":"#0e0e43","tertiary":"#9bfece","on_tertiary":"#0e0e43","error":"#fd4663","on_error":"#0e0e43","surface":"#070722","on_surface":"#f3edf7","surface_container":"#11112d","on_surface_variant":"#7c80b4","outline_variant":"#21215f","shadow":"#070722","hover":"#9bfece","on_hover":"#0e0e43"},
+      "light": {"primary":"#5d65f5","on_primary":"#dadcff","secondary":"#8e93d8","on_secondary":"#dadcff","tertiary":"#0e0e43","on_tertiary":"#fef29a","error":"#fd4663","on_error":"#0e0e43","surface":"#e6e8fa","on_surface":"#0e0e43","surface_container":"#eff0ff","on_surface_variant":"#4b55c8","outline_variant":"#8288fc","shadow":"#f3edf7","hover":"#0e0e43","on_hover":"#fef29a"}
     },
     {
       "name": "Nord",
       "path": "Nord",
-      "dark": {"mPrimary":"#8fbcbb","mOnPrimary":"#2e3440","mSecondary":"#88c0d0","mOnSecondary":"#2e3440","mTertiary":"#5e81ac","mOnTertiary":"#2e3440","mError":"#bf616a","mOnError":"#2e3440","mSurface":"#2e3440","mOnSurface":"#eceff4","mSurfaceVariant":"#3b4252","mOnSurfaceVariant":"#d8dee9","mOutline":"#505a70","mShadow":"#2e3440","mHover":"#5e81ac","mOnHover":"#2e3440"},
-      "light": {"mPrimary":"#5e81ac","mOnPrimary":"#eceff4","mSecondary":"#64adc2","mOnSecondary":"#eceff4","mTertiary":"#6fa9a8","mOnTertiary":"#eceff4","mError":"#bf616a","mOnError":"#eceff4","mSurface":"#eceff4","mOnSurface":"#2e3440","mSurfaceVariant":"#e5e9f0","mOnSurfaceVariant":"#4c566a","mOutline":"#c5cedd","mShadow":"#d8dee9","mHover":"#6fa9a8","mOnHover":"#eceff4"}
+      "dark": {"primary":"#8fbcbb","on_primary":"#2e3440","secondary":"#88c0d0","on_secondary":"#2e3440","tertiary":"#5e81ac","on_tertiary":"#2e3440","error":"#bf616a","on_error":"#2e3440","surface":"#2e3440","on_surface":"#eceff4","surface_container":"#3b4252","on_surface_variant":"#d8dee9","outline_variant":"#505a70","shadow":"#2e3440","hover":"#5e81ac","on_hover":"#2e3440"},
+      "light": {"primary":"#5e81ac","on_primary":"#eceff4","secondary":"#64adc2","on_secondary":"#eceff4","tertiary":"#6fa9a8","on_tertiary":"#eceff4","error":"#bf616a","on_error":"#eceff4","surface":"#eceff4","on_surface":"#2e3440","surface_container":"#e5e9f0","on_surface_variant":"#4c566a","outline_variant":"#c5cedd","shadow":"#d8dee9","hover":"#6fa9a8","on_hover":"#eceff4"}
     },
     {
       "name": "Rosepine",
       "path": "Rosepine",
-      "dark": {"mPrimary":"#ebbcba","mOnPrimary":"#191724","mSecondary":"#9ccfd8","mOnSecondary":"#191724","mTertiary":"#31748f","mOnTertiary":"#e0def4","mError":"#eb6f92","mOnError":"#191724","mSurface":"#191724","mOnSurface":"#e0def4","mSurfaceVariant":"#26233a","mOnSurfaceVariant":"#908caa","mOutline":"#403d52","mShadow":"#191724","mHover":"#524f67","mOnHover":"#e0def4"},
-      "light": {"mPrimary":"#d7827e","mOnPrimary":"#faf4ed","mSecondary":"#56949f","mOnSecondary":"#faf4ed","mTertiary":"#286983","mOnTertiary":"#faf4ed","mError":"#b4637a","mOnError":"#faf4ed","mSurface":"#fffaf3","mOnSurface":"#575279","mSurfaceVariant":"#f2e9e1","mOnSurfaceVariant":"#797593","mOutline":"#dfdad9","mShadow":"#faf4ed","mHover":"#cecacd","mOnHover":"#575279"}
+      "dark": {"primary":"#ebbcba","on_primary":"#191724","secondary":"#9ccfd8","on_secondary":"#191724","tertiary":"#31748f","on_tertiary":"#e0def4","error":"#eb6f92","on_error":"#191724","surface":"#191724","on_surface":"#e0def4","surface_container":"#26233a","on_surface_variant":"#908caa","outline_variant":"#403d52","shadow":"#191724","hover":"#524f67","on_hover":"#e0def4"},
+      "light": {"primary":"#d7827e","on_primary":"#faf4ed","secondary":"#56949f","on_secondary":"#faf4ed","tertiary":"#286983","on_tertiary":"#faf4ed","error":"#b4637a","on_error":"#faf4ed","surface":"#fffaf3","on_surface":"#575279","surface_container":"#f2e9e1","on_surface_variant":"#797593","outline_variant":"#dfdad9","shadow":"#faf4ed","hover":"#cecacd","on_hover":"#575279"}
     },
     {
       "name": "Tokyo-Night",
       "path": "Tokyo-Night",
-      "dark": {"mPrimary":"#7aa2f7","mOnPrimary":"#16161e","mSecondary":"#bb9af7","mOnSecondary":"#16161e","mTertiary":"#9ece6a","mOnTertiary":"#16161e","mError":"#f7768e","mOnError":"#16161e","mSurface":"#1a1b26","mOnSurface":"#c0caf5","mSurfaceVariant":"#24283b","mOnSurfaceVariant":"#9aa5ce","mOutline":"#353D57","mShadow":"#15161e","mHover":"#9ece6a","mOnHover":"#16161e"},
-      "light": {"mPrimary":"#2e7de9","mOnPrimary":"#e1e2e7","mSecondary":"#9854f1","mOnSecondary":"#e1e2e7","mTertiary":"#587539","mOnTertiary":"#e1e2e7","mError":"#f52a65","mOnError":"#e1e2e7","mSurface":"#e1e2e7","mOnSurface":"#3760bf","mSurfaceVariant":"#d0d5e3","mOnSurfaceVariant":"#6172b0","mOutline":"#b4b5b9","mShadow":"#a8aecb","mHover":"#587539","mOnHover":"#e1e2e7"}
+      "dark": {"primary":"#7aa2f7","on_primary":"#16161e","secondary":"#bb9af7","on_secondary":"#16161e","tertiary":"#9ece6a","on_tertiary":"#16161e","error":"#f7768e","on_error":"#16161e","surface":"#1a1b26","on_surface":"#c0caf5","surface_container":"#24283b","on_surface_variant":"#9aa5ce","outline_variant":"#353d57","shadow":"#15161e","hover":"#9ece6a","on_hover":"#16161e"},
+      "light": {"primary":"#2e7de9","on_primary":"#e1e2e7","secondary":"#9854f1","on_secondary":"#e1e2e7","tertiary":"#587539","on_tertiary":"#e1e2e7","error":"#f52a65","on_error":"#e1e2e7","surface":"#e1e2e7","on_surface":"#3760bf","surface_container":"#d0d5e3","on_surface_variant":"#6172b0","outline_variant":"#b4b5b9","shadow":"#a8aecb","hover":"#587539","on_hover":"#e1e2e7"}
     }
   ]
 }
