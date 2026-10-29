@@ -404,7 +404,7 @@ async function main() {
 	await w(
 		'og/umbriel.webp',
 		'Umbriel',
-		'A Wayland compositor with Scrolling, Dwindle, Master, and Floating layouts. Explore four ways to arrange your windows.'
+		'A Wayland compositor with Scrolling, Dwindle, Master, and Stacking layouts. Explore four ways to arrange your windows.'
 	);
 	await w(
 		'og/greeter.webp',

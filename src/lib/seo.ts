@@ -37,7 +37,7 @@ export const SEO_SHELL: PageSeo = {
 export const SEO_UMBRIEL: PageSeo = {
 	title: `Umbriel  -  ${SITE_NAME}`,
 	description:
-		'A Wayland compositor with Scrolling, Dwindle, Master, and Floating layouts. Explore four ways to arrange your windows.',
+		'A Wayland compositor with Scrolling, Dwindle, Master, and Stacking layouts. Explore four ways to arrange your windows.',
 	pathLabel: 'Umbriel',
 	ogImagePath: '/og/umbriel.webp'
 };

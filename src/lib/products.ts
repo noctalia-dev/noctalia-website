@@ -49,7 +49,7 @@ export const PRODUCTS: readonly Product[] = [
 		navLabel: 'Compositor',
 		fullName: 'Umbriel',
 		blurb:
-			'A Wayland compositor designed for daily use, with scrolling, dwindle, master, and floating layouts, per-output workspaces, window rules, blur, shadows, and fluid animations.',
+			'A Wayland compositor designed for daily use, with scrolling, dwindle, master, and stacking layouts, per-output workspaces, window rules, blur, shadows, and fluid animations.',
 		logoUrl: 'https://assets.noctalia.dev/umbriel.svg',
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
 		docsUrl: `${DOCS_BASE_URL}/umbriel/`,

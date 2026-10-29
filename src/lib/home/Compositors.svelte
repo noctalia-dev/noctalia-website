@@ -10,7 +10,7 @@
 
 	/** From the Umbriel docs (noctalia-docs `umbriel/index.mdx`, `layout.mdx`, `outputs.mdx`). */
 	const umbrielHighlights = [
-		'Scrolling, Dwindle, Master & Floating layouts',
+		'Scrolling, Dwindle, Master & Stacking layouts',
 		'Tabbed windows',
 		'HDR',
 		'Per-output workspaces',

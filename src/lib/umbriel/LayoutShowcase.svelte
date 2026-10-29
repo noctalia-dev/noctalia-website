@@ -10,7 +10,7 @@
 		href?: string;
 	} = $props();
 
-	type LayoutId = 'scrolling' | 'dwindle' | 'master' | 'floating';
+	type LayoutId = 'scrolling' | 'dwindle' | 'master' | 'stacking';
 	type Rectangle = { x: number; y: number; w: number; h: number };
 
 	const layouts: { id: LayoutId; name: string; hint: string; description: string }[] = [
@@ -36,8 +36,8 @@
 				'Give your main app the larger area and keep the others beside it. Swap a different window into the main area whenever your focus changes.'
 		},
 		{
-			id: 'floating',
-			name: 'Floating',
+			id: 'stacking',
+			name: 'Stacking',
 			hint: 'A familiar kind of freedom',
 			description:
 				'Move, resize, and snap windows wherever you like. Minimize an app to put it aside, then restore it right where you left it.'
@@ -66,12 +66,12 @@
 	let selectionAnimation: Animation | undefined;
 	const layoutId = $derived(selected);
 	const active = $derived(layouts.find((layout) => layout.id === layoutId)!);
-	const cycleLength = $derived(layoutId === 'floating' ? 6 : layoutId === 'dwindle' ? 5 : 4);
+	const cycleLength = $derived(layoutId === 'stacking' ? 6 : layoutId === 'dwindle' ? 5 : 4);
 	const displayPhase = $derived(
-		reducedMotion ? (layoutId === 'floating' ? 4 : cycleLength - 1) : phase
+		reducedMotion ? (layoutId === 'stacking' ? 4 : cycleLength - 1) : phase
 	);
 	const demoApps = $derived(layoutId === 'dwindle' ? apps : apps.slice(0, 4));
-	const editorMinimized = $derived(layoutId === 'floating' && displayPhase === 4);
+	const editorMinimized = $derived(layoutId === 'stacking' && displayPhase === 4);
 	const visibleWindowCount = $derived(demoApps.filter((_, index) => isWindowVisible(index)).length);
 
 	function isWindowVisible(index: number): boolean {
@@ -79,11 +79,11 @@
 		return !(editorMinimized && index === 1);
 	}
 	// Scrolling focuses Browser, then the stacked Terminal, then Files (twice: normal, then widened).
-	// Floating returns focus to Browser while Editor is minimized, then restores Editor's focus.
+	// Stacking returns focus to Browser while Editor is minimized, then restores Editor's focus.
 	const focused = $derived(
 		layoutId === 'scrolling'
 			? [0, 3, 2, 2][displayPhase]
-			: layoutId === 'floating'
+			: layoutId === 'stacking'
 				? editorMinimized
 					? 0
 					: Math.min(displayPhase, 1)
@@ -345,7 +345,7 @@
 						<div class="window-title">
 							<span class="window-app"><i class="ti {app.icon}"></i><span>{app.name}</span></span>
 							<span class="window-actions">
-								{#if layoutId === 'floating'}
+								{#if layoutId === 'stacking'}
 									<span class="window-minimize" class:highlight={index === 1 && displayPhase === 3}>
 										<i class="ti ti-minus"></i>
 									</span>
@@ -396,7 +396,7 @@
 						</div>
 					</div>
 				{/each}
-				{#if layoutId === 'floating'}
+				{#if layoutId === 'stacking'}
 					<div class="minimized-app" class:shown={editorMinimized}>
 						<i class="ti ti-code"></i><span>Editor</span><span class="minimized-status"
 							>minimized</span
@@ -547,7 +547,7 @@
 			0 0 0 1px color-mix(in srgb, var(--window-tone) 10%, transparent),
 			0 7px 25px rgb(0 0 0 / 0.22);
 	}
-	[data-layout='floating'] .demo-window {
+	[data-layout='stacking'] .demo-window {
 		transform-origin: center bottom;
 	}
 	.minimized-app {
