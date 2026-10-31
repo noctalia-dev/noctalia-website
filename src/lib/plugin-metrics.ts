@@ -30,7 +30,7 @@ export function parsePluginMetrics(value: unknown): Metrics {
 		throw new Error('Unsupported or invalid plugin metrics schema');
 	}
 
-	const metrics = new Map<string, number>();
+	const metrics = new Map<string, PluginMetric>();
 	for (const value of document.plugins) {
 		if (!value || typeof value !== 'object') throw new Error('Invalid plugin metric');
 		const row = value as Record<string, unknown>;
