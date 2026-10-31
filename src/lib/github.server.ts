@@ -1,11 +1,11 @@
-import { GITHUB_TOKEN } from '$env/static/private';
+import { env } from '$env/dynamic/private';
 
 function githubHeaders(): HeadersInit {
 	const headers: Record<string, string> = {
 		Accept: 'application/vnd.github.v3+json'
 	};
-	if (GITHUB_TOKEN) {
-		headers['Authorization'] = `Bearer ${GITHUB_TOKEN}`;
+	if (env.GITHUB_TOKEN) {
+		headers['Authorization'] = `Bearer ${env.GITHUB_TOKEN}`;
 	}
 	return headers;
 }
