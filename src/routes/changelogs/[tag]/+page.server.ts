@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { getChangelogRelease, getChangelogReleases } from '$lib/releases.server';
-import { seoChangelogRelease } from '$lib/seo';
+import { getChangelogRelease, getChangelogReleases } from '#lib/releases.server.js';
+import { seoChangelogRelease } from '#lib/seo.js';
 
 export async function entries() {
 	const releases = await getChangelogReleases();

@@ -1,4 +1,4 @@
-import { GITHUB_TOKEN } from '$env/static/private';
+import { GITHUB_TOKEN } from '$app/env/private';
 
 function githubHeaders(): HeadersInit {
 	const headers: Record<string, string> = {

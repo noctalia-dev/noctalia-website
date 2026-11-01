@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { page } from '$app/stores';
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import { page } from '$app/state';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
-	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
-	import { pluginMetricKey } from '$lib/plugin-identity';
-	import { pluginMetrics, refreshPluginMetrics } from '$lib/plugin-metrics';
+	import PluginRecommendations from '#lib/plugin-recommendations.svelte';
+	import { pluginMetricKey } from '#lib/plugin-identity.js';
+	import { pluginMetrics, refreshPluginMetrics } from '#lib/plugin-metrics.js';
 
 	interface Plugin {
 		id: string;
@@ -25,7 +25,7 @@
 		updatedAt?: number | null;
 	}
 
-	let { data } = $props<{ data: { plugins: Plugin[] } }>();
+	let { data }: { data: { plugins: Plugin[] } } = $props();
 
 	const allPlugins: Plugin[] = $derived(data.plugins);
 	let searchQuery = $state('');
@@ -123,7 +123,7 @@
 	onMount(() => {
 		void refreshPluginMetrics();
 		// Preserve direct links to either a regular tag or a compositor (the page is prerendered).
-		const urlTag = $page.url.searchParams.get('tag');
+		const urlTag = page.url.searchParams.get('tag');
 		if (urlTag && availableCompositors.includes(urlTag)) {
 			selectedCompositors = [urlTag];
 		} else if (urlTag && availableTags.includes(urlTag)) {

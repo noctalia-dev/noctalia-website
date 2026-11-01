@@ -1,13 +1,13 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import Reveal from '$lib/reveal.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
-	import StarHistory from '$lib/star-history.svelte';
-	import PageOutro from '$lib/page-outro.svelte';
-	import GreeterPreview from '$lib/home/GreeterPreview.svelte';
-	import { PRODUCTS } from '$lib/products';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
+	import StarHistory from '#lib/star-history.svelte';
+	import PageOutro from '#lib/page-outro.svelte';
+	import GreeterPreview from '#lib/home/GreeterPreview.svelte';
+	import { PRODUCTS } from '#lib/products.js';
 
 	const greeter = PRODUCTS.find((product) => product.id === 'greeter')!;
 	const shell = PRODUCTS.find((product) => product.id === 'noctalia')!;

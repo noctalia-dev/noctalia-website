@@ -1,14 +1,14 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import Reveal from '$lib/reveal.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
-	import StarHistory from '$lib/star-history.svelte';
-	import PageOutro from '$lib/page-outro.svelte';
-	import LayoutShowcase from '$lib/umbriel/LayoutShowcase.svelte';
-	import { PRODUCTS } from '$lib/products';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
+	import StarHistory from '#lib/star-history.svelte';
+	import PageOutro from '#lib/page-outro.svelte';
+	import LayoutShowcase from '#lib/umbriel/LayoutShowcase.svelte';
+	import { PRODUCTS } from '#lib/products.js';
 
 	const umbriel = PRODUCTS.find((p) => p.id === 'umbriel')!;
 	const shell = PRODUCTS.find((p) => p.id === 'noctalia')!;

@@ -1,17 +1,17 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
-	import type { GithubRelease } from '$lib/releases.server';
+	import type { GithubRelease } from '#lib/releases.server.js';
 
-	let { data } = $props<{
+	let { data }: {
 		data: {
 			release: GithubRelease;
 			newerRelease: GithubRelease | null;
 			olderRelease: GithubRelease | null;
 		};
-	}>();
+	} = $props();
 
 	function formatDate(dateString: string): string {
 		return new Date(dateString).toLocaleDateString('en-US', {

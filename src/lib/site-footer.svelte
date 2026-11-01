@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
+	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '#lib/site-constants.js';
 
 	const logoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
 	const supportUrl = 'https://buymeacoffee.com/noctalia';

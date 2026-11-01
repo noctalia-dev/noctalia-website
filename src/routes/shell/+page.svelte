@@ -1,17 +1,17 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import Reveal from '$lib/reveal.svelte';
-	import FeatureIcon from '$lib/feature-icon.svelte';
-	import Slideshow from '$lib/slideshow.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
-	import StarHistory from '$lib/star-history.svelte';
-	import PageOutro from '$lib/page-outro.svelte';
-	import Compositors from '$lib/home/Compositors.svelte';
-	import { slideshowImages } from '$lib/slideshow-images';
-	import { PRODUCTS } from '$lib/products';
-	import type { FeatureIconId } from '$lib/feature-icons';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import FeatureIcon from '#lib/feature-icon.svelte';
+	import Slideshow from '#lib/slideshow.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
+	import StarHistory from '#lib/star-history.svelte';
+	import PageOutro from '#lib/page-outro.svelte';
+	import Compositors from '#lib/home/Compositors.svelte';
+	import { slideshowImages } from '#lib/slideshow-images.js';
+	import { PRODUCTS } from '#lib/products.js';
+	import type { FeatureIconId } from '#lib/feature-icons.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

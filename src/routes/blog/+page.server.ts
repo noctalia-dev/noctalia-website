@@ -1,5 +1,5 @@
-import { getAllBlogPosts } from '$lib/blog';
-import { SEO_BLOG_INDEX } from '$lib/seo';
+import { getAllBlogPosts } from '#lib/blog.js';
+import { SEO_BLOG_INDEX } from '#lib/seo.js';
 
 export async function load() {
 	const posts = await getAllBlogPosts();

@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import type { PageSeo, PathSeoPreview } from '$lib/seo';
+import type { PageSeo, PathSeoPreview } from '#lib/seo.js';
 
 declare global {
 	namespace App {

@@ -1,8 +1,8 @@
 import type { RequestHandler } from './$types';
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { getAllBlogPosts } from '$lib/blog';
-import { getChangelogReleases } from '$lib/releases.server';
-import { SITE_ORIGIN } from '$lib/site-constants';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { getAllBlogPosts } from '#lib/blog.js';
+import { getChangelogReleases } from '#lib/releases.server.js';
+import { SITE_ORIGIN } from '#lib/site-constants.js';
 
 export const prerender = true;
 

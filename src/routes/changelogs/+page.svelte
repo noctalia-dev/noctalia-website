@@ -1,16 +1,16 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
-	import { PRODUCTS } from '$lib/products';
-	import type { GithubRelease } from '$lib/releases.server';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
+	import { PRODUCTS } from '#lib/products.js';
+	import type { GithubRelease } from '#lib/releases.server.js';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
 	type ProjectId = 'noctalia' | 'umbriel';
 
-	let { data } = $props<{ data: { releases: GithubRelease[] } }>();
+	let { data }: { data: { releases: GithubRelease[] } } = $props();
 	let activeProject = $state<ProjectId>('noctalia');
 	let reducedMotion = $state(false);
 

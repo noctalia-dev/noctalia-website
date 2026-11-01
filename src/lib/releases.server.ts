@@ -1,4 +1,4 @@
-import { githubFetch } from '$lib/github.server';
+import { githubFetch } from '#lib/github.server.js';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 

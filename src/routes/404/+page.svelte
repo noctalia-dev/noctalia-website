@@ -1,6 +1,6 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
 
 	const links = [
 		{ href: '/', label: 'Home', icon: 'ti ti-home' },

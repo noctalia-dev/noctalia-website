@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { pluginMetricKey } from '$lib/plugin-identity';
-	import { pluginMetrics } from '$lib/plugin-metrics';
+	import { pluginMetricKey } from '#lib/plugin-identity.js';
+	import { pluginMetrics } from '#lib/plugin-metrics.js';
 
-	let { source, catalogId, badge = false } = $props<{
+	let { source, catalogId, badge = false }: {
 		source: string;
 		catalogId: string;
 		badge?: boolean;
-	}>();
+	} = $props();
 
 	const key = $derived(pluginMetricKey(source, catalogId));
 	const count = $derived(key === null ? undefined : $pluginMetrics?.get(key)?.recommendations);

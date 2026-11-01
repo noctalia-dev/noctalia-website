@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { FeatureIconId } from '$lib/feature-icons';
+	import type { FeatureIconId } from '#lib/feature-icons.js';
 
 	let {
 		id,

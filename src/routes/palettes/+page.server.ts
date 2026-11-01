@@ -1,5 +1,5 @@
-import corePalettes from '$lib/data/core-palettes.json';
-import { SEO_PALETTES } from '$lib/seo';
+import corePalettes from '#lib/data/core-palettes.json';
+import { SEO_PALETTES } from '#lib/seo.js';
 
 // Core palettes and the `?version=2` catalog both use format 2 color role names.
 const swatchKeys = ['primary', 'secondary', 'tertiary', 'error', 'surface', 'surface_container'];

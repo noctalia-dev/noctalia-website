@@ -2,7 +2,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { marked } from 'marked';
-import { getChangelogReleases } from '$lib/releases.server';
+import { getChangelogReleases } from '#lib/releases.server.js';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;

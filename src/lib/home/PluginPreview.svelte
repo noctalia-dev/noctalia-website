@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AnimatedCount from '$lib/animated-count.svelte';
+	import AnimatedCount from '#lib/animated-count.svelte';
 	let { count }: { count: number | null } = $props();
 </script>
 

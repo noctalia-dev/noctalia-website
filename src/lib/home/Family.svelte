@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Reveal from '$lib/reveal.svelte';
-	import { PRODUCTS } from '$lib/products';
-	import Slideshow from '$lib/slideshow.svelte';
-	import { slideshowImages } from '$lib/slideshow-images';
-	import LayoutShowcase from '$lib/umbriel/LayoutShowcase.svelte';
-	import GreeterPreview from '$lib/home/GreeterPreview.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import { PRODUCTS } from '#lib/products.js';
+	import Slideshow from '#lib/slideshow.svelte';
+	import { slideshowImages } from '#lib/slideshow-images.js';
+	import LayoutShowcase from '#lib/umbriel/LayoutShowcase.svelte';
+	import GreeterPreview from '#lib/home/GreeterPreview.svelte';
 
 	let { stars = {} }: { stars?: Partial<Record<string, number | null>> } = $props();
 	const homeImages = slideshowImages.filter((image) =>

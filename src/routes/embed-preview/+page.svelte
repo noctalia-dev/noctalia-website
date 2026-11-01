@@ -1,13 +1,13 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
-	import type { PathSeoPreview } from '$lib/seo';
+	import type { PathSeoPreview } from '#lib/seo.js';
 
-	let { data } = $props<{
+	let { data }: {
 		data: { preview: PathSeoPreview };
-	}>();
+	} = $props();
 
 	let pathInput = $state('');
 	$effect(() => {
@@ -17,9 +17,9 @@
 	function applyPath(e: Event) {
 		e.preventDefault();
 		const next = pathInput.trim() || '/';
-		const u = new URL('/embed-preview', page.url);
+		const u = new URL('/embed-preview', page.url.href);
 		u.searchParams.set('path', next);
-		goto(u.pathname + u.search, { keepFocus: true, noScroll: true, replaceState: false });
+		goto(u.pathname + u.search, { reset: false, replace: false });
 	}
 
 	const p = $derived(data.preview);

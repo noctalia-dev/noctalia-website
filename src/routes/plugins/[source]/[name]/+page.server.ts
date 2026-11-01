@@ -1,7 +1,7 @@
 import { error } from '@sveltejs/kit';
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { seoPlugin } from '$lib/seo';
-import { githubFetch } from '$lib/github.server';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { seoPlugin } from '#lib/seo.js';
+import { githubFetch } from '#lib/github.server.js';
 
 const readmeCache = new Map<string, { content: string | null; timestamp: number }>();
 const CACHE_TTL = 60 * 60 * 1000;

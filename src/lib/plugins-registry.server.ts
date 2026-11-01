@@ -1,6 +1,6 @@
 import { parse as parseToml } from 'smol-toml';
-import { githubFetch } from '$lib/github.server';
-import { isValidPluginCatalogId } from '$lib/plugin-identity';
+import { githubFetch } from '#lib/github.server.js';
+import { isValidPluginCatalogId } from '#lib/plugin-identity.js';
 
 const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'] as const;
 const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];

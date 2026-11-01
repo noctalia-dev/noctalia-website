@@ -1,13 +1,13 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
-	import type { Contributor } from '$lib/contributors.server';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
+	import type { Contributor } from '#lib/contributors.server.js';
 
-	let { data } = $props<{
+	let { data }: {
 		data: { contributors: Contributor[]; repoUrl: string };
-	}>();
+	} = $props();
 
 	function formatContributions(count: number): string {
 		return count.toLocaleString('en-US');

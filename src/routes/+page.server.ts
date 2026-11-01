@@ -1,6 +1,6 @@
-import { SEO_HOME } from '$lib/seo';
-import { githubFetch } from '$lib/github.server';
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
+import { SEO_HOME } from '#lib/seo.js';
+import { githubFetch } from '#lib/github.server.js';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
 
 async function projectStars(repo: string): Promise<number | null> {
 	try {

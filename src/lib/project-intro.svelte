@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Reveal from '$lib/reveal.svelte';
+	import Reveal from '#lib/reveal.svelte';
 	let {
 		title,
 		eyebrow,

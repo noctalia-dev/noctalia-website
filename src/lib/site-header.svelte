@@ -2,9 +2,9 @@
 	import { page } from '$app/state';
 	import { afterNavigate } from '$app/navigation';
 	import { onMount, tick } from 'svelte';
-	import { getTheme, toggleTheme, type Theme } from '$lib/theme';
-	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '$lib/site-constants';
-	import { PRODUCTS } from '$lib/products';
+	import { getTheme, toggleTheme, type Theme } from '#lib/theme.js';
+	import { DOCS_BASE_URL, GITHUB_ORG_URL } from '#lib/site-constants.js';
+	import { PRODUCTS } from '#lib/products.js';
 
 	const projectNav = PRODUCTS.map((p) => ({
 		href: p.pageUrl ?? p.docsUrl,

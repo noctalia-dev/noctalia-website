@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Reveal from '$lib/reveal.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
 	let {
 		number,
 		name,

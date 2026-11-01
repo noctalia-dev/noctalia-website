@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Reveal from '$lib/reveal.svelte';
+	import Reveal from '#lib/reveal.svelte';
 	let {
 		title,
 		body,

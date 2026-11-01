@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import PluginRecommendations from '$lib/plugin-recommendations.svelte';
-	import { refreshPluginMetrics } from '$lib/plugin-metrics';
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import PluginRecommendations from '#lib/plugin-recommendations.svelte';
+	import { refreshPluginMetrics } from '#lib/plugin-metrics.js';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
 
 	interface PluginRelease {
@@ -28,7 +28,7 @@
 		repo: string;
 	}
 
-	let { data } = $props<{ data: { plugin: Plugin; readme: string | null } }>();
+	let { data }: { data: { plugin: Plugin; readme: string | null } } = $props();
 
 	onMount(() => {
 		void refreshPluginMetrics();
