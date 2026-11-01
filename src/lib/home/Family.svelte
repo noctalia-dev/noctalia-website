@@ -40,7 +40,7 @@
 					{#if stars[product.id] != null}
 						<a
 							class="project-stars"
-							href={`${product.repoUrl}/stargazers`}
+							href={product.repoUrl}
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="{stars[product.id]?.toLocaleString('en')} {product.name} stars on GitHub"
