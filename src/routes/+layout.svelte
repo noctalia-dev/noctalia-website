@@ -5,8 +5,8 @@
 	import { onMount } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
-	import { applyTheme, getTheme } from '$lib/theme';
-	import PlexusCanvas from '$lib/plexus-canvas.svelte';
+	import { applyTheme, getTheme } from '#lib/theme.js';
+	import PlexusCanvas from '#lib/plexus-canvas.svelte';
 	import {
 		DEFAULT_DESCRIPTION,
 		DEFAULT_OG_IMAGE,
@@ -15,7 +15,7 @@
 		OG_IMAGE_WIDTH,
 		SITE_NAME,
 		SITE_ORIGIN
-	} from '$lib/site-constants';
+	} from '#lib/site-constants.js';
 
 	let { children } = $props();
 

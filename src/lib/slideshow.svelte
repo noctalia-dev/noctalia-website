@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { SlideImage } from '$lib/slideshow-images';
+	import type { SlideImage } from '#lib/slideshow-images.js';
 
 	let {
 		images,

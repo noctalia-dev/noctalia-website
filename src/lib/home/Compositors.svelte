@@ -1,8 +1,8 @@
 <script lang="ts">
-	import Reveal from '$lib/reveal.svelte';
-	import SpotlightSurface from '$lib/spotlight-surface.svelte';
-	import { PRODUCTS } from '$lib/products';
-	import { DOCS_BASE_URL } from '$lib/site-constants';
+	import Reveal from '#lib/reveal.svelte';
+	import SpotlightSurface from '#lib/spotlight-surface.svelte';
+	import { PRODUCTS } from '#lib/products.js';
+	import { DOCS_BASE_URL } from '#lib/site-constants.js';
 
 	const umbriel = PRODUCTS.find((p) => p.id === 'umbriel')!;
 

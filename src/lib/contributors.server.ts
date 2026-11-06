@@ -6,7 +6,7 @@ export type Contributor = {
 };
 
 const REPO_URL = 'https://github.com/noctalia-dev/noctalia';
-import { githubFetch } from '$lib/github.server';
+import { githubFetch } from '#lib/github.server.js';
 
 const CONTRIBUTORS_URL = 'https://api.github.com/repos/noctalia-dev/noctalia/contributors';
 

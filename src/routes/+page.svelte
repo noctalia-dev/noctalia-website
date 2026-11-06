@@ -1,11 +1,11 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import Reveal from '$lib/reveal.svelte';
-	import Family from '$lib/home/Family.svelte';
-	import HomeHero from '$lib/home/HomeHero.svelte';
-	import PluginPreview from '$lib/home/PluginPreview.svelte';
-	import { GITHUB_ORG_URL } from '$lib/site-constants';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import Family from '#lib/home/Family.svelte';
+	import HomeHero from '#lib/home/HomeHero.svelte';
+	import PluginPreview from '#lib/home/PluginPreview.svelte';
+	import { GITHUB_ORG_URL } from '#lib/site-constants.js';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();

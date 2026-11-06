@@ -1,6 +1,6 @@
-import { SEO_SHELL } from '$lib/seo';
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { getAllReleases } from '$lib/releases.server';
+import { SEO_SHELL } from '#lib/seo.js';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { getAllReleases } from '#lib/releases.server.js';
 
 async function getPluginCount(): Promise<number> {
 	try {

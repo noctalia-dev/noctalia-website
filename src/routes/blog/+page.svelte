@@ -1,11 +1,11 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
-	import type { BlogPost } from '$lib/blog';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
+	import type { BlogPost } from '#lib/blog.js';
 
-	let { data } = $props<{ data: { posts: BlogPost[] } }>();
+	let { data }: { data: { posts: BlogPost[] } } = $props();
 
 	function formatDate(dateString: string): string {
 		return new Date(dateString).toLocaleDateString('en-US', {

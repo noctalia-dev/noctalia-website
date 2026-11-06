@@ -1,6 +1,6 @@
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { knownTablerIcon } from '$lib/tabler-icons.server';
-import { SEO_PLUGINS_INDEX } from '$lib/seo';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { knownTablerIcon } from '#lib/tabler-icons.server.js';
+import { SEO_PLUGINS_INDEX } from '#lib/seo.js';
 
 export async function load() {
 	try {

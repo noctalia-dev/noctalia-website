@@ -1,4 +1,4 @@
-import { DOCS_BASE_URL } from '$lib/site-constants';
+import { DOCS_BASE_URL } from '#lib/site-constants.js';
 
 /**
  * Canonical copy for the three Noctalia projects.

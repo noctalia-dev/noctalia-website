@@ -1,4 +1,4 @@
-import { DEFAULT_DESCRIPTION, DEFAULT_OG_TITLE, SITE_NAME } from '$lib/site-constants';
+import { DEFAULT_DESCRIPTION, DEFAULT_OG_TITLE, SITE_NAME } from '#lib/site-constants.js';
 
 export type PageSeo = {
 	title: string;

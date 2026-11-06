@@ -1,11 +1,11 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 	import { marked } from 'marked';
-	import type { BlogPost } from '$lib/blog';
+	import type { BlogPost } from '#lib/blog.js';
 
-	let { data } = $props<{ data: { post: BlogPost } }>();
+	let { data }: { data: { post: BlogPost } } = $props();
 
 	function formatDate(dateString: string): string {
 		const [year, month, day] = dateString.slice(0, 10).split('-').map(Number);

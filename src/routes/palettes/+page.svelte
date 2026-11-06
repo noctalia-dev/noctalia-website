@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 	import Fuse from 'fuse.js';
 
 	interface PaletteItem {
@@ -14,9 +14,9 @@
 		lightSwatches: string[];
 	}
 
-	let { data } = $props<{
+	let { data }: {
 		data: { corePalettes: PaletteItem[]; communityPalettes: PaletteItem[] };
-	}>();
+	} = $props();
 	let corePalettes = $state<PaletteItem[]>([]);
 	let communityPalettes = $state<PaletteItem[]>([]);
 	let allCorePalettes = $state<PaletteItem[]>([]);

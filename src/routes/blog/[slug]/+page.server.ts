@@ -1,6 +1,6 @@
 import { error } from '@sveltejs/kit';
-import { getAllBlogPosts, getBlogPostBySlug } from '$lib/blog';
-import { seoBlogPost } from '$lib/seo';
+import { getAllBlogPosts, getBlogPostBySlug } from '#lib/blog.js';
+import { seoBlogPost } from '#lib/seo.js';
 
 export async function entries() {
 	const posts = await getAllBlogPosts();

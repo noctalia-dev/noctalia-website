@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Reveal from '$lib/reveal.svelte';
-	import SectionHeading from '$lib/section-heading.svelte';
+	import Reveal from '#lib/reveal.svelte';
+	import SectionHeading from '#lib/section-heading.svelte';
 	let {
 		number,
 		name,
@@ -31,7 +31,7 @@
 		<Reveal delay={60}>
 			<a
 				class="action-link"
-				href="https://github.com/{repo}/stargazers"
+				href="https://github.com/{repo}"
 				target="_blank"
 				rel="noopener noreferrer">View on GitHub <span aria-hidden="true">↗</span></a
 			>

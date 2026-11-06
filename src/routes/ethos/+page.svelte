@@ -1,8 +1,8 @@
 <script lang="ts">
-	import SiteHeader from '$lib/site-header.svelte';
-	import ProjectIntro from '$lib/project-intro.svelte';
-	import SiteFooter from '$lib/site-footer.svelte';
-	import ScrollToTop from '$lib/scroll-to-top.svelte';
+	import SiteHeader from '#lib/site-header.svelte';
+	import ProjectIntro from '#lib/project-intro.svelte';
+	import SiteFooter from '#lib/site-footer.svelte';
+	import ScrollToTop from '#lib/scroll-to-top.svelte';
 </script>
 
 <SiteHeader />

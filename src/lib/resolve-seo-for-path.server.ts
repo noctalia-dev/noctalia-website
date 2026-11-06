@@ -1,6 +1,6 @@
-import { getBlogPostBySlug } from '$lib/blog';
-import { getRegistryPlugins, isValidPlugin } from '$lib/plugins-registry.server';
-import { SITE_NAME } from '$lib/site-constants';
+import { getBlogPostBySlug } from '#lib/blog.js';
+import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { SITE_NAME } from '#lib/site-constants.js';
 import {
 	type PathSeoPreview,
 	SEO_BLOG_INDEX,
@@ -17,7 +17,7 @@ import {
 	SEO_PALETTES,
 	seoBlogPost,
 	seoPlugin
-} from '$lib/seo';
+} from '#lib/seo.js';
 
 function normalizePathname(raw: string): string {
 	const t = raw.trim() || '/';
