@@ -80,7 +80,7 @@ export const SEO_PALETTES: PageSeo = {
 
 export const SEO_CONTRIBUTORS: PageSeo = {
 	title: `Contributors  -  ${SITE_NAME}`,
-	description: 'Meet the people who contribute to Noctalia on GitHub.',
+	description: 'Meet the people who build and translate Noctalia.',
 	pathLabel: 'Contributors',
 	ogImagePath: '/og/contributors.webp'
 };

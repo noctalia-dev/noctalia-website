@@ -418,7 +418,7 @@ async function main() {
 	await w(
 		'og/contributors.webp',
 		'Contributors',
-		'Meet the people who contribute to Noctalia on GitHub.'
+		'Meet the people who build and translate Noctalia.'
 	);
 	await w(
 		'og/privacy.webp',
