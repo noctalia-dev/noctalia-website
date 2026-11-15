@@ -4,6 +4,7 @@
 	import { page } from '$app/state';
 	import { goto } from '$app/navigation';
 	import type { PathSeoPreview } from '#lib/seo.js';
+	import { ogBackground } from '#lib/og-colors.js';
 
 	let { data }: {
 		data: { preview: PathSeoPreview };
@@ -26,10 +27,7 @@
 	const imageUrl = $derived(new URL(p.seo.ogImagePath, page.url.origin).href);
 	/** Small unfurl: thumbnail = logo on OG-style gradient only (not a crop of the full PNG). */
 	const noctaliaLogoUrl = 'https://assets.noctalia.dev/noctalia-logo.svg';
-	const ogStyleThumb =
-		'background:radial-gradient(ellipse 70% 55% at 18% 28%, rgba(155, 254, 206, 0.14) 0%, transparent 55%),' +
-		'radial-gradient(ellipse 55% 45% at 88% 72%, rgba(255, 245, 155, 0.09) 0%, transparent 50%),' +
-		'linear-gradient(165deg, #070722 0%, #0a0a2a 40%, #11112d 100%)';
+	const ogStyleThumb = `background:${ogBackground}`;
 </script>
 
 <svelte:head>

@@ -19,9 +19,9 @@
 <main class="site-main">
 	<div class="site-shell--narrow">
 		<div class="card-surface p-8 text-center md:p-12">
-			<p class="font-mono text-sm font-semibold tracking-[0.3em] text-accent">404</p>
+			<p class="text-sm font-semibold tracking-[0.3em] text-accent">404</p>
 
-			<h1 class="mt-4 font-sans text-4xl font-semibold tracking-tight text-fg md:text-5xl">
+			<h1 class="mt-4 text-4xl font-semibold tracking-tight text-fg md:text-5xl">
 				Page not found
 			</h1>
 

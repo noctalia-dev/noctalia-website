@@ -29,7 +29,7 @@
 			</p>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Core principles
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -74,7 +74,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Telemetry data we collect
 				</h2>
 				<p class="text-fg-dim">When you opt in to telemetry, we collect:</p>
@@ -111,7 +111,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Why we collect telemetry
 				</h2>
 				<p class="text-fg-dim">
@@ -140,7 +140,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					What telemetry does not collect
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -163,7 +163,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Telemetry storage &amp; retention
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -199,7 +199,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Google Calendar OAuth
 				</h2>
 				<p class="text-fg-dim">
@@ -243,7 +243,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Automatic location lookup
 				</h2>
 				<p class="text-fg-dim">
@@ -283,7 +283,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Your control
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -313,7 +313,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Right to deletion
 				</h2>
 				<p class="text-fg-dim">
@@ -332,7 +332,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Contact
 				</h2>
 				<p class="text-fg-dim">

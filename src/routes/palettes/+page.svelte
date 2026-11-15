@@ -190,11 +190,7 @@
 
 	.search-container:focus-within {
 		border-color: var(--mPrimary);
-		box-shadow: 0 0 0 4px rgba(255, 245, 155, 0.1);
-	}
-
-	:global([data-theme='light']) .search-container:focus-within {
-		box-shadow: 0 0 0 4px rgba(93, 101, 245, 0.1);
+		box-shadow: 0 0 0 4px color-mix(in srgb, var(--mPrimary) 10%, transparent);
 	}
 
 	.search-icon {

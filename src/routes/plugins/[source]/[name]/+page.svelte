@@ -493,7 +493,7 @@
 		background: var(--mSurface);
 		padding: 0.2rem 0.4rem;
 		border-radius: 0.25rem;
-		font-family: 'JetBrains Mono', 'Fira Code', monospace;
+		font-family: var(--font-mono);
 		font-size: 0.875em;
 		color: var(--mPrimary);
 	}
@@ -584,12 +584,12 @@
 
 	.github-btn:hover {
 		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(255, 245, 155, 0.3);
+		box-shadow: 0 8px 24px color-mix(in srgb, var(--mPrimary) 30%, transparent);
 		filter: brightness(1.1);
 	}
 
 	:global([data-theme='light']) .github-btn:hover {
-		box-shadow: 0 8px 24px rgba(93, 101, 245, 0.35);
+		box-shadow: 0 8px 24px color-mix(in srgb, var(--mPrimary) 35%, transparent);
 	}
 
 	/* Mobile Responsive */

@@ -75,7 +75,7 @@
 				</div>
 			</aside>
 
-			<article class="release-body prose prose-invert max-w-none prose-headings:font-sans prose-headings:tracking-tight prose-headings:text-fg prose-h2:text-2xl prose-h3:text-xl prose-p:text-fg-dim prose-li:text-fg-dim prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-fg prose-code:rounded prose-code:bg-void-deep/90 prose-code:px-1 prose-code:py-0.5 prose-code:text-accent-2 prose-pre:border prose-pre:border-border/50">
+			<article class="release-body prose prose-invert max-w-none prose-headings:tracking-tight prose-headings:text-fg prose-h2:text-2xl prose-h3:text-xl prose-p:text-fg-dim prose-li:text-fg-dim prose-a:text-accent prose-a:underline-offset-4 prose-strong:text-fg prose-code:rounded prose-code:bg-void-deep/90 prose-code:px-1 prose-code:py-0.5 prose-code:text-accent-2 prose-pre:border prose-pre:border-border/50">
 				{@html renderMarkdown(data.release.body)}
 			</article>
 		</div>
@@ -123,21 +123,21 @@
 		height: 1px;
 		background: linear-gradient(90deg, var(--color-accent-2), var(--color-accent), transparent);
 	}
-	.release-hero__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; font-family: var(--font-mono); font-size: .69rem; letter-spacing: .045em; text-transform: uppercase; color: var(--color-fg-dim); }
+	.release-hero__meta { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; font-size: .69rem; letter-spacing: .045em; text-transform: uppercase; color: var(--color-fg-dim); }
 	.release-hero__signal { width: .45rem; height: .45rem; margin-right: .2rem; border-radius: 999px; background: var(--color-accent-2); box-shadow: 0 0 .8rem color-mix(in srgb, var(--color-accent-2) 65%, transparent); }
 	.release-status { padding: .18rem .48rem; border: 1px solid color-mix(in srgb, var(--color-accent-3) 35%, transparent); border-radius: 999px; color: var(--color-accent-3); }
 	.release-hero__title-row { display: flex; align-items: end; justify-content: space-between; gap: 2rem; margin-top: 1.25rem; }
-	.release-hero h1 { margin: 0; font-family: var(--font-mono); font-size: clamp(2.5rem, 6vw, 4.4rem); font-weight: 620; line-height: .95; letter-spacing: -.07em; color: var(--color-fg); }
+	.release-hero h1 { margin: 0; font-size: clamp(2.5rem, 6vw, 4.4rem); font-weight: 620; line-height: .95; letter-spacing: -.07em; color: var(--color-fg); }
 	.release-github-link { display: inline-flex; align-items: center; gap: .5rem; min-height: 2.65rem; padding: .55rem .8rem; border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent); border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-surface-2) 55%, transparent); font-size: .76rem; font-weight: 650; color: var(--color-fg); transition: color 180ms ease, border-color 180ms ease, transform 180ms ease; }
 	.release-github-link:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--color-accent) 38%, transparent); color: var(--color-accent); }
 	.release-content-grid { display: grid; gap: clamp(2rem, 6vw, 5rem); padding: clamp(2.75rem, 5vw, 4.5rem) 0; }
 	.release-facts { position: sticky; top: 6rem; }
-	.release-facts > p { margin: 0 0 1.1rem; font-family: var(--font-mono); font-size: .68rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: var(--color-accent-2); }
+	.release-facts > p { margin: 0 0 1.1rem; font-size: .68rem; font-weight: 650; letter-spacing: .12em; text-transform: uppercase; color: var(--color-accent-2); }
 	.release-facts dl { margin: 0; }
 	.release-facts dl > div { padding: .8rem 0; border-top: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); }
 	.release-facts dl > div:last-child { border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent); }
 	.release-facts dt { font-size: .7rem; color: var(--color-fg-dim); }
-	.release-facts dd { margin: .25rem 0 0; font-family: var(--font-mono); font-size: .78rem; color: var(--color-fg); }
+	.release-facts dd { margin: .25rem 0 0; font-size: .78rem; color: var(--color-fg); }
 	.release-body {
 		min-width: 0;
 		padding: clamp(1.5rem, 3vw, 2.5rem);
@@ -157,7 +157,7 @@
 	.release-pagination a { display: flex; flex-direction: column; gap: .4rem; padding: 1.2rem; border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent); border-radius: var(--radius-md); background: color-mix(in srgb, var(--color-surface-2) 42%, transparent); transition: border-color 180ms ease, transform 180ms ease; }
 	.release-pagination a:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--color-accent) 38%, transparent); }
 	.release-pagination span { display: flex; align-items: center; gap: .4rem; font-size: .7rem; color: var(--color-fg-dim); }
-	.release-pagination strong { font-family: var(--font-mono); font-size: .9rem; color: var(--color-fg); }
+	.release-pagination strong { font-size: .9rem; color: var(--color-fg); }
 	.release-pagination__newer { align-items: end; text-align: right; }
 	@media (min-width: 800px) { .release-content-grid { grid-template-columns: 11rem minmax(0, 1fr); } }
 	@media (max-width: 540px) {

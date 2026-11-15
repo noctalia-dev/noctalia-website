@@ -13,6 +13,7 @@ import { createElement as h } from 'react';
 import sharp from 'sharp';
 import satori from 'satori';
 import { parse as parseToml } from 'smol-toml';
+import { ogBackground, ogColors } from '../src/lib/og-colors.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -20,9 +21,9 @@ const root = join(__dirname, '..');
 const CACHE_FILE = join(root, 'static/og', '.og-input-hashes.json');
 const WEBP_OPTIONS = { quality: 88, effort: 4 };
 /** Matches the card gradient's base, so a fit-inside thumbnail sits on the same dark field. */
-const OG_BACKGROUND = { r: 10, g: 10, b: 42, alpha: 1 };
-/** Bump when layout, font usage, or WebP settings change so all images rebuild. */
-const LAYOUT_VERSION = 2;
+const OG_BACKGROUND = { r: 18, g: 19, b: 41, alpha: 1 };
+/** Bump when layout, colors, font usage, or WebP settings change so all images rebuild. */
+const LAYOUT_VERSION = 3;
 
 const NOCTALIA_LOGO_SVG_URL = 'https://assets.noctalia.dev/noctalia-logo.svg';
 
@@ -110,7 +111,7 @@ async function loadLogoDataUrl() {
 }
 
 /** Satori can clip a single long flex child oddly; "Plugin" + name as spans avoids that. */
-const mintChroma = { fontSize: 40, fontWeight: 600, color: '#9bfece', lineHeight: 1.2 };
+const mintChroma = { fontSize: 40, fontWeight: 600, color: ogColors.accent2, lineHeight: 1.2 };
 
 function pathLabelLine(pathLabel) {
 	const m = String(pathLabel).match(/^Plugin:\s*(.+)$/i);
@@ -168,7 +169,7 @@ function textColumn(pathLabel, body) {
 					fontWeight: 600,
 					letterSpacing: '0.2em',
 					textTransform: 'uppercase',
-					color: '#7c80b4',
+					color: ogColors.fgDim,
 					marginBottom: 22,
 				},
 			},
@@ -181,7 +182,7 @@ function textColumn(pathLabel, body) {
 					fontSize: 100,
 					fontWeight: 600,
 					letterSpacing: -2,
-					color: '#f3edf7',
+					color: ogColors.fg,
 					lineHeight: 1.04,
 				},
 			},
@@ -194,7 +195,7 @@ function textColumn(pathLabel, body) {
 				style: {
 					fontSize: 26,
 					fontWeight: 400,
-					color: '#7c80b4',
+					color: ogColors.fgDim,
 					marginTop: 28,
 					lineHeight: 1.5,
 					maxWidth: 900,
@@ -254,7 +255,7 @@ function buildTree(pathLabel, bodyText, logoDataUrl) {
 				height: 630,
 				display: 'flex',
 				position: 'relative',
-				backgroundColor: '#070722',
+				backgroundColor: ogColors.bg,
 				fontFamily: 'Inter',
 			},
 		},
@@ -265,12 +266,7 @@ function buildTree(pathLabel, bodyText, logoDataUrl) {
 				left: 0,
 				width: 1200,
 				height: 630,
-				background: [
-					'radial-gradient(ellipse 70% 55% at 18% 28%, rgba(155, 254, 206, 0.14) 0%, transparent 55%)',
-					'radial-gradient(ellipse 55% 45% at 88% 72%, rgba(255, 245, 155, 0.09) 0%, transparent 50%)',
-					'radial-gradient(ellipse 50% 40% at 50% 100%, rgba(169, 174, 254, 0.06) 0%, transparent 45%)',
-					'linear-gradient(165deg, #070722 0%, #0a0a2a 40%, #11112d 100%)',
-				].join(', '),
+				background: ogBackground,
 			},
 		}),
 		h('div', {
@@ -280,7 +276,7 @@ function buildTree(pathLabel, bodyText, logoDataUrl) {
 				left: 0,
 				right: 0,
 				height: 1,
-				background: 'linear-gradient(90deg, transparent, rgba(33, 33, 95, 0.9), transparent)',
+				background: `linear-gradient(90deg, transparent, ${ogColors.border}, transparent)`,
 			},
 		}),
 		h('div', {

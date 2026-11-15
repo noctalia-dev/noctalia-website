@@ -1,11 +1,13 @@
 <script lang="ts">
 	import '@fontsource-variable/inter/wght.css';
+	import '@fontsource-variable/jetbrains-mono/wght.css';
 	import './tabler-icons.css';
 	import './layout.css';
 	import { onMount } from 'svelte';
 	import { onNavigate } from '$app/navigation';
 	import { page } from '$app/state';
 	import { applyTheme, getTheme } from '#lib/theme.js';
+	import { ogColors } from '#lib/og-colors.js';
 	import PlexusCanvas from '#lib/plexus-canvas.svelte';
 	import {
 		DEFAULT_DESCRIPTION,
@@ -88,12 +90,13 @@
 	});
 </script>
 
+<!-- theme-color is replaced client-side by applyTheme from --color-void-deep. -->
 <svelte:head>
 	<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 	<link rel="canonical" href={canonicalUrl} />
 	<link rel="alternate" type="application/rss+xml" href="/rss.xml" />
 	<meta name="description" content={metaDescription} />
-	<meta name="theme-color" content="#070722" />
+	<meta name="theme-color" content={ogColors.bg} />
 
 	<meta property="og:site_name" content={SITE_NAME} />
 	<meta property="og:type" content={ogType} />

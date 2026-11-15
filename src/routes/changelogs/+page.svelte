@@ -233,7 +233,6 @@
 		align-items: center;
 		gap: 0.65rem;
 		margin: 0 0 1.25rem;
-		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		font-weight: 650;
 		letter-spacing: 0.16em;
@@ -294,7 +293,6 @@
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		font-family: var(--font-mono);
 		font-size: 0.67rem;
 		letter-spacing: 0.07em;
 		text-transform: uppercase;
@@ -327,7 +325,6 @@
 	.project-release-card strong {
 		display: block;
 		margin-top: 1.1rem;
-		font-family: var(--font-mono);
 		font-size: clamp(1.55rem, 3vw, 2.1rem);
 		font-weight: 650;
 		letter-spacing: -0.055em;
@@ -415,7 +412,6 @@
 		padding: 0.1rem 0.4rem;
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--color-border) 45%, transparent);
-		font-family: var(--font-mono);
 		font-size: 0.62rem;
 		font-weight: 600;
 	}
@@ -491,7 +487,6 @@
 
 	.release-list__number {
 		padding-top: 0.1rem;
-		font-family: var(--font-mono);
 		font-size: 0.72rem;
 		color: var(--color-fg-dim);
 	}
@@ -505,7 +500,6 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: 0.55rem;
-		font-family: var(--font-mono);
 		font-size: 0.67rem;
 		letter-spacing: 0.03em;
 		color: var(--color-fg-dim);
@@ -525,7 +519,6 @@
 
 	.release-list h3 {
 		margin: 0.75rem 0 0;
-		font-family: var(--font-mono);
 		font-size: clamp(1.45rem, 3vw, 2rem);
 		font-weight: 600;
 		letter-spacing: -0.045em;

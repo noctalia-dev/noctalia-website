@@ -26,7 +26,7 @@
 			</p>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					What you can expect from us
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -59,7 +59,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					What we don't promise
 				</h2>
 				<p class="text-fg-dim">A gift exchange is not a support contract. That means:</p>
@@ -85,7 +85,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					On following up
 				</h2>
 				<p class="text-fg-dim">
@@ -101,7 +101,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					How to actually help your PR get attention
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -137,7 +137,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					A few ground rules
 				</h2>
 				<ul class="list-none space-y-2 text-fg-dim">
@@ -168,7 +168,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Give back if you can
 				</h2>
 				<p class="text-fg-dim">
@@ -181,7 +181,7 @@
 			</section>
 
 			<section class="space-y-3">
-				<h2 class="border-b border-border/40 pb-2 font-sans text-xl font-semibold text-fg">
+				<h2 class="border-b border-border/40 pb-2 text-xl font-semibold text-fg">
 					Contact
 				</h2>
 				<p class="text-fg-dim">

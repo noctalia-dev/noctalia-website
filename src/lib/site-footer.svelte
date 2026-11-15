@@ -73,7 +73,7 @@
 						height="32"
 					/>
 					<div class="min-w-0">
-						<p class="font-sans text-base font-semibold leading-tight tracking-tight text-fg">Noctalia</p>
+						<p class="text-base font-semibold leading-tight tracking-tight text-fg">Noctalia</p>
 						<p class="mt-0.5 text-[11px] font-medium uppercase leading-snug tracking-[0.12em] text-fg-dim">
 							quiet by design
 						</p>

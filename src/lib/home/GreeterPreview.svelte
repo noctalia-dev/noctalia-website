@@ -197,13 +197,14 @@
 	}
 	/* Geometry follows greeter_surface.cpp at a 960 × 540 logical viewport. */
 	.login-scene {
-		--greeter-surface: #070722;
-		--greeter-surface-variant: #11112d;
-		--greeter-outline: #21215f;
-		--greeter-fg: #f3edf7;
-		--greeter-muted: #7c80b4;
-		--greeter-primary: #fff59b;
-		--greeter-on-primary: #0e0e43;
+		/* Mirrors the site theme tokens (src/routes/layout.css), which follow Noctalia's palette. */
+		--greeter-surface: var(--color-void-deep);
+		--greeter-surface-variant: var(--color-void);
+		--greeter-outline: var(--color-border);
+		--greeter-fg: var(--color-fg);
+		--greeter-muted: var(--color-fg-dim);
+		--greeter-primary: var(--color-accent);
+		--greeter-on-primary: var(--color-on-accent);
 		position: absolute;
 		inset: 0;
 		background: var(--greeter-surface);
@@ -413,16 +414,6 @@
 	[data-greeter-phase='2'] .session-selector {
 		border-color: var(--greeter-primary);
 		box-shadow: 0 0 0 0.3cqw color-mix(in srgb, var(--greeter-primary) 20%, transparent);
-	}
-	/* The mock follows the site theme, using Noctalia's light scheme in light mode. */
-	:global(html[data-theme='light']) .login-scene {
-		--greeter-surface: #e6e8fa;
-		--greeter-surface-variant: #eff0ff;
-		--greeter-outline: #a8affc;
-		--greeter-fg: #2d3180;
-		--greeter-muted: #4b55c8;
-		--greeter-primary: #5d65f5;
-		--greeter-on-primary: #ffffff;
 	}
 
 	.preview-caption {
