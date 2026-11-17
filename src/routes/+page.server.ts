@@ -22,14 +22,15 @@ async function pluginCount(): Promise<number | null> {
 }
 
 export async function load() {
-	const [count, shellStars, umbrielStars] = await Promise.all([
+	const [count, shellStars, umbrielStars, lucioleStars] = await Promise.all([
 		pluginCount(),
 		projectStars('noctalia'),
-		projectStars('umbriel')
+		projectStars('umbriel'),
+		projectStars('luciole')
 	]);
 	return {
 		pluginCount: count,
-		stars: { noctalia: shellStars, umbriel: umbrielStars },
+		stars: { noctalia: shellStars, umbriel: umbrielStars, luciole: lucioleStars },
 		seo: SEO_HOME
 	};
 }

@@ -40,7 +40,7 @@
 		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 		const sequence = ++navigationSequence;
 		pageAnimation?.cancel();
-		const paths = ['/', '/shell', '/umbriel', '/greeter', '/plugins', '/blog', '/changelogs'];
+		const paths = ['/', '/shell', '/umbriel', '/luciole', '/greeter', '/plugins', '/blog', '/changelogs'];
 		const from = paths.indexOf(navigation.from?.url.pathname ?? '/');
 		const to = paths.indexOf(navigation.to?.url.pathname ?? '/');
 		const direction = from >= 0 && to >= 0 && to < from ? -1 : 1;

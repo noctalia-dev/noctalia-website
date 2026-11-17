@@ -50,6 +50,14 @@ export const SEO_GREETER: PageSeo = {
 	ogImagePath: '/og/greeter.webp'
 };
 
+export const SEO_LUCIOLE: PageSeo = {
+	title: `Luciole  -  ${SITE_NAME}`,
+	description:
+		'A native Wayland file manager built to stay smooth. Grid, list, and Miller views, tabs, split view, and previews that never block the window.',
+	pathLabel: 'Luciole',
+	ogImagePath: '/og/luciole.webp'
+};
+
 export const SEO_BLOG_INDEX: PageSeo = {
 	title: `Blog  -  ${SITE_NAME}`,
 	description: 'News from the Noctalia team.',

@@ -1,14 +1,14 @@
 import { DOCS_BASE_URL } from '#lib/site-constants.js';
 
 /**
- * Canonical copy for the three Noctalia projects.
+ * Canonical copy for the Noctalia projects.
  *
  * Mirrors `PROJECTS` in noctalia-docs (`src/lib/projects.ts`): same names, same
  * order, same one-line roles. Keep both in sync so the marketing site and the
  * documentation site never disagree about what a project is.
  */
 export interface Product {
-	id: 'noctalia' | 'umbriel' | 'greeter';
+	id: 'noctalia' | 'umbriel' | 'greeter' | 'luciole';
 	name: string;
 	/** One-line role, identical to the docs card. */
 	role: string;
@@ -54,6 +54,20 @@ export const PRODUCTS: readonly Product[] = [
 		repoUrl: 'https://github.com/noctalia-dev/umbriel',
 		docsUrl: `${DOCS_BASE_URL}/umbriel/`,
 		pageUrl: '/umbriel'
+	},
+	{
+		id: 'luciole',
+		name: 'Luciole',
+		role: 'File manager',
+		navLabel: 'Files',
+		fullName: 'Luciole',
+		blurb:
+			'A native Wayland file manager that stays smooth: quick to start, fluid in huge folders, with grid, list, and Miller views, tabs, split view, and previews that never block the window.',
+		logoUrl:
+			'https://raw.githubusercontent.com/noctalia-dev/luciole/HEAD/assets/icons/dev.noctalia.luciole.svg',
+		repoUrl: 'https://github.com/noctalia-dev/luciole',
+		docsUrl: `${DOCS_BASE_URL}/luciole/`,
+		pageUrl: '/luciole'
 	},
 	{
 		id: 'greeter',

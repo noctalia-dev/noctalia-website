@@ -5,6 +5,7 @@
 	import { slideshowImages } from '#lib/slideshow-images.js';
 	import LayoutShowcase from '#lib/umbriel/LayoutShowcase.svelte';
 	import GreeterPreview from '#lib/home/GreeterPreview.svelte';
+	import LucioleVisual from '#lib/home/LucioleVisual.svelte';
 
 	let { stars = {} }: { stars?: Partial<Record<string, number | null>> } = $props();
 	const homeImages = slideshowImages.filter((image) =>
@@ -15,7 +16,8 @@
 	const notes: Record<string, string> = {
 		noctalia: 'The things you reach for, all day.',
 		umbriel: 'Tile, scroll, or float. Your call.',
-		greeter: 'A familiar face, before you sign in.'
+		greeter: 'A familiar face, before you sign in.',
+		luciole: 'Every folder, at the speed you move.'
 	};
 </script>
 
@@ -57,7 +59,7 @@
 						>
 							{product.pageUrl
 								? `Explore ${product.name}`
-								: 'Greeter documentation'}
+								: `${product.name} documentation`}
 							<span aria-hidden="true">{product.pageUrl ? '→' : '↗'}</span>
 						</a>
 						<a
@@ -84,8 +86,10 @@
 					<div class="project-visual layout-visual">
 						<LayoutShowcase compact href="/umbriel" />
 					</div>
-				{:else}
+				{:else if product.id === 'greeter'}
 					<GreeterPreview />
+				{:else}
+					<LucioleVisual href="/luciole" />
 				{/if}
 			</article>
 		</Reveal>

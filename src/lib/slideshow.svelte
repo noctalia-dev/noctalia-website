@@ -6,11 +6,17 @@
 		images,
 		interval = 6000,
 		href,
+		label = 'Noctalia screenshots',
+		linkLabel = 'Explore Noctalia Shell',
 		class: className = ''
 	}: {
 		images: SlideImage[];
 		interval?: number;
 		href?: string;
+		/** Carousel accessible name. */
+		label?: string;
+		/** Prefix for each slide's accessible name when `href` is set. */
+		linkLabel?: string;
 		class?: string;
 	} = $props();
 
@@ -142,7 +148,7 @@
 		class:slideshow--paused={paused}
 		role="group"
 		aria-roledescription="carousel"
-		aria-label="Noctalia screenshots"
+		aria-label={label}
 		style:--slide-duration="{interval + 1000}ms"
 		onmouseenter={() => (hovered = true)}
 		onmouseleave={onMouseLeave}
@@ -161,7 +167,7 @@
 				role={href ? undefined : 'group'}
 				aria-roledescription="slide"
 				aria-label={href
-					? `Explore Noctalia Shell: ${image.alt} (${i + 1} of ${images.length})`
+					? `${linkLabel}: ${image.alt} (${i + 1} of ${images.length})`
 					: `${i + 1} of ${images.length}`}
 				aria-hidden={i !== active}
 			>

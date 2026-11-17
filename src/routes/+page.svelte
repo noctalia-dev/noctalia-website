@@ -25,7 +25,7 @@
 			<div class="plugin-row">
 				<div class="plugin-copy">
 					<a href="/plugins" class="plugin-overview">
-						<p class="eyebrow plugin-marker"><span>04</span> / Shell ecosystem</p>
+						<p class="eyebrow plugin-marker"><span>05</span> / Shell ecosystem</p>
 						<div class="plugin-name">
 							<i class="ti ti-puzzle" aria-hidden="true"></i>
 							<h2 id="plugins-title">Plugins</h2>

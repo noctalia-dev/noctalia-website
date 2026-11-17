@@ -3,6 +3,7 @@ import { githubFetch } from '#lib/github.server.js';
 export const CONTRIBUTOR_REPOS = [
 	{ id: 'noctalia', label: 'Noctalia', url: 'https://github.com/noctalia-dev/noctalia' },
 	{ id: 'umbriel', label: 'Umbriel', url: 'https://github.com/noctalia-dev/umbriel' },
+	{ id: 'luciole', label: 'Luciole', url: 'https://github.com/noctalia-dev/luciole' },
 	{ id: 'official-plugins', label: 'Official plugins', url: 'https://github.com/noctalia-dev/official-plugins' }
 ] as const;
 

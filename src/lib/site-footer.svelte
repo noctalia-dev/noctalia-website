@@ -15,6 +15,7 @@
 				{ href: '/', label: 'Home' },
 				{ href: '/shell', label: 'Shell' },
 				{ href: '/umbriel', label: 'Compositor' },
+				{ href: '/luciole', label: 'Files' },
 				{ href: '/greeter', label: 'Greeter' },
 				{ href: '/plugins', label: 'Plugins' }
 			]

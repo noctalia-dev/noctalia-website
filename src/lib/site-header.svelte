@@ -31,7 +31,9 @@
 				? `${DOCS_BASE_URL}/noctalia/`
 				: page.url.pathname.startsWith('/greeter')
 					? `${DOCS_BASE_URL}/greeter/`
-					: DOCS_BASE_URL
+					: page.url.pathname.startsWith('/luciole')
+						? `${DOCS_BASE_URL}/luciole/`
+						: DOCS_BASE_URL
 	);
 	const navActive = (href: string) =>
 		page.url.pathname === href || (href !== '/' && page.url.pathname.startsWith(`${href}/`));

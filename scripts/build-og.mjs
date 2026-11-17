@@ -407,6 +407,11 @@ async function main() {
 		'Greeter',
 		'A greetd login screen that shares your Noctalia wallpaper, colors, and font. A familiar desktop from the moment you sign in.'
 	);
+	await w(
+		'og/luciole.webp',
+		'Luciole',
+		'A native Wayland file manager built to stay smooth. Grid, list, and Miller views, tabs, split view, and previews that never block the window.'
+	);
 	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
 	await w('og/changelog.webp', 'Changelog', 'Release notes for Noctalia v5 and later.');
 	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');

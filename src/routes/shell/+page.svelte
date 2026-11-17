@@ -19,6 +19,7 @@
 	const shell = PRODUCTS.find((p) => p.id === 'noctalia')!;
 	const umbriel = PRODUCTS.find((p) => p.id === 'umbriel')!;
 	const greeter = PRODUCTS.find((p) => p.id === 'greeter')!;
+	const luciole = PRODUCTS.find((p) => p.id === 'luciole')!;
 
 	type ReasonCard = {
 		icon: FeatureIconId;
@@ -157,9 +158,10 @@
 
 	<PageOutro
 		title="Complete the desktop"
-		body="Arrange your windows with Umbriel, and sign in with Greeter. Same people, same look."
+		body="Arrange your windows with Umbriel, sign in with Greeter, and browse your files with Luciole. Same people, same look."
 		links={[
 			{ href: '/umbriel', label: 'Compositor', logo: umbriel.logoUrl },
+			{ href: '/luciole', label: 'Files', logo: luciole.logoUrl },
 			{ href: '/greeter', label: 'Greeter', logo: greeter.logoUrl }
 		]}
 	/>

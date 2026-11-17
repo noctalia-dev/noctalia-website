@@ -13,6 +13,7 @@
 	const umbriel = PRODUCTS.find((p) => p.id === 'umbriel')!;
 	const shell = PRODUCTS.find((p) => p.id === 'noctalia')!;
 	const greeter = PRODUCTS.find((p) => p.id === 'greeter')!;
+	const luciole = PRODUCTS.find((p) => p.id === 'luciole')!;
 
 	const details = [
 		{
@@ -100,9 +101,10 @@
 
 	<PageOutro
 		title="The desktop around it"
-		body="Pair Umbriel with Noctalia Shell for your bar, launcher, and wallpaper-driven colors, and sign in with Greeter. Same people, same look."
+		body="Pair Umbriel with Noctalia Shell for your bar, launcher, and wallpaper-driven colors, sign in with Greeter, and browse your files with Luciole. Same people, same look."
 		links={[
 			{ href: '/shell', label: 'Shell', logo: shell.logoUrl },
+			{ href: '/luciole', label: 'Files', logo: luciole.logoUrl },
 			{ href: '/greeter', label: 'Greeter', logo: greeter.logoUrl }
 		]}
 	/>

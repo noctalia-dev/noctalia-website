@@ -12,6 +12,7 @@
 	const greeter = PRODUCTS.find((product) => product.id === 'greeter')!;
 	const shell = PRODUCTS.find((product) => product.id === 'noctalia')!;
 	const umbriel = PRODUCTS.find((product) => product.id === 'umbriel')!;
+	const luciole = PRODUCTS.find((product) => product.id === 'luciole')!;
 
 	const details = [
 		{
@@ -83,10 +84,11 @@
 
 	<PageOutro
 		title="On the other side of login"
-		body="Noctalia Shell brings the bar, launcher, and desktop controls; Umbriel arranges your windows."
+		body="Noctalia Shell brings the bar, launcher, and desktop controls; Umbriel arranges your windows; Luciole keeps your files close."
 		links={[
 			{ href: '/shell', label: 'Shell', logo: shell.logoUrl },
-			{ href: '/umbriel', label: 'Compositor', logo: umbriel.logoUrl }
+			{ href: '/umbriel', label: 'Compositor', logo: umbriel.logoUrl },
+			{ href: '/luciole', label: 'Files', logo: luciole.logoUrl }
 		]}
 	/>
 </main>

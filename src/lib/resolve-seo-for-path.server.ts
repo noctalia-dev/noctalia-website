@@ -12,6 +12,7 @@ import {
 	SEO_SHELL,
 	SEO_UMBRIEL,
 	SEO_GREETER,
+	SEO_LUCIOLE,
 	SEO_PLUGINS_INDEX,
 	SEO_PRIVACY,
 	SEO_PALETTES,
@@ -49,6 +50,9 @@ export async function resolveSeoForPathname(pathInput: string): Promise<PathSeoP
 	}
 	if (normalizedPath === '/greeter' || normalizedPath === '/greeter/') {
 		return { seo: SEO_GREETER, normalizedPath: '/greeter', notFound: false, unknown: false };
+	}
+	if (normalizedPath === '/luciole' || normalizedPath === '/luciole/') {
+		return { seo: SEO_LUCIOLE, normalizedPath: '/luciole', notFound: false, unknown: false };
 	}
 	if (a === 'blog' && !b) {
 		return { seo: SEO_BLOG_INDEX, normalizedPath, notFound: false, unknown: false };

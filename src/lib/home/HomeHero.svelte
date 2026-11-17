@@ -22,8 +22,8 @@
 			A family of native <span>Wayland</span> projects that feel like one desktop.
 		</h1>
 		<p class="hero-lead">
-			A desktop shell, a compositor, and a login screen that share one look, one palette, and one
-			philosophy. Use them together, or choose the pieces you need.
+			A desktop shell, a compositor, a file manager, and a login screen that share one look, one
+			palette, and one philosophy. Use them together, or choose the pieces you need.
 		</p>
 	</Reveal>
 	<Reveal delay={130}>
@@ -126,10 +126,10 @@
 	}
 	.family-strip {
 		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
+		grid-template-columns: repeat(4, minmax(0, 1fr));
 		gap: 0.75rem;
 		width: 100%;
-		max-width: 46rem;
+		max-width: 56rem;
 		margin-top: clamp(2.5rem, 5vw, 3.5rem);
 	}
 	.family-chip {
@@ -167,7 +167,7 @@
 		line-height: 1.4;
 		color: var(--color-fg-dim);
 	}
-	@media (max-width: 639px) {
+	@media (max-width: 759px) {
 		.family-strip {
 			grid-template-columns: 1fr;
 			max-width: 22rem;
