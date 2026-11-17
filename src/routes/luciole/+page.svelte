@@ -4,6 +4,7 @@
 	import Reveal from '#lib/reveal.svelte';
 	import ProjectIntro from '#lib/project-intro.svelte';
 	import SectionHeading from '#lib/section-heading.svelte';
+	import StarHistory from '#lib/star-history.svelte';
 	import PageOutro from '#lib/page-outro.svelte';
 	import LucioleVisual from '#lib/home/LucioleVisual.svelte';
 	import { PRODUCTS } from '#lib/products.js';
@@ -73,6 +74,13 @@
 			<Reveal delay={90}><LucioleVisual /></Reveal>
 		</div>
 	</section>
+
+	<StarHistory
+		number={2}
+		name="Luciole"
+		repo="noctalia-dev/luciole"
+		chartUrl="https://api.noctalia.dev/stars-animated/luciole"
+	/>
 
 	<PageOutro
 		title="Part of the family"
