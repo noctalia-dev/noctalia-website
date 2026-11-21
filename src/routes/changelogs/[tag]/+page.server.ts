@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getChangelogRelease, getChangelogReleases } from '#lib/releases.server.js';
+import { getChangelogReleases } from '#lib/releases.server.js';
 import { seoChangelogRelease } from '#lib/seo.js';
 
 export async function entries() {
@@ -9,15 +9,14 @@ export async function entries() {
 
 export async function load({ params }: { params: { tag: string } }) {
 	const releases = await getChangelogReleases();
-	const release = await getChangelogRelease(params.tag);
+	const index = releases.findIndex((item) => item.tagName === params.tag);
+	if (index === -1) throw error(404, 'Release not found');
 
-	if (!release) throw error(404, 'Release not found');
-
-	const index = releases.findIndex((item) => item.tagName === release.tagName);
+	const release = releases[index];
 	return {
 		release,
 		newerRelease: index > 0 ? releases[index - 1] : null,
-		olderRelease: index >= 0 && index < releases.length - 1 ? releases[index + 1] : null,
+		olderRelease: index < releases.length - 1 ? releases[index + 1] : null,
 		seo: seoChangelogRelease(release)
 	};
 }

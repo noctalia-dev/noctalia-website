@@ -167,7 +167,3 @@ export async function getChangelogReleases(): Promise<GithubRelease[]> {
 			(a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
 		);
 }
-
-export async function getChangelogRelease(tagName: string): Promise<GithubRelease | undefined> {
-	return (await getChangelogReleases()).find((release) => release.tagName === tagName);
-}

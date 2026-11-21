@@ -2,7 +2,7 @@
 	import SiteHeader from '#lib/site-header.svelte';
 	import SiteFooter from '#lib/site-footer.svelte';
 	import ScrollToTop from '#lib/scroll-to-top.svelte';
-	import { marked } from 'marked';
+	import { renderMarkdown } from '#lib/markdown.js';
 	import type { GithubRelease } from '#lib/releases.server.js';
 
 	let { data }: {
@@ -20,10 +20,6 @@
 			day: 'numeric',
 			timeZone: 'UTC'
 		});
-	}
-
-	function renderMarkdown(content: string): string {
-		return marked.parse(content, { async: false }) as string;
 	}
 
 	function releaseHref(tagName: string): string {

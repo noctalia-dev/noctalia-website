@@ -105,19 +105,21 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 	}
 }
 
-/** Fetch and normalize one source's catalog.toml; returns [] if the repo/catalog is absent. */
+/**
+ * Fetch and normalize one source's catalog.toml; returns [] if the catalog is absent (404).
+ * Other failures throw so a GitHub outage fails the build instead of shipping an empty store.
+ */
 async function fetchSource(source: (typeof PLUGIN_SOURCES)[number]): Promise<any[]> {
-	try {
-		const response = await githubFetch(
-			`https://raw.githubusercontent.com/noctalia-dev/${source.repo}/main/catalog.toml`
-		);
-		if (!response.ok) return [];
-		const catalog = parseToml(await response.text()) as any;
-		const rows = Array.isArray(catalog.plugin) ? catalog.plugin : [];
-		return Promise.all(rows.map((row: any) => enrich(row, source)));
-	} catch {
-		return [];
+	const response = await githubFetch(
+		`https://raw.githubusercontent.com/noctalia-dev/${source.repo}/main/catalog.toml`
+	);
+	if (response.status === 404) return [];
+	if (!response.ok) {
+		throw new Error(`Plugin catalog ${source.repo}: ${response.status} ${response.statusText}`);
 	}
+	const catalog = parseToml(await response.text()) as any;
+	const rows = Array.isArray(catalog.plugin) ? catalog.plugin : [];
+	return Promise.all(rows.map((row: any) => enrich(row, source)));
 }
 
 /**
@@ -129,13 +131,9 @@ export async function getRegistryPlugins(): Promise<any[]> {
 	if (pluginsCache.timestamp > 0 && now - pluginsCache.timestamp < CACHE_TTL) {
 		return pluginsCache.plugins;
 	}
-	try {
-		const sources = await Promise.all(PLUGIN_SOURCES.map(fetchSource));
-		const plugins = sources.flat();
-		pluginsCache.plugins = plugins;
-		pluginsCache.timestamp = now;
-		return plugins;
-	} catch {
-		return pluginsCache.plugins.length > 0 ? pluginsCache.plugins : [];
-	}
+	const plugins = (await Promise.all(PLUGIN_SOURCES.map(fetchSource))).flat();
+	if (plugins.length === 0) throw new Error('Plugin catalogs are empty');
+	pluginsCache.plugins = plugins;
+	pluginsCache.timestamp = now;
+	return plugins;
 }

@@ -2,7 +2,7 @@
 	import SiteHeader from '#lib/site-header.svelte';
 	import SiteFooter from '#lib/site-footer.svelte';
 	import ScrollToTop from '#lib/scroll-to-top.svelte';
-	import { marked } from 'marked';
+	import { renderMarkdown } from '#lib/markdown.js';
 	import type { BlogPost } from '#lib/blog.js';
 
 	let { data }: { data: { post: BlogPost } } = $props();
@@ -14,10 +14,6 @@
 			month: 'long',
 			day: 'numeric'
 		});
-	}
-
-	function renderMarkdown(content: string): string {
-		return marked.parse(content, { async: false }) as string;
 	}
 </script>
 

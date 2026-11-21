@@ -1,14 +1,12 @@
 // src/routes/rss.xml/+server.ts
-import fs from 'node:fs/promises';
-import path from 'node:path';
-import { marked } from 'marked';
+import { getAllBlogPosts } from '#lib/blog.js';
+import { renderMarkdown } from '#lib/markdown.js';
 import { getChangelogReleases } from '#lib/releases.server.js';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;
 
 const SITE_URL = 'https://noctalia.dev';
-const BLOG_DIR = path.resolve('src/content/blog');
 
 function escapeXml(str: string) {
 	return str
@@ -19,64 +17,13 @@ function escapeXml(str: string) {
 		.replace(/'/g, '&apos;');
 }
 
-function parseFrontmatter(source: string) {
-	const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---/);
-	if (!match) return null;
-
-	const raw = match[1];
-	const lines = raw.split(/\r?\n/);
-	const data: Record<string, string | string[]> = {};
-
-	for (const line of lines) {
-		const idx = line.indexOf(':');
-		if (idx === -1) continue;
-
-		const key = line.slice(0, idx).trim();
-		const value = line.slice(idx + 1).trim();
-
-		if (key === 'tags') {
-			data[key] = value
-				.split(',')
-				.map((tag) => tag.trim())
-				.filter(Boolean);
-		} else {
-			data[key] = value;
-		}
-	}
-
-	return data;
-}
-
 export const GET: RequestHandler = async () => {
-	const files = await fs.readdir(BLOG_DIR);
-
-	const posts = (
-		await Promise.all(
-			files
-				.filter((file) => file.endsWith('.md'))
-				.map(async (file) => {
-					const fullPath = path.join(BLOG_DIR, file);
-					const source = await fs.readFile(fullPath, 'utf8');
-					const data = parseFrontmatter(source);
-
-					if (!data?.title || !data?.publishedAt) {
-						return null;
-					}
-
-					const slug = file.replace(/\.md$/, '');
-
-					return {
-						title: String(data.title),
-						description: String(data.description ?? ''),
-						author: String(data.author ?? 'Noctalia Team'),
-						tags: Array.isArray(data.tags) ? data.tags : [],
-						publishedAt: new Date(String(data.publishedAt)),
-						link: `${SITE_URL}/blog/${slug}`
-					};
-				})
-		)
-	)
-		.filter((post): post is NonNullable<typeof post> => post !== null);
+	const posts = (await getAllBlogPosts()).map((post) => ({
+		title: post.title,
+		description: post.description,
+		publishedAt: new Date(post.publishedAt),
+		link: `${SITE_URL}/blog/${post.slug}`
+	}));
 
 	const releases = await getChangelogReleases();
 
@@ -100,7 +47,7 @@ export const GET: RequestHandler = async () => {
 		const title = `Noctalia ${release.tagName}${release.prerelease ? ' (Pre-release)' : ''}`;
 		const link = `${SITE_URL}/changelogs/${encodeURIComponent(release.tagName)}`;
 		const guid = release.htmlUrl || link;
-		const html = marked.parse(release.body, { async: false }) as string;
+		const html = renderMarkdown(release.body);
 
 		return {
 			publishedAt,

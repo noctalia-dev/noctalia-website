@@ -5,7 +5,7 @@
 	import SiteHeader from '#lib/site-header.svelte';
 	import SiteFooter from '#lib/site-footer.svelte';
 	import ScrollToTop from '#lib/scroll-to-top.svelte';
-	import { marked } from 'marked';
+	import { renderUntrustedMarkdown } from '#lib/markdown.js';
 
 	interface PluginRelease {
 		version: string;
@@ -68,10 +68,6 @@
 	function getPluginUrl(): string {
 		return `https://github.com/noctalia-dev/${data.plugin.repo}/tree/main/${data.plugin.id}`;
 	}
-
-	function renderMarkdown(content: string): string {
-		return marked.parse(content, { async: false }) as string;
-	}
 </script>
 
 <SiteHeader />
@@ -120,7 +116,7 @@
 			<div class="about-section">
 				<h2 class="section-title">About</h2>
 				<div class="readme-content">
-					{@html renderMarkdown(data.readme)}
+					{@html renderUntrustedMarkdown(data.readme)}
 				</div>
 			</div>
 		{/if}

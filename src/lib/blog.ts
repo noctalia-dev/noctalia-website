@@ -11,8 +11,13 @@ export interface BlogPost extends BlogPostMeta {
 	content: string;
 }
 
+function requireField(fields: Record<string, string>, key: string): string {
+	if (!fields[key]) throw new Error(`Blog post frontmatter is missing "${key}"`);
+	return fields[key];
+}
+
 function parseFrontmatter(raw: string): { meta: Omit<BlogPostMeta, 'slug'>; content: string } {
-	const match = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+	const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
 	if (!match) {
 		throw new Error('Invalid markdown frontmatter');
 	}
@@ -20,7 +25,7 @@ function parseFrontmatter(raw: string): { meta: Omit<BlogPostMeta, 'slug'>; cont
 	const [, frontmatter, body] = match;
 	const fields: Record<string, string> = {};
 
-	for (const line of frontmatter.split('\n')) {
+	for (const line of frontmatter.split(/\r?\n/)) {
 		const separatorIndex = line.indexOf(':');
 		if (separatorIndex === -1) continue;
 		const key = line.slice(0, separatorIndex).trim();
@@ -38,7 +43,7 @@ function parseFrontmatter(raw: string): { meta: Omit<BlogPostMeta, 'slug'>; cont
 		meta: {
 			title: fields.title ?? 'Untitled post',
 			description: fields.description ?? '',
-			publishedAt: fields.publishedAt ?? new Date().toISOString().slice(0, 10),
+			publishedAt: requireField(fields, 'publishedAt'),
 			author: fields.author ?? 'Noctalia Team',
 			tags
 		},
