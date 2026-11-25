@@ -14,10 +14,10 @@
 	const starFormat = new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 });
 
 	const notes: Record<string, string> = {
-		noctalia: 'The things you reach for, all day.',
-		umbriel: 'Tile, scroll, or float. Your call.',
+		noctalia: 'Bar, launcher, and lock screen, themed from your wallpaper.',
+		umbriel: 'Tile, scroll, or float, per workspace.',
 		greeter: 'A familiar face, before you sign in.',
-		luciole: 'Every folder, at the speed you move.'
+		luciole: 'Huge folders, no stutter.'
 	};
 </script>
 

@@ -1,5 +1,5 @@
 import corePalettes from '#lib/data/core-palettes.json';
-import { SEO_PALETTES } from '#lib/seo.js';
+import { SEO_PALETTES } from '#lib/seo-pages.js';
 
 // Core palettes and the `?version=2` catalog both use format 2 color role names.
 const swatchKeys = ['primary', 'secondary', 'tertiary', 'error', 'surface', 'surface_container'];
@@ -11,7 +11,6 @@ export async function load() {
 	const corePalettesList = (corePalettes.palettes || []).map((palette: any) => ({
 		name: palette.name,
 		path: palette.path,
-		swatches: extractSwatches(palette.dark),
 		darkSwatches: extractSwatches(palette.dark),
 		lightSwatches: extractSwatches(palette.light)
 	})).sort((a: any, b: any) => a.name.localeCompare(b.name));
@@ -26,7 +25,6 @@ export async function load() {
 			communityPalettes = palettes.map((palette: any) => ({
 				name: palette.name,
 				path: '',
-				swatches: extractSwatches(palette.dark),
 				darkSwatches: extractSwatches(palette.dark),
 				lightSwatches: extractSwatches(palette.light)
 			})).sort((a: any, b: any) => a.name.localeCompare(b.name));

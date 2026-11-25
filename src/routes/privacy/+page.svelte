@@ -36,7 +36,7 @@
 					<li
 						class="relative pl-5 before:absolute before:left-0 before:top-2.5 before:h-1.5 before:w-1.5 before:rounded-full before:bg-accent"
 					>
-						<strong class="text-fg">Telemetry is opt-in:</strong> Telemetry is disabled by default. You
+						<strong class="text-fg">Telemetry is opt-in:</strong> It is disabled by default. You
 						choose whether to enable it.
 					</li>
 					<li

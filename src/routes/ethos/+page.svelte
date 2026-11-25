@@ -173,7 +173,7 @@
 				</h2>
 				<p class="text-fg-dim">
 					If Noctalia is useful to you, we'd love your help - code, documentation, testing,
-					translations, or well-written bug reports all genuinely move the project forward. But you
+					translations, or well-written bug reports all move the project forward. But you
 					don't have to contribute anything at all. The software stays free either way. That's the
 					exchange: we give what we can, you take what you need, and anything you give back is a
 					gift too - not a debt being repaid.

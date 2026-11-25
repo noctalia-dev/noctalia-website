@@ -80,7 +80,7 @@
 		eyebrow="Community"
 		logoUrl="https://assets.noctalia.dev/noctalia-logo.svg"
 		summary="The people who help build Noctalia."
-		detail="Code contributors across Noctalia, Umbriel, Luciole, and the official plugins, plus the translators who bring it to every language."
+		detail="Code contributors across Noctalia, Umbriel, Luciole, and the official plugins, plus the translators who bring it to other languages."
 	>
 		{#snippet actions()}
 			<a href={GITHUB_ORG_URL} target="_blank" rel="noopener noreferrer" class="action-secondary"

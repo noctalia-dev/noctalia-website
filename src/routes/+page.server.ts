@@ -1,6 +1,6 @@
-import { SEO_HOME } from '#lib/seo.js';
+import { SEO_HOME } from '#lib/seo-pages.js';
 import { githubFetch } from '#lib/github.server.js';
-import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { getRegistryPlugins } from '#lib/plugins-registry.server.js';
 
 async function projectStars(repo: string): Promise<number | null> {
 	try {
@@ -15,7 +15,7 @@ async function projectStars(repo: string): Promise<number | null> {
 
 async function pluginCount(): Promise<number | null> {
 	try {
-		return (await getRegistryPlugins()).filter(isValidPlugin).length || null;
+		return (await getRegistryPlugins()).length || null;
 	} catch {
 		return null;
 	}

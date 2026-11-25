@@ -16,7 +16,8 @@ function requireField(fields: Record<string, string>, key: string): string {
 	return fields[key];
 }
 
-function parseFrontmatter(raw: string): { meta: Omit<BlogPostMeta, 'slug'>; content: string } {
+/** Also used by scripts/build-og.mjs (loaded directly by Node), so OG cards match the posts. */
+export function parseFrontmatter(raw: string): { meta: Omit<BlogPostMeta, 'slug'>; content: string } {
 	const match = raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
 	if (!match) {
 		throw new Error('Invalid markdown frontmatter');

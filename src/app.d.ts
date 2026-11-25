@@ -1,6 +1,6 @@
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
-import type { PageSeo, PathSeoPreview } from '#lib/seo.js';
+import type { PageSeo } from '#lib/seo.js';
 
 declare global {
 	namespace App {
@@ -8,8 +8,6 @@ declare global {
 		// interface Locals {}
 		interface PageData {
 			seo?: PageSeo;
-			/** Only on /embed-preview */
-			preview?: PathSeoPreview;
 		}
 		// interface PageState {}
 		// interface Platform {}

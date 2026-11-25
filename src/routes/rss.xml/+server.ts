@@ -2,11 +2,10 @@
 import { getAllBlogPosts } from '#lib/blog.js';
 import { renderMarkdown } from '#lib/markdown.js';
 import { getChangelogReleases } from '#lib/releases.server.js';
+import { SITE_ORIGIN as SITE_URL } from '#lib/site-constants.js';
 import type { RequestHandler } from './$types';
 
 export const prerender = true;
-
-const SITE_URL = 'https://noctalia.dev';
 
 function escapeXml(str: string) {
 	return str

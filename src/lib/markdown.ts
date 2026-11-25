@@ -2,7 +2,8 @@ import { Marked } from 'marked';
 
 const trusted = new Marked();
 
-const UNSAFE_URL = /^\s*(?:javascript|vbscript|data):/i;
+// Allow list, not block list: entities like `&#106;` decode only in the browser, so a block list misses them.
+const SAFE_URL = /^(?:https?:|mailto:|[#/])/i;
 
 function escapeHtml(text: string): string {
 	return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -11,7 +12,7 @@ function escapeHtml(text: string): string {
 // Third-party markdown: raw HTML is shown as text and script-capable URLs are neutralised.
 const untrusted = new Marked({
 	walkTokens(token) {
-		if ((token.type === 'link' || token.type === 'image') && UNSAFE_URL.test(token.href)) {
+		if ((token.type === 'link' || token.type === 'image') && !SAFE_URL.test(token.href)) {
 			token.href = '#';
 		}
 	},

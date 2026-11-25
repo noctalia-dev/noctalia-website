@@ -1,5 +1,5 @@
 import type { RequestHandler } from './$types';
-import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { getRegistryPlugins } from '#lib/plugins-registry.server.js';
 import { getAllBlogPosts } from '#lib/blog.js';
 import { getChangelogReleases } from '#lib/releases.server.js';
 import { SITE_ORIGIN } from '#lib/site-constants.js';
@@ -41,9 +41,9 @@ export const GET: RequestHandler = async () => {
 
 	const entries = [
 		...STATIC_PAGES.map((p) => url(`${SITE_ORIGIN}${p.path}`, p)),
-		...plugins.filter(isValidPlugin).map((p) =>
+		...plugins.map((p) =>
 			url(`${SITE_ORIGIN}/plugins/${p.source}/${p.id}`, {
-				lastmod: typeof p.lastUpdated === 'string' ? p.lastUpdated.slice(0, 10) : undefined,
+				lastmod: p.updatedAt ? new Date(p.updatedAt * 1000).toISOString().slice(0, 10) : undefined,
 				changefreq: 'monthly',
 				priority: '0.7',
 			})

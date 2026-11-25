@@ -76,7 +76,8 @@
 
 	// Fuzzy index is built on the first search, not on page load.
 	let fuse: Fuse<Plugin> | null = null;
-	function searchMatches(query: string): Set<string> {
+	// Match objects, not ids: folder ids repeat across sources (official and community `lyrics`).
+	function searchMatches(query: string): Set<Plugin> {
 		fuse ??= new Fuse(allPlugins, {
 			keys: [
 				{ name: 'name', weight: 0.5 },
@@ -88,7 +89,7 @@
 			threshold: 0.4, // 0.0 = perfect match, 1.0 = match anything
 			minMatchCharLength: 2
 		});
-		return new Set(fuse.search(query).map((r) => r.item.id));
+		return new Set(fuse.search(query).map((r) => r.item));
 	}
 
 	// Tag and compositor groups combine with AND; each group permits one active choice.
@@ -106,8 +107,8 @@
 		}
 		const query = searchQuery.trim();
 		if (query) {
-			const ids = searchMatches(query);
-			filtered = filtered.filter((plugin) => ids.has(plugin.id));
+			const matches = searchMatches(query);
+			filtered = filtered.filter((plugin) => matches.has(plugin));
 		}
 		return filtered;
 	});
@@ -163,7 +164,7 @@
 	}
 
 	function getIconClass(plugin: Plugin): string {
-		return `ti ti-${plugin.icon ?? 'puzzle'}`;
+		return plugin.icon ? `ti ti-${plugin.icon}` : 'ti ti-puzzle';
 	}
 
 	function getPreviewUrl(plugin: Plugin): string {

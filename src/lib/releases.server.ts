@@ -87,7 +87,8 @@ async function fetchAllReleases(): Promise<GithubRelease[]> {
 			if (releases.length === 0) {
 				hasMore = false;
 			} else {
-				all.push(...releases.map(mapRelease));
+				// Drafts are listed for tokens with push access; never publish them.
+				all.push(...releases.filter((r) => !r.draft).map(mapRelease));
 				const linkHeader = response.headers.get('Link');
 				hasMore = linkHeader?.includes('rel="next"') ?? releases.length === 100;
 				ghPage++;

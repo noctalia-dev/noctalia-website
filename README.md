@@ -22,6 +22,16 @@ npm run build
 
 Preview the production build with `npm run preview`.
 
+`prebuild` also cuts the Tabler icon font down to the icons the site and the plugin manifests use
+(`npm run icons`; full set in `scripts/tabler-icons/`). Use a new icon as a literal `ti-<name>` class
+so the script finds it.
+
+## Testing
+
+```sh
+npm test
+```
+
 ## Dependency security
 
 Use `npm ci` to install the audited lockfile and `npm audit` to check for new advisories.

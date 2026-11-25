@@ -1,7 +1,7 @@
 // Runs the independent asset generators concurrently.
 import { spawn } from 'node:child_process';
 
-const scripts = ['build-og', 'build-github-showcase', 'build-plugin-wall'];
+const scripts = ['build-og', 'build-github-showcase', 'build-plugin-wall', 'build-icons'];
 
 const codes = await Promise.all(
 	scripts.map(

@@ -1,6 +1,7 @@
 /**
  * Writes WebP files into static/og/** for Open Graph. Run before `vite build` (package.json "prebuild").
- * Satori + Resvg render a PNG raster, then `sharp` encodes WebP. Paths match `src/lib/seo.ts`.
+ * Satori lays out an SVG, then `sharp` rasterizes and encodes WebP. Texts and paths come from the
+ * site's own modules (seo-pages.js, seo.ts, blog.ts, plugin-identity.ts), loaded directly by Node.
  * Skips re-encoding when inputs are unchanged (see LAYOUT_VERSION, static/og/.og-input-hashes.json).
  */
 import { createHash } from 'node:crypto';
@@ -8,12 +9,17 @@ import { existsSync } from 'node:fs';
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Resvg } from '@resvg/resvg-js';
-import { createElement as h } from 'react';
 import sharp from 'sharp';
 import satori from 'satori';
 import { parse as parseToml } from 'smol-toml';
 import { ogBackground, ogColors } from '../src/lib/og-colors.js';
+import * as SEO_PAGES from '../src/lib/seo-pages.js';
+import { seoBlogPost, seoPlugin } from '../src/lib/seo.ts';
+import { parseFrontmatter } from '../src/lib/blog.ts';
+import { isValidPlugin, PLUGIN_SOURCES, slugFromId } from '../src/lib/plugin-identity.ts';
+
+/** Satori takes plain `{ type, props }` elements, so React isn't needed to build them. */
+const h = (type, props, ...children) => ({ type, props: { ...props, children } });
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = join(__dirname, '..');
@@ -23,7 +29,7 @@ const WEBP_OPTIONS = { quality: 88, effort: 4 };
 /** Matches the card gradient's base, so a fit-inside thumbnail sits on the same dark field. */
 const OG_BACKGROUND = { r: 18, g: 19, b: 41, alpha: 1 };
 /** Bump when layout, colors, font usage, or WebP settings change so all images rebuild. */
-const LAYOUT_VERSION = 3;
+const LAYOUT_VERSION = 4;
 
 const NOCTALIA_LOGO_SVG_URL = 'https://assets.noctalia.dev/noctalia-logo.svg';
 
@@ -34,26 +40,6 @@ function clip(s, max = 240) {
 	const t = s.replace(/\s+/g, ' ').trim();
 	if (t.length <= max) return t;
 	return `${t.slice(0, max - 1).trim()}…`;
-}
-
-const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'];
-const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
-
-/** Plugin sources, rendered in this order (official first, then community). Keyed by URL slug. */
-const PLUGIN_SOURCES = [
-	{ repo: 'official-plugins', slug: 'official' },
-	{ repo: 'community-plugins', slug: 'community' }
-];
-
-function isValidPlugin(plugin) {
-	if (!plugin || typeof plugin !== 'object') return false;
-	for (const field of REQUIRED_FIELDS) {
-		if (typeof plugin[field] !== 'string' || !plugin[field].trim()) return false;
-	}
-	const id = plugin.id;
-	if (!/^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]$/.test(id)) return false;
-	if (RESERVED_IDS.includes(id.toLowerCase())) return false;
-	return true;
 }
 
 function buildGlobalDigest(fontW400, fontW600, logoDataUrl) {
@@ -101,8 +87,7 @@ async function loadLogoDataUrl() {
 		const res = await fetch(NOCTALIA_LOGO_SVG_URL);
 		if (!res.ok) throw new Error(`HTTP ${res.status}`);
 		const svg = await res.text();
-		const r = new Resvg(svg, { fitTo: { mode: 'width', value: 256 } });
-		const data = r.render().asPng();
+		const data = await sharp(Buffer.from(svg)).resize({ width: 256 }).png().toBuffer();
 		return `data:image/png;base64,${data.toString('base64')}`;
 	} catch (e) {
 		console.warn('Could not load logo; OG art will be text only:', e?.message || e);
@@ -302,9 +287,7 @@ async function writeOg(outPathRel, pathLabel, bodyText, logoDataUrl, fonts, glob
 
 	const tree = buildTree(pathLabel, bodyText, logoDataUrl);
 	const svg = await satori(tree, { width: 1200, height: 630, fonts });
-	const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
-	const out = resvg.render();
-	const webp = await sharp(out.asPng()).webp(WEBP_OPTIONS).toBuffer();
+	const webp = await sharp(Buffer.from(svg)).webp(WEBP_OPTIONS).toBuffer();
 	await mkdir(dirname(abs), { recursive: true });
 	await writeFile(abs, webp);
 	nextCache[outPathRel] = digest;
@@ -355,18 +338,6 @@ async function mapPool(items, limit, fn) {
 	await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
 }
 
-function parseDescriptionFromMd(raw) {
-	const m = raw.match(/^description:\s*(.+)$/m);
-	if (!m) return '';
-	return m[1].replace(/^["']|["']$/g, '').trim();
-}
-
-function parseTitleFromMd(raw) {
-	const m = raw.match(/^title:\s*(.+)$/m);
-	if (!m) return '';
-	return m[1].replace(/^["']|["']$/g, '').trim();
-}
-
 async function main() {
 	if (process.env.SKIP_OG === '1' || process.env.SKIP_OG === 'true') {
 		console.log('SKIP_OG set - skipping build-og.mjs');
@@ -387,60 +358,16 @@ async function main() {
 
 	const w = (rel, pathLabel, body) => writeOg(rel, pathLabel, body, logo, fonts, globalDigest, prevCache, nextCache);
 
-	await w(
-		'og.webp',
-		'Home',
-		'Noctalia - a family of native Wayland projects: a desktop shell, a compositor, and a login screen.'
-	);
-	await w(
-		'og/shell.webp',
-		'Shell',
-		'A native Wayland desktop shell. Bar, launcher, control center, lock screen, and wallpaper-driven theming, configured together.'
-	);
-	await w(
-		'og/umbriel.webp',
-		'Umbriel',
-		'A Wayland compositor with Scrolling, Dwindle, Master, and Stacking layouts. Explore four ways to arrange your windows.'
-	);
-	await w(
-		'og/greeter.webp',
-		'Greeter',
-		'A greetd login screen that shares your Noctalia wallpaper, colors, and font. A familiar desktop from the moment you sign in.'
-	);
-	await w(
-		'og/luciole.webp',
-		'Luciole',
-		'A native Wayland file manager built to stay smooth. Grid, list, and Miller views, tabs, split view, and previews that never block the window.'
-	);
-	await w('og/blog.webp', 'Blog', 'News from the Noctalia team.');
-	await w('og/changelog.webp', 'Changelog', 'Release notes for Noctalia v5 and later.');
-	await w('og/plugins.webp', 'Plugins', 'Browse community and official plugins to extend your Noctalia setup.');
-	await w('og/palettes.webp', 'Palettes', 'Explore color palettes for Noctalia.');
-	await w(
-		'og/contributors.webp',
-		'Contributors',
-		'Meet the people who build and translate Noctalia.'
-	);
-	await w(
-		'og/privacy.webp',
-		'Privacy',
-		'What Noctalia collects, how we use it, and your rights. Open source, transparent, opt-in only.'
-	);
-	await w(
-		'og/ethos.webp',
-		'Our Ethos',
-		'How we work with the people who use and build Noctalia - a gift exchange, not a support contract.'
-	);
+	for (const seo of Object.values(SEO_PAGES)) {
+		await w(seo.ogImagePath.slice(1), seo.pathLabel, seo.description);
+	}
 
 	const blogDir = join(root, 'src/content/blog');
-	const entries = await readdir(blogDir);
-	for (const name of entries) {
+	for (const name of await readdir(blogDir)) {
 		if (!name.endsWith('.md')) continue;
-		const slug = name.replace(/\.md$/, '');
-		const raw = await readFile(join(blogDir, name), 'utf8');
-		const desc = parseDescriptionFromMd(raw) || 'News from the Noctalia team.';
-		const postTitle = parseTitleFromMd(raw) || 'Blog';
-		await w(`og/blog/${slug}.webp`, postTitle, desc);
+		const { meta } = parseFrontmatter(await readFile(join(blogDir, name), 'utf8'));
+		const seo = seoBlogPost({ slug: name.replace(/\.md$/, ''), ...meta });
+		await w(seo.ogImagePath.slice(1), seo.pathLabel, seo.description);
 	}
 
 	for (const source of PLUGIN_SOURCES) {
@@ -454,14 +381,17 @@ async function main() {
 			const catalog = parseToml(await res.text());
 			const rows = Array.isArray(catalog.plugin) ? catalog.plugin : [];
 			await mapPool(rows, 16, async (row) => {
-				const slug = typeof row.id === 'string' ? row.id.split('/').pop() : '';
 				const plugin = {
-					id: slug,
-					name: typeof row.name === 'string' ? row.name : '',
-					version: typeof row.version === 'string' ? row.version : '',
-					author: typeof row.author === 'string' ? row.author : '',
+					id: slugFromId(row.id),
+					catalogId: row.id,
+					source: source.slug,
+					name: row.name,
+					version: row.version,
+					author: row.author,
 					description: ''
 				};
+				if (!isValidPlugin(plugin)) return;
+				const slug = plugin.id;
 				try {
 					const manifestRes = await fetch(`${base}/${slug}/plugin.toml`);
 					if (manifestRes.ok) {
@@ -471,16 +401,15 @@ async function main() {
 				} catch {
 					/* description stays empty */
 				}
-				if (!isValidPlugin(plugin)) return;
 
-				const outPathRel = `og/plugin/${source.slug}/${plugin.id}.webp`;
+				const outPathRel = seoPlugin(plugin).ogImagePath.slice(1);
 				const thumbnail = await fetchThumbnail(`${base}/${plugin.id}/thumbnail.webp`);
 				if (thumbnail) {
 					await writeOgThumbnail(outPathRel, thumbnail, globalDigest, prevCache, nextCache);
 				} else {
 					// No thumbnail in the repo: fall back to the generated title/description card.
 					console.warn(`No thumbnail for ${source.slug}/${plugin.id}; using the generated card`);
-					await w(outPathRel, 'Plugin: ' + plugin.name, plugin.description);
+					await w(outPathRel, seoPlugin(plugin).pathLabel, plugin.description);
 				}
 			});
 		} catch (e) {

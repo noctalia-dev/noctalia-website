@@ -9,7 +9,6 @@
 	interface PaletteItem {
 		name: string;
 		path: string;
-		swatches: string[];
 		darkSwatches: string[];
 		lightSwatches: string[];
 	}

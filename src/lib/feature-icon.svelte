@@ -9,17 +9,18 @@
 		class?: string;
 	} = $props();
 
-	const iconNameById = {
-		wayland: 'stack-2',
-		minimal: 'target',
-		custom: 'tool',
-		compositors: 'browser',
-		plugins: 'layout-grid',
-		releases: 'rocket'
+	// Full `ti-` names so scripts/build-icons.mjs finds them when subsetting the font.
+	const iconClassById = {
+		wayland: 'ti-stack-2',
+		minimal: 'ti-target',
+		custom: 'ti-tool',
+		compositors: 'ti-browser',
+		plugins: 'ti-layout-grid',
+		releases: 'ti-rocket'
 	} satisfies Record<FeatureIconId, string>;
 </script>
 
 <i
-	class={`ti ti-${iconNameById[id]} inline-flex items-center justify-center text-[1.75rem] leading-none ${className}`}
+	class={`ti ${iconClassById[id]} inline-flex items-center justify-center text-[1.75rem] leading-none ${className}`}
 	aria-hidden="true"
 ></i>

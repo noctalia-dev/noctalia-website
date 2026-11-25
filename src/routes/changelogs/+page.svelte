@@ -10,7 +10,8 @@
 
 	type ProjectId = 'noctalia' | 'umbriel';
 
-	let { data }: { data: { releases: GithubRelease[] } } = $props();
+	let { data }: { data: { releases: Pick<GithubRelease, 'tagName' | 'publishedAt' | 'prerelease'>[] } } =
+		$props();
 	let activeProject = $state<ProjectId>('noctalia');
 	let reducedMotion = $state(false);
 

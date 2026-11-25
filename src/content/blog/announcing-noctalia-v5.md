@@ -8,7 +8,7 @@ tags: announcement, rewrite, v5
 
 Today, we’re officially talking about **Noctalia v5** - a ground-up rewrite in C++ designed for total control and long-term stability.
 
-[![Noctalia v5 preview](/v5.png)](/v5.png)
+[![Noctalia v5 preview](/v5.webp)](/v5.webp)
 
 Transitions are rarely easy, but they are often necessary. After about a year of building Noctalia on our first-generation Qt-based stack, we’ve reached a crossroads.
 

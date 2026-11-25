@@ -1,5 +1,5 @@
 /**
- * Dark palette for Open Graph art (scripts/build-og.mjs) and its preview (routes/embed-preview).
+ * Dark palette for Open Graph art (scripts/build-og.mjs).
  * Satori can't read CSS variables, so these mirror the dark tokens in src/routes/layout.css;
  * change both together and bump LAYOUT_VERSION in build-og.mjs.
  */

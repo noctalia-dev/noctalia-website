@@ -1,20 +1,6 @@
 import { parse as parseToml } from 'smol-toml';
 import { githubFetch } from '#lib/github.server.js';
-import { isValidPluginCatalogId } from '#lib/plugin-identity.js';
-
-const REQUIRED_FIELDS = ['id', 'name', 'version', 'author'] as const;
-const RESERVED_IDS = ['license', 'readme', 'index', 'api', 'admin', 'static', 'assets'];
-
-/**
- * Plugin sources, listed/rendered in this order: official first, then community.
- * `slug` namespaces a plugin's URL (/plugins/<slug>/<plugin>): folder names are only unique
- * within one source, so `noctalia/timer` and `someone/timer` can coexist across the two repos.
- * It also says which source a plugin came from - test `source === 'official'`.
- */
-const PLUGIN_SOURCES = [
-	{ repo: 'official-plugins', slug: 'official' },
-	{ repo: 'community-plugins', slug: 'community' }
-] as const;
+import { isValidPlugin, PLUGIN_SOURCES, slugFromId } from '#lib/plugin-identity.js';
 
 const pluginsCache = {
 	plugins: [] as any[],
@@ -22,29 +8,6 @@ const pluginsCache = {
 };
 
 const CACHE_TTL = 60 * 60 * 1000;
-
-export function isValidPlugin(plugin: any): boolean {
-	if (!plugin || typeof plugin !== 'object') return false;
-	for (const field of REQUIRED_FIELDS) {
-		if (typeof plugin[field] !== 'string' || plugin[field].trim() === '') {
-			return false;
-		}
-	}
-	const id = plugin.id;
-	if (!isValidPluginCatalogId(plugin.catalogId) || id !== slugFromId(plugin.catalogId)) {
-		return false;
-	}
-	if (RESERVED_IDS.includes(id.toLowerCase())) {
-		return false;
-	}
-	return true;
-}
-
-/** Derive the folder slug (URL + raw path segment) from a namespaced catalog id. */
-function slugFromId(catalogId: unknown): string {
-	if (typeof catalogId !== 'string') return '';
-	return catalogId.split('/').pop() ?? '';
-}
 
 /** One older, still-installable revision of a plugin, from a catalog `[[plugin.release]]` row. */
 export type PluginRelease = {
@@ -93,14 +56,18 @@ async function enrich(row: any, source: (typeof PLUGIN_SOURCES)[number]): Promis
 		const response = await githubFetch(
 			`https://raw.githubusercontent.com/noctalia-dev/${source.repo}/main/${slug}/plugin.toml`
 		);
-		if (!response.ok) return base;
+		if (!response.ok) {
+			console.warn(`plugin.toml for ${source.repo}/${slug}: HTTP ${response.status}; shipping without description`);
+			return base;
+		}
 		const manifest = parseToml(await response.text()) as any;
 		return {
 			...base,
 			description: typeof manifest.description === 'string' ? manifest.description : '',
 			icon: typeof manifest.icon === 'string' ? manifest.icon : undefined
 		};
-	} catch {
+	} catch (err) {
+		console.warn(`plugin.toml for ${source.repo}/${slug} failed; shipping without description:`, err);
 		return base;
 	}
 }
@@ -124,14 +91,14 @@ async function fetchSource(source: (typeof PLUGIN_SOURCES)[number]): Promise<any
 
 /**
  * Cached fetch of the public plugin catalogs (official + community), in source order.
- * Shared by the plugins list, detail page, and SEO resolver.
+ * Invalid rows are dropped here, so callers never see them.
  */
 export async function getRegistryPlugins(): Promise<any[]> {
 	const now = Date.now();
 	if (pluginsCache.timestamp > 0 && now - pluginsCache.timestamp < CACHE_TTL) {
 		return pluginsCache.plugins;
 	}
-	const plugins = (await Promise.all(PLUGIN_SOURCES.map(fetchSource))).flat();
+	const plugins = (await Promise.all(PLUGIN_SOURCES.map(fetchSource))).flat().filter(isValidPlugin);
 	if (plugins.length === 0) throw new Error('Plugin catalogs are empty');
 	pluginsCache.plugins = plugins;
 	pluginsCache.timestamp = now;

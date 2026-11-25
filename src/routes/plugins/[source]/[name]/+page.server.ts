@@ -1,5 +1,5 @@
 import { error } from '@sveltejs/kit';
-import { getRegistryPlugins, isValidPlugin } from '#lib/plugins-registry.server.js';
+import { getRegistryPlugins } from '#lib/plugins-registry.server.js';
 import { seoPlugin } from '#lib/seo.js';
 import { githubFetch } from '#lib/github.server.js';
 
@@ -48,14 +48,14 @@ async function fetchReadme(plugin: any): Promise<string | null> {
 
 export async function entries() {
 	const plugins = await getRegistryPlugins();
-	return plugins.filter(isValidPlugin).map((plugin: any) => ({ source: plugin.source, name: plugin.id }));
+	return plugins.map((plugin: any) => ({ source: plugin.source, name: plugin.id }));
 }
 
 export async function load({ params }: { params: { source: string; name: string } }) {
 	const plugins = await getRegistryPlugins();
 	// A folder name is unique only within its source, so both parts identify the plugin.
 	const plugin = plugins.find((p: any) => p.source === params.source && p.id === params.name);
-	if (!plugin || !isValidPlugin(plugin)) {
+	if (!plugin) {
 		throw error(404, 'Plugin not found');
 	}
 	const readme = await fetchReadme(plugin);

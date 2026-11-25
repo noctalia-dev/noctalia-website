@@ -15,8 +15,8 @@ export async function load({ params }: { params: { tag: string } }) {
 	const release = releases[index];
 	return {
 		release,
-		newerRelease: index > 0 ? releases[index - 1] : null,
-		olderRelease: index < releases.length - 1 ? releases[index + 1] : null,
+		newerTag: releases[index - 1]?.tagName ?? null,
+		olderTag: releases[index + 1]?.tagName ?? null,
 		seo: seoChangelogRelease(release)
 	};
 }

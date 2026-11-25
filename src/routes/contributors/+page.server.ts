@@ -1,6 +1,6 @@
 import { CONTRIBUTOR_REPOS, getContributors } from '#lib/contributors.server.js';
 import { getTranslators, TRANSLATE_URL } from '#lib/translators.server.js';
-import { SEO_CONTRIBUTORS } from '#lib/seo.js';
+import { SEO_CONTRIBUTORS } from '#lib/seo-pages.js';
 
 export async function load() {
 	const [contributors, translators] = await Promise.all([getContributors(), getTranslators()]);

@@ -8,8 +8,8 @@
 	let { data }: {
 		data: {
 			release: GithubRelease;
-			newerRelease: GithubRelease | null;
-			olderRelease: GithubRelease | null;
+			newerTag: string | null;
+			olderTag: string | null;
 		};
 	} = $props();
 
@@ -77,16 +77,16 @@
 		</div>
 
 		<nav class="release-pagination" aria-label="Other releases">
-			{#if data.olderRelease}
-				<a href={releaseHref(data.olderRelease.tagName)}>
+			{#if data.olderTag}
+				<a href={releaseHref(data.olderTag)}>
 					<span><i class="ti ti-arrow-left" aria-hidden="true"></i> Older</span>
-					<strong>{data.olderRelease.tagName}</strong>
+					<strong>{data.olderTag}</strong>
 				</a>
 			{:else}<span></span>{/if}
-			{#if data.newerRelease}
-				<a class="release-pagination__newer" href={releaseHref(data.newerRelease.tagName)}>
+			{#if data.newerTag}
+				<a class="release-pagination__newer" href={releaseHref(data.newerTag)}>
 					<span>Newer <i class="ti ti-arrow-right" aria-hidden="true"></i></span>
-					<strong>{data.newerRelease.tagName}</strong>
+					<strong>{data.newerTag}</strong>
 				</a>
 			{/if}
 		</nav>
